@@ -306,7 +306,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[9], indicators[10])
         oscillators_counter[computed_oscillators["CCI"]] += 1
     # ADX (14)
-    if None not in indicators[11:16]:
+    if None not in indicators[11:16]: # I did not get this one
         computed_oscillators["ADX"] = Compute.ADX(
             indicators[11], indicators[12], indicators[13], indicators[14], indicators[15])
         oscillators_counter[computed_oscillators["ADX"]] += 1
@@ -326,11 +326,11 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[20], indicators[21])
         oscillators_counter[computed_oscillators["MACD"]] += 1
     # Stoch RSI
-    if indicators[22] != None:
+    if indicators[22] != None: # did not find it
         computed_oscillators["Stoch.RSI"] = Compute.Simple(indicators[22])
         oscillators_counter[computed_oscillators["Stoch.RSI"]] += 1
     # W%R
-    if indicators[24] != None:
+    if indicators[24] != None: # did not find it
         computed_oscillators["W%R"] = Compute.Simple(indicators[24])
         oscillators_counter[computed_oscillators["W%R"]] += 1
     # BBP
@@ -364,7 +364,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
         computed_ma["VWMA"] = Compute.Simple(indicators[47])
         ma_counter[computed_ma["VWMA"]] += 1
     # HullMA (9)
-    if indicators[49] != None:
+    if indicators[49] != None: # did not find it
         computed_ma["HullMA"] = Compute.Simple(indicators[49])
         ma_counter[computed_ma["HullMA"]] += 1
 
