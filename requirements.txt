@@ -2,3 +2,4 @@
 pandas==2.0.1
 numpy==1.24.3
 pandas_ta
+scikit-learn
