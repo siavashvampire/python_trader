@@ -72,8 +72,6 @@ class Compute:
             string: "BUY", "SELL", or "NEUTRAL"
         """
 
-        print(rsi)
-        print(rsi1)
         if (rsi < 30 and rsi1 < rsi):
             return Recommendation.buy
         elif (rsi > 70 and rsi1 > rsi):
