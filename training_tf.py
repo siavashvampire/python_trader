@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 import tensorflow as tf
-from keras.callbacks import EarlyStopping,History
+from keras.callbacks import EarlyStopping, History
 import matplotlib.pyplot as plt
 
 
@@ -14,13 +14,13 @@ def getting_x_y(df):
     df.replace({"BUY": 1, "SELL": -1, "NEUTRAL": 0}, inplace=True)
     feature_list = ['bbands', 'RSI_14_sig', 'STOCH_14_3_3_sig', 'CCI_14_0.015_sig', 'AO_5_34_sig', 'MOM_10_sig',
                     'MACD_12_26_9_sig', 'EMA_10_sig', 'SMA_10_sig', 'EMA_20_sig', 'SMA_20_sig', 'EMA_30_sig',
-                    'SMA_30_sig', "RSI_15_sig",'EMA_50_sig', 'SMA_50_sig', 'EMA_100_sig',
-                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig','Percent_Change_5', 'Percent_Change_3',
+                    'SMA_30_sig', "RSI_15_sig", 'EMA_50_sig', 'SMA_50_sig', 'EMA_100_sig',
+                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig', 'Percent_Change_5', 'Percent_Change_3',
                     'Percent_Change_10']
 
-    X = df[feature_list]
+    x = df[feature_list]
     y = df["signal1"]
-    return X,y
+    return x, y
 
 
 def y_encoder(y):
@@ -39,7 +39,7 @@ def y_encoder(y):
     return y
 
 
-def test_train(x,y):
+def test_train(x, y):
     q_80 = int(len(y) * .8)
     q_90 = int(len(y) * .9)
 
@@ -65,9 +65,9 @@ def model_train(x_train, y_train, x_val, y_val):
                   metrics=[
                       tf.keras.metrics.BinaryAccuracy(name='accuracy'),
                       tf.keras.metrics.Precision(name='precision'),
-                      tf.keras.metrics.Recall(name='recall')],)
+                      tf.keras.metrics.Recall(name='recall')], )
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks = [cback])
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback])
 
     return model, history
 
@@ -135,7 +135,7 @@ def results(model, x_test, y_test):
 
 def main():
     df = pd.read_csv('test_df.csv')
-    x,y = getting_x_y(df)
+    x, y = getting_x_y(df)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
     model, history = model_train(x_train, y_train, x_val, y_val)
@@ -144,6 +144,3 @@ def main():
 
 
 main()
-
-
-
