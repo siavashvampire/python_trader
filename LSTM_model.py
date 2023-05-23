@@ -3,8 +3,9 @@ import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
+from keras.callbacks import EarlyStopping
 import tensorflow as tf
-from training_tf import *
+from training_tf import y_encoder, test_train, model_plot, results
 
 
 def x_y_extract(df, n=60):

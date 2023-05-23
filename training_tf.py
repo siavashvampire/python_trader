@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 import tensorflow as tf
-from keras.callbacks import EarlyStopping, History
+from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
 
