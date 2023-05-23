@@ -67,7 +67,7 @@ def model_train(x_train, y_train, x_val, y_val):
                       tf.keras.metrics.Precision(name='precision'),
                       tf.keras.metrics.Recall(name='recall')],)
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, callbacks = [cback])
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks = [cback])
 
     return model, history
 

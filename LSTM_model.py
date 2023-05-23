@@ -23,7 +23,7 @@ def x_y_extract(df, n = 60):
     return x, y
 
 
-def lstm_model(X_train, y_train, n = 60):
+def lstm_model(X_train, y_train, X_val, y_val, n = 60):
     model = Sequential([layers.Input((n, 1)),
                         layers.LSTM(64),
                         layers.Dense(32, activation='relu'),
@@ -48,7 +48,7 @@ def main():
     x,y = x_y_extract(df, n=60)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
-    model, history = lstm_model(x_train, y_train)
+    model, history = lstm_model(x_train, y_train, x_val, y_val)
     model_plot(history)
     results(model, x_test, y_test)
 

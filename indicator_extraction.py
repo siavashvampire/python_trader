@@ -180,9 +180,9 @@ def adding_percent_change(df):
 def winning_policy_1(df_in, treshold):
     df_in["signal1"] = 0
     for i in list(df_in.index.values):
-        if df_in["Percent_Change_5"][i] > treshold:
+        if df_in["Percent_Change_10"][i] > treshold:
             df_in["signal1"][i] = 1
-        elif df_in["Percent_Change_5"][i] < -treshold:
+        elif df_in["Percent_Change_10"][i] < -treshold:
             df_in["signal1"][i] = -1
 
     return df_in
@@ -195,7 +195,7 @@ def main():
     df = adding_indicator_signal(df)
     df = solving_NANs(df)
     df = adding_percent_change(df)
-    df = winning_policy_1(df, 0.04)
+    df = winning_policy_1(df, 0.03)
     print(df)
     df.to_csv('test_df.csv', index = False, encoding='utf-8')
 
