@@ -6,3 +6,18 @@ scikit-learn==1.2.2
 matplotlib==3.7.1
 tensorflow==2.12.0
 google==3.0.0
+PyQt5Designer
+PyQt5==5.15.9
+pyqt-tools
+PyQt5-stubs
+tinydb==4.7.1
+auto-py-to-exe
+v20==3.0.25.0
+PyYAML==6.0
+# pip install --index-url https://test.pypi.org/simple/ tpqoa
+# tpqoa==0.0.46
+SQLAlchemy==2.0.15
+mysqlclient==2.1.1
+pandas==2.0.1
+requests==2.30.0
+future==0.18.3

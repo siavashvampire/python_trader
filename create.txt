@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --console --icon "C:/project/Hafez/V_0/core/theme/icons/logo.ico" --name "Mersad_System_v0" --add-data "C:/project/Hafez/V_0/core;core/" --add-data "C:/project/Hafez/V_0/app;app/" --add-data "C:/project/Hafez/V_0/singleton.py;." --add-data "C:/project/Hafez/V_0/sololearn.py;."  "C:/project/Hafez/V_0/MainCode.py"
