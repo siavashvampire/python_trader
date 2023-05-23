@@ -134,7 +134,7 @@ def results(model, x_test, y_test):
 
 
 def main():
-    df = pd.read_csv('test_df.csv')
+    df = pd.read_csv('../../../test_df.csv')
     x, y = getting_x_y(df)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)

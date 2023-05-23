@@ -189,7 +189,7 @@ def winning_policy_1(df_in, treshold):
 
 
 def main():
-    csv_file = 'EURUSD_M1_202301251915_202305031504.csv'
+    csv_file = '../../../EURUSD_M1_202301251915_202305031504.csv'
     df = metatrader_data_import(csv_file)
     df = adding_raw_indicators(df)
     df = adding_indicator_signal(df)

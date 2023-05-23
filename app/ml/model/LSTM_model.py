@@ -5,7 +5,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 from keras.callbacks import EarlyStopping
 import tensorflow as tf
-from training_tf import y_encoder, test_train, model_plot, results
+from app.ml.model.training_tf import y_encoder, test_train, model_plot, results
 
 
 def x_y_extract(df, n=60):
@@ -45,7 +45,7 @@ def lstm_model(x_train, y_train, x_val, y_val, n=60):
 
 
 def main():
-    df = pd.read_csv('test_df.csv')
+    df = pd.read_csv('../../../test_df.csv')
     x, y = x_y_extract(df, n=60)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
