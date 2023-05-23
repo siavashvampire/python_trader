@@ -2,6 +2,7 @@
 # Author: deathlyface (https://github.com/deathlyface)
 # Rewritten from https://www.tradingview.com/static/bundles/technicals.f2e6e6a51aebb6cd46f8.js
 # License: MIT
+from datetime import datetime
 
 
 class Analysis(object):
@@ -54,9 +55,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (ma < close):
+        if ma < close:
             return Recommendation.buy
-        elif (ma > close):
+        elif ma > close:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -72,9 +73,9 @@ class Compute:
             string: "BUY", "SELL", or "NEUTRAL"
         """
 
-        if (rsi < 30 and rsi1 < rsi):
+        if 30 > rsi > rsi1:
             return Recommendation.buy
-        elif (rsi > 70 and rsi1 > rsi):
+        elif 70 < rsi < rsi1:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -91,9 +92,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (k < 20 and d < 20 and k > d and k1 < d1):
+        if 20 > k > d and d < 20 and k1 < d1:
             return Recommendation.buy
-        elif (k > 80 and d > 80 and k < d and k1 > d1):
+        elif 80 < k < d and d > 80 and k1 > d1:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -108,9 +109,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (cci20 < -100 and cci20 > cci201):
+        if -100 > cci20 > cci201:
             return Recommendation.buy
-        elif (cci20 > 100 and cci20 < cci201):
+        elif 100 < cci20 < cci201:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -128,9 +129,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (adx > 20 and adxpdi1 < adxndi1 and adxpdi > adxndi):
+        if adx > 20 and adxpdi1 < adxndi1 and adxpdi > adxndi:
             return Recommendation.buy
-        elif (adx > 20 and adxpdi1 > adxndi1 and adxpdi < adxndi):
+        elif adx > 20 and adxpdi1 > adxndi1 and adxpdi < adxndi:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -146,9 +147,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (ao > 0 and ao1 < 0) or (ao > 0 and ao1 > 0 and ao > ao1 and ao2 > ao1):
+        if (ao > 0 > ao1) or (ao > 0 and 0 < ao1 < ao and ao2 > ao1):
             return Recommendation.buy
-        elif (ao < 0 and ao1 > 0) or (ao < 0 and ao1 < 0 and ao < ao1 and ao2 < ao1):
+        elif (ao < 0 < ao1) or (ao < 0 and 0 > ao1 > ao and ao2 < ao1):
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -163,9 +164,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (mom < mom1):
+        if mom < mom1:
             return Recommendation.sell
-        elif (mom > mom1):
+        elif mom > mom1:
             return Recommendation.buy
         else:
             return Recommendation.neutral
@@ -180,9 +181,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (macd > signal):
+        if macd > signal:
             return Recommendation.buy
-        elif (macd < signal):
+        elif macd < signal:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -197,7 +198,7 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (close < bblower):
+        if close < bblower:
             return Recommendation.buy
         else:
             return Recommendation.neutral
@@ -212,7 +213,7 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (close > bbupper):
+        if close > bbupper:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -227,9 +228,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (psar < open):
+        if psar < open:
             return Recommendation.buy
-        elif (psar > open):
+        elif psar > open:
             return Recommendation.sell
         else:
             return Recommendation.neutral
@@ -243,15 +244,15 @@ class Compute:
         Returns:
             string: "STRONG_BUY", "BUY", "NEUTRAL", "SELL", "STRONG_SELL", or "ERROR"
         """
-        if value >= -1 and value < -.5:
+        if -1 <= value < -.5:
             return Recommendation.strong_sell
-        elif value >= -.5 and value < -.1:
+        elif -.5 <= value < -.1:
             return Recommendation.sell
-        elif value >= -.1 and value <= .1:
+        elif -.1 <= value <= .1:
             return Recommendation.neutral
-        elif value > .1 and value <= .5:
+        elif .1 < value <= .5:
             return Recommendation.buy
-        elif value > .5 and value <= 1:
+        elif .5 < value <= 1:
             return Recommendation.strong_buy
         else:
             return Recommendation.error
@@ -310,7 +311,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[11], indicators[12], indicators[13], indicators[14], indicators[15])
         oscillators_counter[computed_oscillators["ADX"]] += 1
     # AO
-    if None not in indicators[16:18] and indicators[86] != None:
+    if None not in indicators[16:18] and indicators[86] is not None:
         computed_oscillators["AO"] = Compute.AO(
             indicators[16], indicators[17], indicators[86])
         oscillators_counter[computed_oscillators["AO"]] += 1
@@ -325,19 +326,19 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[20], indicators[21])
         oscillators_counter[computed_oscillators["MACD"]] += 1
     # Stoch RSI
-    if indicators[22] != None:  # did not find it
+    if indicators[22] is not None:  # did not find it
         computed_oscillators["Stoch.RSI"] = Compute.Simple(indicators[22])
         oscillators_counter[computed_oscillators["Stoch.RSI"]] += 1
     # W%R
-    if indicators[24] != None:  # did not find it
+    if indicators[24] is not None:  # did not find it
         computed_oscillators["W%R"] = Compute.Simple(indicators[24])
         oscillators_counter[computed_oscillators["W%R"]] += 1
     # BBP
-    if indicators[26] != None:
+    if indicators[26] is not None:
         computed_oscillators["BBP"] = Compute.Simple(indicators[26])
         oscillators_counter[computed_oscillators["BBP"]] += 1
     # UO
-    if indicators[28] != None:
+    if indicators[28] is not None:
         computed_oscillators["UO"] = Compute.Simple(indicators[28])
         oscillators_counter[computed_oscillators["UO"]] += 1
 
@@ -347,7 +348,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
     close = indicators[30]
     ma_list_counter = 0
     for index in range(33, 45):
-        if indicators[index] != None:
+        if indicators[index] is not None:
             computed_ma[ma_list[ma_list_counter]] = Compute.MA(
                 indicators[index], close)
             ma_counter[computed_ma[ma_list[ma_list_counter]]] += 1
@@ -355,15 +356,15 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
 
     # MOVING AVERAGES, pt 2
     # ICHIMOKU
-    if indicators[45] != None:
+    if indicators[45] is not None:
         computed_ma["Ichimoku"] = Compute.Simple(indicators[45])
         ma_counter[computed_ma["Ichimoku"]] += 1
     # VWMA
-    if indicators[47] != None:
+    if indicators[47] is not None:
         computed_ma["VWMA"] = Compute.Simple(indicators[47])
         ma_counter[computed_ma["VWMA"]] += 1
     # HullMA (9)
-    if indicators[49] != None:  # did not find it
+    if indicators[49] is not None:  # did not find it
         computed_ma["HullMA"] = Compute.Simple(indicators[49])
         ma_counter[computed_ma["HullMA"]] += 1
 
@@ -372,7 +373,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
     analysis.exchange = exchange
     analysis.symbol = symbol
     analysis.interval = interval
-    analysis.time = datetime.datetime.now()
+    analysis.time = datetime.now()
 
     for x in range(len(indicators)):
         analysis.indicators[indicators_key[x]] = indicators[x]
