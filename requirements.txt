@@ -18,6 +18,5 @@ PyYAML==6.0
 # tpqoa==0.0.46
 SQLAlchemy==2.0.15
 mysqlclient==2.1.1
-pandas==2.0.1
 requests==2.30.0
 future==0.18.3
