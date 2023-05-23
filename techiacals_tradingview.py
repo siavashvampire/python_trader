@@ -265,9 +265,9 @@ class Compute:
         Returns:
             string: "BUY", "SELL", or "NEUTRAL"
         """
-        if (value == -1):
+        if value == -1:
             return Recommendation.sell
-        elif (value == 1):
+        elif value == 1:
             return Recommendation.buy
         else:
             return Recommendation.neutral
@@ -282,9 +282,10 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
 
     # RECOMMENDATIONS
     if None not in indicators[0:2]:
-        recommend_oscillators = Compute.Recommend(indicators[0]) # this was calculated in the server _ useless to us
-        recommend_summary = Compute.Recommend(indicators[1]) # this was calculated in the server _ useless to us
-        recommend_moving_averages = Compute.Recommend(indicators[2]) # this was calculated in the server _ useless to us
+        recommend_oscillators = Compute.Recommend(indicators[0])  # this was calculated in the server _ useless to us
+        recommend_summary = Compute.Recommend(indicators[1])  # this was calculated in the server _ useless to us
+        recommend_moving_averages = Compute.Recommend(
+            indicators[2])  # this was calculated in the server _ useless to us
     else:
         return None
 
@@ -304,7 +305,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[9], indicators[10])
         oscillators_counter[computed_oscillators["CCI"]] += 1
     # ADX (14)
-    if None not in indicators[11:16]: # I did not get this one
+    if None not in indicators[11:16]:  # I did not get this one
         computed_oscillators["ADX"] = Compute.ADX(
             indicators[11], indicators[12], indicators[13], indicators[14], indicators[15])
         oscillators_counter[computed_oscillators["ADX"]] += 1
@@ -324,11 +325,11 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
             indicators[20], indicators[21])
         oscillators_counter[computed_oscillators["MACD"]] += 1
     # Stoch RSI
-    if indicators[22] != None: # did not find it
+    if indicators[22] != None:  # did not find it
         computed_oscillators["Stoch.RSI"] = Compute.Simple(indicators[22])
         oscillators_counter[computed_oscillators["Stoch.RSI"]] += 1
     # W%R
-    if indicators[24] != None: # did not find it
+    if indicators[24] != None:  # did not find it
         computed_oscillators["W%R"] = Compute.Simple(indicators[24])
         oscillators_counter[computed_oscillators["W%R"]] += 1
     # BBP
@@ -362,7 +363,7 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
         computed_ma["VWMA"] = Compute.Simple(indicators[47])
         ma_counter[computed_ma["VWMA"]] += 1
     # HullMA (9)
-    if indicators[49] != None: # did not find it
+    if indicators[49] != None:  # did not find it
         computed_ma["HullMA"] = Compute.Simple(indicators[49])
         ma_counter[computed_ma["HullMA"]] += 1
 
@@ -379,10 +380,13 @@ def calculate(indicators, indicators_key, screener, symbol, exchange, interval):
     analysis.indicators = analysis.indicators.copy()
 
     analysis.oscillators = {"RECOMMENDATION": recommend_oscillators,
-                            "BUY": oscillators_counter["BUY"], "SELL": oscillators_counter["SELL"], "NEUTRAL": oscillators_counter["NEUTRAL"], "COMPUTE": computed_oscillators}
+                            "BUY": oscillators_counter["BUY"], "SELL": oscillators_counter["SELL"],
+                            "NEUTRAL": oscillators_counter["NEUTRAL"], "COMPUTE": computed_oscillators}
     analysis.moving_averages = {"RECOMMENDATION": recommend_moving_averages,
-                                "BUY": ma_counter["BUY"], "SELL": ma_counter["SELL"], "NEUTRAL": ma_counter["NEUTRAL"], "COMPUTE": computed_ma}
+                                "BUY": ma_counter["BUY"], "SELL": ma_counter["SELL"], "NEUTRAL": ma_counter["NEUTRAL"],
+                                "COMPUTE": computed_ma}
     analysis.summary = {"RECOMMENDATION": recommend_summary, "BUY": oscillators_counter["BUY"] + ma_counter["BUY"],
-                        "SELL": oscillators_counter["SELL"] + ma_counter["SELL"], "NEUTRAL": oscillators_counter["NEUTRAL"] + ma_counter["NEUTRAL"]}
+                        "SELL": oscillators_counter["SELL"] + ma_counter["SELL"],
+                        "NEUTRAL": oscillators_counter["NEUTRAL"] + ma_counter["NEUTRAL"]}
 
     return analysis
