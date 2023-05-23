@@ -4,8 +4,8 @@ import numpy as np
 from techiacals_tradingview import *
 
 
-def metatrader_data_import(csv_file): # function for importing metatrader data and changing it to our form.
-    df = pd.read_csv(csv_file,sep = '\t')
+def metatrader_data_import(csv_file):  # function for importing metatrader data and changing it to our form.
+    df = pd.read_csv(csv_file, sep='\t')
     df.rename(columns={'<DATE>': 'Date',
                        '<TIME>': 'Time',
                        '<OPEN>': 'Open',
@@ -15,11 +15,11 @@ def metatrader_data_import(csv_file): # function for importing metatrader data a
                        '<TICKVOL>': 'Volume'},
               inplace=True, errors='raise')
 
-    df = df[['Date','Time','Open','High','Low','Close','Volume']]
+    df = df[['Date', 'Time', 'Open', 'High', 'Low', 'Close', 'Volume']]
     return df
 
 
-def adding_raw_indicators(df): # function for adding raw indicators to our dataframe.
+def adding_raw_indicators(df):  # function for adding raw indicators to our dataframe.
     df.ta.macd(fast=12, slow=26, signal=9, append=True)
     df.ta.psar(append=True)
     df.ta.cci(lenght=20, append=True)
@@ -28,8 +28,8 @@ def adding_raw_indicators(df): # function for adding raw indicators to our dataf
 
     df.ta.ichimoku(append=True)  # did not get it
     df.ta.adx()  # did not get it
-    df.ta.uo(append=True) # did not get it
-    df.ta.vwma(append=True) # did not get it
+    df.ta.uo(append=True)  # did not get it
+    df.ta.vwma(append=True)  # did not get it
 
     # stock in the function
     df.ta.stoch(k=20, append=True)
@@ -69,17 +69,17 @@ def bbands_fun(df):
     df.ta.bbands(length=30, std=2, mamode="sma", ddof=0, append=True)
     buy_bbands_diff = df['BBU_30_2.0'] - df['Close']
     sell_bbands_diff = df['BBL_30_2.0'] - df['Close']
-    bbands = np.zeros((len(buy_bbands_diff),1))
+    bbands = np.zeros((len(buy_bbands_diff), 1))
 
-    for i in range(len(buy_bbands_diff)-1):
-        if (sell_bbands_diff[i+1] * sell_bbands_diff[i] < 0) and (df['Close'][i+1]<df['BBL_30_2.0'][i+1]):
-            bbands[i+1] = -1
-            bbands[i+2] = -1
+    for i in range(len(buy_bbands_diff) - 1):
+        if (sell_bbands_diff[i + 1] * sell_bbands_diff[i] < 0) and (df['Close'][i + 1] < df['BBL_30_2.0'][i + 1]):
+            bbands[i + 1] = -1
+            bbands[i + 2] = -1
 
-    for i in range(len(buy_bbands_diff)-1):
-        if (buy_bbands_diff[i+1] * buy_bbands_diff[i] < 0) and (df['Close'][i+1]>df['BBU_30_2.0'][i+1]):
-            bbands[i+1] = 1
-            bbands[i+2] = 1
+    for i in range(len(buy_bbands_diff) - 1):
+        if (buy_bbands_diff[i + 1] * buy_bbands_diff[i] < 0) and (df['Close'][i + 1] > df['BBU_30_2.0'][i + 1]):
+            bbands[i + 1] = 1
+            bbands[i + 2] = 1
 
     if 'sell_bbands_diff' in df.columns.values.tolist():
         df.drop('bbands', axis=1, inplace=True)
@@ -160,7 +160,7 @@ def adding_indicator_signal(df):
     return df
 
 
-def solving_NANs(df):
+def solving_nans(df):
     df = df[300:]
     df = df.reset_index(drop=True)
     return df
@@ -193,16 +193,11 @@ def main():
     df = metatrader_data_import(csv_file)
     df = adding_raw_indicators(df)
     df = adding_indicator_signal(df)
-    df = solving_NANs(df)
+    df = solving_nans(df)
     df = adding_percent_change(df)
     df = winning_policy_1(df, 0.03)
     print(df)
-    df.to_csv('test_df.csv', index = False, encoding='utf-8')
+    df.to_csv('test_df.csv', index=False, encoding='utf-8')
+
 
 main()
-
-
-
-
-
-
