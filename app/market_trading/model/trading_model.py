@@ -38,6 +38,7 @@ class TradingModel(Base):
             return "<Trading(%r, %r, %r)>" % (self.country_from_rel.name, self.country_to_rel.name, self.id)
         else:
             return "<Trading(%r, %r, %r)>" % (self.country_from, self.country_to, self.id)
+
     def insert(self) -> bool:
         try:
             session.add(self)
@@ -45,3 +46,6 @@ class TradingModel(Base):
             return True
         except:
             return False
+
+    def currency_disp(self, between: str = "/") -> str:
+        return self.country_from_rel.currency + between + self.country_to_rel.currency

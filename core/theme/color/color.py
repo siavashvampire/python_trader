@@ -14,6 +14,8 @@ PB_Text_color_active: str = "{r}, {g}, {b}, {a}".format(r=0, g=0, b=0, a=255)  #
 line_edit_BG: str = "transparent"  # line edit back ground
 line_edit_Text_color: str = "{r}, {g}, {b}, {a}".format(r=0, g=0, b=0, a=255)  # line edit Text color
 
+label_Text_color: str = "{r}, {g}, {b}, {a}".format(r=255, g=0, b=0, a=255)  # label Text color
+
 tab_selected_bg_color = "{r}, {g}, {b}, {a}".format(r=139, g=56, b=0, a=255)  # tab selected back ground color
 tab_selected_text_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # tab selected Text color
 
