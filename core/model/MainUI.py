@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import QFrame
 from MainCode import path
 from app.market_trading.api import get_all_trading
 from app.market_trading.model.trading_thread_model import TradingThreadModel
-from app.oanda.api import tpqoa_api
 from core.theme.color.color import label_Text_color, PB_BG_color_active
 
 

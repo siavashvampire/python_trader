@@ -6,8 +6,6 @@ tinydb==4.7.1
 auto-py-to-exe
 v20==3.0.25.0
 PyYAML==6.0
-# pip install --index-url https://test.pypi.org/simple/ tpqoa
-# tpqoa==0.0.46
 SQLAlchemy==2.0.15
 mysqlclient==2.1.1
 pandas==2.0.1

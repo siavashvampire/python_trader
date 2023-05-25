@@ -5,7 +5,7 @@ from typing import Callable
 from PyQt5.QtWidgets import QLabel
 
 from app.market_trading.model.trading_model import TradingModel
-from app.oanda.api import tpqoa_api
+from app.oanda.api import get_real_time_data
 
 
 class TradingThreadModel:
@@ -28,7 +28,7 @@ class TradingThreadModel:
 
     def getting_data(self, stop_thread: Callable[[], bool]):
         while True:
-            response = tpqoa_api.stream_one_data(self.name)
+            response = get_real_time_data(self.name)
             value = str(response.asks[0].dict()['price'])
             self.q_label_value.setText(value)
             sleep(1)
