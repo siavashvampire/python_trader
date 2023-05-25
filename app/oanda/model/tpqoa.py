@@ -99,7 +99,7 @@ class TPQOA(object):
         return data
 
     def get_history(self, instrument, start, end, granularity, price):
-        ''' Retrieves historical data for instrument.
+        """ Retrieves historical data for instrument.
 
         Parameters
         ==========
@@ -116,7 +116,7 @@ class TPQOA(object):
         =======
         data: pd.DataFrame
             pandas DataFrame object with data
-        '''
+        """
         if granularity.startswith('S') or granularity.startswith('M'):
             if granularity.startswith('S'):
                 freq = '4h'
@@ -139,7 +139,7 @@ class TPQOA(object):
         return data
 
     def create_order(self, instrument, units, sl_distance=0.01):
-        ''' Places order with Oanda.
+        """ Places order with Oanda.
 
         Parameters
         ==========
@@ -151,7 +151,7 @@ class TPQOA(object):
             or to be sold (negative int, eg 'units=-100')
         sl_distance: float
             stop loss distance price, mandatory eg in Germany
-        '''
+        """
         sl_details = StopLossDetails(distance=sl_distance)
         request = self.ctx.order.market(
             self.account_id,
@@ -163,14 +163,14 @@ class TPQOA(object):
         order = request.get('orderCreateTransaction')
         print('\n\n', order.dict(), '\n')
 
-    def stream_data(self, instrument, stop=None, ret: bool = False)-> list[ClientPrice]:
-        ''' Starts a real-time data stream.
+    def stream_data(self, instrument, stop=None, ret: bool = False) -> list[ClientPrice]:
+        """ Starts a real-time data stream.
 
         Parameters
         ==========
         instrument: string
             valid instrument name
-        '''
+        """
         self.stream_instrument = instrument
         self.ticks = 0
         response = self.ctx_stream.pricing.stream(
@@ -218,7 +218,7 @@ class TPQOA(object):
         print(time, bid, ask)
 
     def get_account_summary(self, detailed=False):
-        ''' Returns summary data for Oanda account.'''
+        """ Returns summary data for Oanda account."""
         if detailed is True:
             response = self.ctx.account.get(self.account_id)
         else:
@@ -227,14 +227,14 @@ class TPQOA(object):
         return raw.dict()
 
     def get_transactions(self, tid=0):
-        ''' Retrieves and returns transactions data. '''
+        """ Retrieves and returns transactions data. """
         response = self.ctx.transaction.since(self.account_id, id=tid)
         transactions = response.get('transactions')
         transactions = [t.dict() for t in transactions]
         return transactions
 
     def print_transactions(self, tid=0):
-        ''' Prints basic transactions data. '''
+        """ Prints basic transactions data. """
         transactions = self.get_transactions(tid)
         for trans in transactions:
             try:
