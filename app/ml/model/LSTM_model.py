@@ -6,7 +6,7 @@ from tensorflow.keras import layers
 from keras.callbacks import EarlyStopping
 import tensorflow as tf
 from app.ml.model.training_tf import y_encoder, test_train, model_plot, results
-
+# test
 
 def x_y_extract(df, n=60):
     list_x = []
