@@ -9,9 +9,13 @@ def get_real_time_data(name: str) -> ClientPrice:
     return tpqoa_api.stream_one_data(name)
 
 
-def get_history(name: str, start_time: str, end_time: str, candle: str):
+def get_history(name: str, start_time: str, end_time: str, candle: str) -> None:
     # tpqoa_api.get_history("EUR_USD", "2020-08-03", "2023-05-21", "M1", "A")
     tpqoa_api.get_history(name, start_time, end_time, candle, "A")
+
+
+def create_order(name: str, unit: int) -> None:
+    tpqoa_api.create_order(instrument=name, units=unit, sl_distance=0.1)
 
 # api.get_account_summary()
 #

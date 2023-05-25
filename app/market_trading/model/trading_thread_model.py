@@ -12,7 +12,7 @@ class TradingThreadModel:
     thread: Thread
     name: str
 
-    def __init__(self, trade: TradingModel, q_label_name: QLabel, q_label_value: QLabel):
+    def __init__(self, trade: TradingModel, q_label_name: QLabel, q_label_value: QLabel) -> None:
         self.trade = trade
         self.q_label_name = q_label_name
         self.q_label_value = q_label_value
