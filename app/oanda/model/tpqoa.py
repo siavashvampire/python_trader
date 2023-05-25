@@ -1,3 +1,5 @@
+from typing import Union
+
 import v20
 import configparser
 import pandas as pd
@@ -6,10 +8,10 @@ from v20.transaction import StopLossDetails
 
 
 class TPQOA(object):
-    ''' tpqoa is a Python wrapper class for the Oanda v20 API. '''
+    """ tpqoa is a Python wrapper class for the Oanda v20 API. """
 
     def __init__(self, conf_file):
-        ''' Init function is expecting a configuration file with
+        """ Init function is expecting a configuration file with
         the following content:
 
         [oanda]
@@ -22,7 +24,7 @@ class TPQOA(object):
         conf_file: string
             path to and filename of the configuration file,
             e.g. '/home/me/oanda.cfg'
-        '''
+        """
         self.config = configparser.ConfigParser()
         self.config.read(conf_file)
         self.access_token = self.config['oanda']['access_token']
@@ -57,7 +59,7 @@ class TPQOA(object):
         self.stop_stream = False
 
     def get_instruments(self):
-        ''' Retrieves and returns all instruments for the given account. '''
+        """ Retrieves and returns all instruments for the given account. """
         resp = self.ctx.account.instruments(self.account_id)
         instruments = resp.get('instruments')
         instruments = [ins.dict() for ins in instruments]
@@ -66,7 +68,7 @@ class TPQOA(object):
         return instruments
 
     def transform_datetime(self, dati):
-        ''' Transforms Python datetime object to string. '''
+        """ Transforms Python datetime object to string. """
         if isinstance(dati, str):
             dati = pd.Timestamp(dati).to_pydatetime()
         return dati.isoformat('T') + self.suffix
@@ -150,7 +152,7 @@ class TPQOA(object):
             (positive int, eg 'units=50')
             or to be sold (negative int, eg 'units=-100')
         sl_distance: float
-            stop loss distance price, mandatory eg in Germany
+            stop loss distance price, mandatory e.g. in Germany
         """
         sl_details = StopLossDetails(distance=sl_distance)
         request = self.ctx.order.market(
@@ -170,6 +172,9 @@ class TPQOA(object):
         ==========
         instrument: string
             valid instrument name
+            :param instrument:
+            :param stop:
+            :param ret:
         """
         self.stream_instrument = instrument
         self.ticks = 0
@@ -195,14 +200,14 @@ class TPQOA(object):
                     return msgs
                 break
 
-    def stream_one_data(self, instrument) -> ClientPrice:
-        ''' Starts a real-time data stream.
+    def stream_one_data(self, instrument) -> Union[ClientPrice, None]:
+        """ Starts a real-time data stream.
 
         Parameters
         ==========
         instrument: string
             valid instrument name
-        '''
+        """
         self.stream_instrument = instrument
         response = self.ctx_stream.pricing.stream(
             self.account_id, snapshot=True,
@@ -214,7 +219,7 @@ class TPQOA(object):
         return None
 
     def on_success(self, time, bid, ask):
-        ''' Method called when new data is retrieved. '''
+        """ Method called when new data is retrieved. """
         print(time, bid, ask)
 
     def get_account_summary(self, detailed=False):
