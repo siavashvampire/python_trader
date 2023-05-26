@@ -1,7 +1,7 @@
 import pandas as pd
 import pandas_ta as ta
 import numpy as np
-from techiacals_tradingview import *
+from app.ml.model.techiacals_tradingview import *
 
 import os
 print(os.getcwd())
