@@ -1,6 +1,6 @@
 import pandas as pd
 import tensorflow as tf
-from app.ml.model.indicator_extraction import metatrader_data_import, adding_raw_indicators, adding_indicator_signal, \
+from app.ml.model.indicator_extraction import adding_raw_indicators, adding_indicator_signal, \
     solving_nans, adding_percent_change, winning_policy_1
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot, results
 from app.ml.model.LSTM_model import x_y_extract, lstm_model

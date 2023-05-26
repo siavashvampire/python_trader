@@ -4,7 +4,7 @@ import numpy as np
 from app.ml.model.techiacals_tradingview import *
 
 
-def metatrader_data_import_meta(csv_file):  # function for importing metatrader data and changing it to our form.
+def data_import_meta(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep='\t')
     df.rename(columns={'<DATE>': 'Date',
                        '<TIME>': 'Time',
@@ -19,8 +19,8 @@ def metatrader_data_import_meta(csv_file):  # function for importing metatrader 
     return df
 
 
-def metatrader_data_import_trview(csv_file):  # function for importing metatrader data and changing it to our form.
-    df = pd.read_csv(csv_file, sep='\t')
+def data_import_sia(csv_file):  # function for importing metatrader data and changing it to our form.
+    df = pd.read_csv(csv_file, sep=',')
     df.rename(columns={'time': 'Date',
                        'o': 'Open',
                        'h': 'High',

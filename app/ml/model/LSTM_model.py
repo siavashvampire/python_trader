@@ -24,7 +24,8 @@ def x_y_extract(df, n=60):
     return x, y
 
 
-def lstm_model(x_train, y_train, x_val, y_val, n=60):
+def lstm_model(x_train, y_train, x_val, y_val):
+    n = x_train.shape[1]
     model = Sequential([layers.Input((n, 1)),
                         layers.LSTM(128),
                         layers.Dense(64, activation='relu'),
