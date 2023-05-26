@@ -1,3 +1,4 @@
+from pandas import DataFrame
 from v20.pricing import ClientPrice
 
 from app.oanda.model.tpqoa import TPQOA
@@ -9,9 +10,14 @@ def get_real_time_data(name: str) -> ClientPrice:
     return tpqoa_api.stream_one_data(name)
 
 
-def get_history(name: str, start_time: str, end_time: str, candle: str) -> None:
+def get_history(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
     # tpqoa_api.get_history("EUR_USD", "2020-08-03", "2023-05-21", "M1", "A")
-    tpqoa_api.get_history(name, start_time, end_time, candle, "A")
+    data = tpqoa_api.get_history(name, start_time, end_time, candle, "A")
+
+    if csv_path != "":
+        data.to_csv(csv_path, index=True, encoding='utf-8')
+
+    return data
 
 
 def create_order(name: str, unit: int) -> None:
