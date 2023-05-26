@@ -3,6 +3,8 @@ from v20.pricing import ClientPrice
 
 from app.oanda.model.tpqoa import TPQOA
 
+from datetime import datetime, timedelta
+
 tpqoa_api = TPQOA("File/Config/oanda.cfg")
 
 
@@ -18,6 +20,26 @@ def get_history(name: str, start_time: str, end_time: str, candle: str, csv_path
         data.to_csv(csv_path, index=True, encoding='utf-8')
 
     return data
+
+
+def get_last_candle(name: str, candle: str) -> DataFrame:
+    if candle.startswith('S'):
+        last_hour_date_time = datetime.utcnow() - timedelta(seconds=1)
+
+        start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M:%S'))
+        end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
+
+    elif candle.startswith('M'):
+        last_hour_date_time = datetime.utcnow() - timedelta(minutes=1)
+
+        start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M'))
+        end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M'))
+    else:
+        return DataFrame()
+
+    data = tpqoa_api.retrieve_data(name, start, end, candle, "A")
+
+    return data.tail(1)
 
 
 def create_order(name: str, unit: int) -> None:
