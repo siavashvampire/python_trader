@@ -34,6 +34,9 @@ def indicator_model_load(csv_file_path_out: str):
     model = tf.keras.models.load_model('my_model.h5')
 
 
+
+
+
 def LSTM_model():
     df = pd.read_csv('../../../test_df.csv')
     x, y = x_y_extract(df, n=60)
