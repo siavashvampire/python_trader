@@ -4,7 +4,7 @@ import numpy as np
 from app.ml.model.techiacals_tradingview import *
 
 
-def metatrader_data_import(csv_file):  # function for importing metatrader data and changing it to our form.
+def metatrader_data_import_meta(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep='\t')
     df.rename(columns={'<DATE>': 'Date',
                        '<TIME>': 'Time',
@@ -17,6 +17,21 @@ def metatrader_data_import(csv_file):  # function for importing metatrader data 
 
     df = df[['Date', 'Time', 'Open', 'High', 'Low', 'Close', 'Volume']]
     return df
+
+
+def metatrader_data_import_trview(csv_file):  # function for importing metatrader data and changing it to our form.
+    df = pd.read_csv(csv_file, sep='\t')
+    df.rename(columns={'time': 'Date',
+                       'o': 'Open',
+                       'h': 'High',
+                       'l': 'Low',
+                       'c': 'Close',
+                       'volume': 'Volume'},
+              inplace=True, errors='raise')
+
+    df = df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
+    return df
+
 
 
 def adding_raw_indicators(df):  # function for adding raw indicators to our dataframe.
