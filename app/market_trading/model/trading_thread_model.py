@@ -1,3 +1,4 @@
+from datetime import datetime
 from threading import Thread
 from time import sleep
 from typing import Callable
@@ -17,6 +18,7 @@ class TradingThreadModel:
         self.q_label_name = q_label_name
         self.q_label_value = q_label_value
         self.stop_thread = False
+        self.last_update_time = datetime.now()
 
         self.name = self.trade.currency_disp("_")
 
@@ -32,6 +34,11 @@ class TradingThreadModel:
             value = str(response.asks[0].dict()['price'])
             self.q_label_value.setText(value)
             sleep(1)
+
+            if (datetime.now() - self.last_update_time).seconds > 60:
+                print("inja bayad update beshe")
+                self.last_update_time = datetime.now()
+
             if stop_thread():
                 print("Main Rendering Thread", "Stop")
                 break
