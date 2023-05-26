@@ -5,6 +5,7 @@ from app.ml.model.indicator_extraction import metatrader_data_import, adding_raw
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot, results
 from app.ml.model.LSTM_model import x_y_extract, lstm_model
 
+# not finished yet
 csv_file_path_in = 'app/ml/file/EURUSD_M1_202301251915_202305031504.csv'
 #while True:
 
