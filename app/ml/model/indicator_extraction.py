@@ -3,7 +3,8 @@ import pandas_ta as ta
 import numpy as np
 from techiacals_tradingview import *
 
-
+import os
+print(os.getcwd())
 def metatrader_data_import(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep='\t')
     df.rename(columns={'<DATE>': 'Date',
@@ -189,7 +190,7 @@ def winning_policy_1(df_in, treshold):
 
 
 def main():
-    csv_file = '../../../EURUSD_M1_202301251915_202305031504.csv'
+    csv_file = 'app\ml\\file\EURUSD_M1_202301251915_202305031504.csv'
     df = metatrader_data_import(csv_file)
     df = adding_raw_indicators(df)
     df = adding_indicator_signal(df)
@@ -197,7 +198,7 @@ def main():
     df = adding_percent_change(df)
     df = winning_policy_1(df, 0.03)
     print(df)
-    df.to_csv('test_df.csv', index=False, encoding='utf-8')
+    df.to_csv('app\ml\\file\EURUSD_indicator.csv', index=False, encoding='utf-8')
 
 
 main()
