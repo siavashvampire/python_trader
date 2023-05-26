@@ -42,13 +42,3 @@ def lstm_model(x_train, y_train, x_val, y_val, n=60):
 
     history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20, callbacks=[cback])
     return model, history
-
-
-def main():
-    df = pd.read_csv('../../../test_df.csv')
-    x, y = x_y_extract(df, n=60)
-    y = y_encoder(y)
-    x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
-    model, history = lstm_model(x_train, y_train, x_val, y_val)
-    model_plot(history)
-    results(model, x_test, y_test)
