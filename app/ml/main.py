@@ -5,6 +5,7 @@ from app.ml.model.indicator_extraction import metatrader_data_import, adding_raw
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot, results
 from app.ml.model.LSTM_model import x_y_extract, lstm_model
 
+
 def indicator_extraction(csv_file_path_in: str, csv_file_path_out: str):
     df = metatrader_data_import(csv_file_path_in)
     df = adding_raw_indicators(df)
@@ -25,13 +26,12 @@ def indication_trainer(csv_file_path_out: str, h5_file_path_out: str):
     model_plot(history)
     results(model, x_test, y_test)
 
+
 def indicator_model_load(csv_file_path_out: str):
     df = pd.read_csv(csv_file_path_out)
     x, y = getting_x_y(df)
     y = y_encoder(y)
     model = tf.keras.models.load_model('my_model.h5')
-
-
 
 
 def LSTM_model():
