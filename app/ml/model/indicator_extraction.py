@@ -3,10 +3,6 @@ import pandas_ta as ta
 import numpy as np
 from app.ml.model.techiacals_tradingview import *
 
-import os
-
-print(os.getcwd())
-
 
 def metatrader_data_import(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep='\t')
