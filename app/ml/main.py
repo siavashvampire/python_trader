@@ -11,7 +11,7 @@ def indicator_extraction(df):
     df = adding_indicator_signal(df)
     df = solving_nans(df)
     df = adding_percent_change(df)
-    df = winning_policy_1(df, 0.03)
+    df = winning_policy_1(df, 0.01)
     return df
 
 

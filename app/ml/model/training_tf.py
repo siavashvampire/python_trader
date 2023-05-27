@@ -15,8 +15,7 @@ def getting_x_y(df):
     feature_list = ['bbands', 'RSI_14_sig', 'STOCH_14_3_3_sig', 'CCI_14_0.015_sig', 'AO_5_34_sig', 'MOM_10_sig',
                     'MACD_12_26_9_sig', 'EMA_10_sig', 'SMA_10_sig', 'EMA_20_sig', 'SMA_20_sig', 'EMA_30_sig',
                     'SMA_30_sig', "RSI_15_sig", 'EMA_50_sig', 'SMA_50_sig', 'EMA_100_sig',
-                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig', 'Percent_Change_5', 'Percent_Change_3',
-                    'Percent_Change_10']
+                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig']
 
     x = df[feature_list]
     y = df["signal1"]
