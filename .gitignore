@@ -5,3 +5,17 @@ __pycache__/
 /venv/
 
 *.csv
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb.1
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb.2
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb.3
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb.4
+
+cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb.5
+
+*.h5

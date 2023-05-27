@@ -21,7 +21,7 @@ def data_import_meta(csv_file):  # function for importing metatrader data and ch
 
 def data_import_sia(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep=',')
-    df.rename(columns={'time': 'Date',
+    df.rename(columns={
                        'o': 'Open',
                        'h': 'High',
                        'l': 'Low',
@@ -29,7 +29,7 @@ def data_import_sia(csv_file):  # function for importing metatrader data and cha
                        'volume': 'Volume'},
               inplace=True, errors='raise')
 
-    df = df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
+    df = df[[ 'Open', 'High', 'Low', 'Close', 'Volume']]
     return df
 
 
@@ -185,19 +185,24 @@ def adding_percent_change(df):
     df["Percent_Change_5"] = 0
     df["Percent_Change_3"] = 0
     df["Percent_Change_10"] = 0
-    for i in list(df.index.values)[:-10]:
-        df["Percent_Change_5"][i] = ((df["Close"][i + 5] - df["Close"][i]) / df["Close"][i]) * 100
-        df["Percent_Change_3"][i] = ((df["Close"][i + 3] - df["Close"][i]) / df["Close"][i]) * 100
-        df["Percent_Change_10"][i] = ((df["Close"][i + 10] - df["Close"][i]) / df["Close"][i]) * 100
+    for i in list(df.index.values)[:-100]:
+        df["Percent_Change_5"][i] = ((df["Close"][i + 50] - df["Close"][i]) / df["Close"][i]) * 100
+        df["Percent_Change_3"][i] = ((df["Close"][i + 30] - df["Close"][i]) / df["Close"][i]) * 100
+        df["Percent_Change_10"][i] = ((df["Close"][i + 100] - df["Close"][i]) / df["Close"][i]) * 100
     return df
 
 
-def winning_policy_1(df_in, treshold):
-    df_in["signal1"] = 0
-    for i in list(df_in.index.values):
-        if df_in["Percent_Change_10"][i] > treshold:
-            df_in["signal1"][i] = 1
-        elif df_in["Percent_Change_10"][i] < -treshold:
-            df_in["signal1"][i] = -1
+def winning_policy_1(df, treshold):
+    df["signal1"] = 0
+    for i in list(df.index.values):
+        if df["Percent_Change_10"][i] > treshold:
+            df.loc[i,"signal1"] = 1
+        elif df["Percent_Change_10"][i] < -treshold:
+            df.loc[i,"signal1"] = -1
+    df1 = df[df["signal1"]==1]
+    df2 = df[df["signal1"]==-1]
 
-    return df_in
+    print('percent of buy = ', len(df1.index)/len(df.index))
+    print('percent of sell = ', len(df2.index)/len(df.index))
+    return df
+
