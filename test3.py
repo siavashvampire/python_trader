@@ -1,3 +1,5 @@
+from time import sleep
+
 import pandas as pd
 import tensorflow as tf
 from app.ml.model.indicator_extraction import data_import_meta, adding_raw_indicators, adding_indicator_signal, \
@@ -8,11 +10,15 @@ from app.oanda.api import get_history, get_last_candle
 
 # not finished yet
 csv_file_path_in = 'app/ml/file/testing.csv'
-df = get_history("EUR_USD", "2023-05-25", "2023-05-26", "S5",csv_file_path_in)
+df = get_history("EUR_USD", "2023-05-25", "2023-05-26", "S5", csv_file_path_in)
+sleep(5)
 for i in range(1000):
-#df = sia_func()
-    df.iloc[[0, -1]] = get_last_candle("EUR_USD", "S5")
-    print(len(list(df.index)))
+    # df = sia_func()
+    print(i)
+    # df.iloc[[0, -1]] = get_last_candle("EUR_USD", "S5")
+    asd = get_last_candle("EUR_USD", "S5")
+    print(asd)
+    sleep(5)
 
 print(df)
 '''
