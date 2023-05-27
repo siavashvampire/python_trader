@@ -54,7 +54,7 @@ def model_train(x_train, y_train, x_val, y_val):
     model = Sequential([layers.Input(n),
                         layers.Dense(32, activation='relu'),
                         layers.Dense(32, activation='relu'),
-                        layers.Dense(3, activation=tf.nn.softmax)])
+                        layers.Dense(3)])
 
     cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
                           restore_best_weights=True)
@@ -66,7 +66,7 @@ def model_train(x_train, y_train, x_val, y_val):
                       tf.keras.metrics.Precision(name='precision'),
                       tf.keras.metrics.Recall(name='recall')], )
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback])
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback], batch_size = 256)
 
     return model, history
 

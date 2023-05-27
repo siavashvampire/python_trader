@@ -30,7 +30,7 @@ def lstm_model(x_train, y_train, x_val, y_val):
                         layers.LSTM(128),
                         layers.Dense(64, activation='relu'),
                         layers.Dense(64, activation='relu'),
-                        layers.Dense(3, activation=tf.nn.softmax)])
+                        layers.Dense(3)])
 
     cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
                           restore_best_weights=True)
