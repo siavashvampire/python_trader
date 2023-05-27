@@ -23,6 +23,11 @@ def get_history(name: str, start_time: str, end_time: str, candle: str, csv_path
 
 
 def get_last_candle(name: str, candle: str) -> DataFrame:
+    """
+    :param name: ex. "EUR_USD"
+    :param candle: "S5" or "M1"
+    :return:
+    """
     if candle.startswith('S'):
         last_hour_date_time = datetime.utcnow() - timedelta(seconds=1)
 
