@@ -29,13 +29,13 @@ def get_last_candle(name: str, candle: str) -> DataFrame:
     :return:
     """
     if candle.startswith('S'):
-        last_hour_date_time = datetime.utcnow() - timedelta(seconds=1)
+        last_hour_date_time = datetime.utcnow() - timedelta(seconds=6)
 
         start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M:%S'))
         end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
 
     elif candle.startswith('M'):
-        last_hour_date_time = datetime.utcnow() - timedelta(minutes=1)
+        last_hour_date_time = datetime.utcnow() - timedelta(minutes=2)
 
         start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M'))
         end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M'))
