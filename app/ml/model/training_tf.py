@@ -8,18 +8,42 @@ from tensorflow.keras import layers
 import tensorflow as tf
 from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
+from sklearn import tree
+from sklearn.metrics import precision_recall_fscore_support
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn import svm
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+import pickle
+import imblearn
+from imblearn.under_sampling import RandomUnderSampler
 
 
-def getting_x_y(df):
+
+
+def getting_x_y(df, signal = 'signal1'):
     df.replace({"BUY": 1, "SELL": -1, "NEUTRAL": 0}, inplace=True)
     feature_list = ['bbands', 'RSI_14_sig', 'STOCH_14_3_3_sig', 'CCI_14_0.015_sig', 'AO_5_34_sig', 'MOM_10_sig',
                     'MACD_12_26_9_sig', 'EMA_10_sig', 'SMA_10_sig', 'EMA_20_sig', 'SMA_20_sig', 'EMA_30_sig',
                     'SMA_30_sig', "RSI_15_sig", 'EMA_50_sig', 'SMA_50_sig', 'EMA_100_sig',
-                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig', 'Percent_Change_5', 'Percent_Change_3',
-                    'Percent_Change_10']
+                    'SMA_100_sig', 'EMA_200_sig', 'SMA_200_sig']
 
     x = df[feature_list]
-    y = df["signal1"]
+    y = df[signal]
     return x, y
 
 
@@ -50,14 +74,14 @@ def test_train(x, y):
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 
-def model_train(x_train, y_train, x_val, y_val):
+def model_train(x_train, y_train, x_val, y_val, out = 3):
     n = x_train.shape[1]
     model = Sequential([layers.Input(n),
-                        layers.Dense(32, activation='relu'),
-                        layers.Dense(32, activation='relu'),
-                        layers.Dense(3, activation=tf.nn.softmax)])
+                        layers.Dense(128, activation='relu'),
+                        layers.Dense(128, activation='relu'),
+                        layers.Dense(out)])
 
-    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
+    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='auto',
                           restore_best_weights=True)
 
     model.compile(loss=tf.keras.losses.binary_crossentropy,
@@ -67,7 +91,7 @@ def model_train(x_train, y_train, x_val, y_val):
                       tf.keras.metrics.Precision(name='precision'),
                       tf.keras.metrics.Recall(name='recall')], )
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback])
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback], batch_size = 128)
 
     return model, history
 
@@ -131,5 +155,129 @@ def results(model, x_test, y_test):
     print(num_pred_sell)
     print("cr/pred", num_correct_sell / num_pred_sell)
     print("cr/test", num_correct_sell / num_test_sell)
+
+
+def results_buy(model, x_test, y_test):
+    y_pred = model.predict(x_test)
+    print(y_pred)
+    y_pred = np.round(y_pred)
+    num_correct_buy = 0
+    num_pred_buy = 0
+    num_test_buy = 0
+    y_test.reset_index(drop=True, inplace=True)
+
+    print(y_pred)
+    print(y_test)
+    for i in range(len(y_pred)):
+        if int(y_pred[i]) == 1 and int(y_test[i]) == 1:
+            num_correct_buy += 1
+        if int(y_pred[i][0]) == 1:
+            num_pred_buy += 1
+        if int(y_test[i]) == 1:
+            num_test_buy += 1
+    print("*****buy******")
+    print(num_pred_buy)
+    print("cr/pred", num_correct_buy / num_pred_buy)
+    print("cr/test", num_correct_buy / num_test_buy)
+
+
+def model_dtree(x_train, y_train):
+    classifiers = [
+    KNeighborsClassifier(5),
+    SVC(kernel="linear", C=0.025),
+    GaussianProcessClassifier(1.0 * RBF(1.0)),
+    DecisionTreeClassifier(max_depth=8),
+    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(128,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(64,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(256,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(32,64)),
+    LogisticRegression(solver='newton-cg', random_state=0),
+    LogisticRegression(penalty='l1', solver='liblinear', random_state=0, max_iter = 200),
+    LogisticRegression(random_state=0),
+    LogisticRegression(penalty='l2', random_state=0)
+    ]
+    model = tree.DecisionTreeClassifier()
+    model = model.fit(x_train, y_train)
+    return model
+
+
+def results_tree(model, x_test, y_test):
+    y_test.reset_index(drop=True, inplace=True)
+    y_pred = model.predict(x_test)
+    num_correct_buy = 0
+    num_pred_buy = 0
+    num_test_buy = 0
+
+    print(y_pred)
+    print(y_test)
+    for i in range(len(y_pred)):
+        if int(y_pred[i][1]) == 1 and int(y_test[i][1]) == 1:
+            num_correct_buy += 1
+        if int(y_pred[i][1]) == 1:
+            num_pred_buy += 1
+        if int(y_test[i][1]) == 1:
+            num_test_buy += 1
+
+    print("*****buy******")
+    print(num_pred_buy)
+    print("cr/pred", num_correct_buy / num_pred_buy)
+    print("cr/test", num_correct_buy / num_test_buy)
+
+
+def full_model(x_train, y_train, x_test, y_test):
+    y_test.reset_index(drop=True, inplace=True)
+    classifiers = [
+    KNeighborsClassifier(5),
+    SVC(kernel="linear", C=0.025),
+    #GaussianProcessClassifier(1.0 * RBF(1.0)),
+    DecisionTreeClassifier(max_depth=8),
+    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(128,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(64,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(256,)),
+    MLPClassifier(alpha=0.2, max_iter=1000, hidden_layer_sizes=(32,64)),
+    LogisticRegression(solver='newton-cg', random_state=0),
+    LogisticRegression(penalty='l1', solver='liblinear', random_state=0, max_iter = 200),
+    LogisticRegression(random_state=0),
+    LogisticRegression(penalty='l2', random_state=0)
+    ]
+    for model in classifiers:
+        print(model)
+        model = model.fit(x_train, y_train)
+        y_pred = model.predict(x_test)
+        num_correct_buy = 0
+        num_pred_buy = 0
+        num_test_buy = 0
+
+        print(y_pred)
+        print(y_test)
+        for i in range(len(y_pred)):
+            if int(y_pred[i]) == 1 and int(y_test[i]) == 1:
+                num_correct_buy += 1
+            if int(y_pred[i]) == 1:
+                num_pred_buy += 1
+            if int(y_test[i]) == 1:
+                num_test_buy += 1
+
+        print(model)
+        print("*****buy******")
+        print(num_pred_buy)
+        if num_pred_buy > 0:
+            print("cr/pred", num_correct_buy / num_pred_buy)
+            print("cr/test", num_correct_buy / num_test_buy)
+
+    return model
+
+
+def Sampling(x_train, y_train, x_val, y_val):
+    rus = RandomUnderSampler(random_state=42, replacement=True)# fit predictor and target variable
+    x_train, y_train = rus.fit_resample(x_train, y_train)
+    x_val, y_val = rus.fit_resample(x_val, y_val)
+    return x_train, y_train, x_val, y_val
+
+
+
+
 
 
