@@ -206,3 +206,32 @@ def winning_policy_1(df, treshold):
     print('percent of sell = ', len(df2.index)/len(df.index))
     return df
 
+
+def winning_policy_2(df):
+    df["signal2"] = 0
+    for i in list(df.index.values)[:-4]:
+        if df['Close'][i+1]-df['Close'][i] > 0 and df['Close'][i+2]-df['Close'][i+1] > 0 and df['Close'][i+3]-df['Close'][i+2] > 0:
+            df.loc[i,"signal2"] = 1
+        if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
+            df.loc[i,"signal2"] = -1
+
+    df1 = df[df["signal2"]==1]
+    df2 = df[df["signal2"]==-1]
+    print('percent of buy = ', len(df1.index)/len(df.index))
+    print('percent of sell = ', len(df2.index)/len(df.index))
+    return df
+
+
+def winning_policy_3(df):
+    df["signal3"] = 0
+    for i in list(df.index.values)[:-4]:
+        if df['Close'][i+1]-df['Close'][i] > 0 and df['Close'][i+2]-df['Close'][i+1] > 0 and df['Close'][i+3]-df['Close'][i+2] > 0:
+            df.loc[i,"signal3"] = 1
+        #if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
+        #    df.loc[i,"signal2"] = -1
+
+    df1 = df[df["signal3"]==1]
+    #df2 = df[df["signal2"]==-1]
+    print('percent of buy = ', len(df1.index)/len(df.index))
+    #print('percent of sell = ', len(df2.index)/len(df.index))
+    return df
