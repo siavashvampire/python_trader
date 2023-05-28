@@ -24,9 +24,10 @@ h5_file_path_out = 'app/ml/file/EUR_USD_M1.h5'
 df = pd.read_csv(csv_file_path_out)
 #df = winning_policy_1(df, 0.001)
 df = winning_policy_3(df)
-# model = indication_trainer_buy(df, signal = 'signal3')
+
+model = indication_trainer_buy(df, signal = 'signal3')
 #tree_model(df, signal = 'signal3')
-full_model_full(df, signal = 'signal3')
+#full_model_full(df, signal = 'signal3')
 #model = LSTM_model(df)
 #model.save(h5_file_path_out)
 

@@ -3,7 +3,7 @@ import tensorflow as tf
 from app.ml.model.indicator_extraction import adding_raw_indicators, adding_indicator_signal, \
     solving_nans, adding_percent_change, winning_policy_1
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot,\
-     results, results_buy, results_tree, model_dtree, full_model
+     results, results_buy, results_tree, model_dtree, full_model, Sampling
 from app.ml.model.LSTM_model import x_y_extract, lstm_model
 
 
@@ -29,6 +29,7 @@ def indication_trainer(df, signal = 'signal1'):
 def indication_trainer_buy(df, signal = 'signal1'):
     x, y = getting_x_y(df, signal = signal)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
+    x_train, y_train, x_val, y_val = Sampling(x_train, y_train, x_val, y_val)
     model, history = model_train(x_train, y_train, x_val, y_val, out = 1)
     model_plot(history)
     results_buy(model, x_test, y_test)
@@ -48,6 +49,17 @@ def LSTM_model(df, signal = 'signal1'):
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
     model, history = lstm_model(x_train, y_train, x_val, y_val)
+    model_plot(history)
+    results(model, x_test, y_test)
+    return model
+
+
+def LSTM_model_buy(df, signal = 'signal1'):
+    x, y = x_y_extract(df, n=100, signal = signal)
+    y = y_encoder(y)
+    x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
+    x_train, y_train, x_val, y_val = Sampling(x_train, y_train, x_val, y_val)
+    model, history = lstm_model(x_train, y_train, x_val, y_val, out = 1)
     model_plot(history)
     results(model, x_test, y_test)
     return model

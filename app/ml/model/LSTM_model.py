@@ -24,13 +24,12 @@ def x_y_extract(df, n=1000, signal = 'signal1'):
     return x, y
 
 
-def lstm_model(x_train, y_train, x_val, y_val):
+def lstm_model(x_train, y_train, x_val, y_val, out = 3):
     n = x_train.shape[1]
     model = Sequential([layers.Input((n, 1)),
-                        layers.LSTM(128),
-                        layers.Dense(64, activation='relu'),
-                        layers.Dense(64, activation='relu'),
-                        layers.Dense(3)])
+                        layers.LSTM(64),
+                        layers.Dense(32, activation='relu'),
+                        layers.Dense(out)])
 
     cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
                           restore_best_weights=True)
