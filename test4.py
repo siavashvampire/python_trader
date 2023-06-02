@@ -25,7 +25,7 @@ df = pd.read_csv(csv_file_path_out)
 df = adding_percent_change(df)
 
 #df = winning_policy_1(df, 0.001)
-df = winning_policy_4(df, 0.03)
+df = winning_policy_4(df, 0.01)
 
 model = indication_trainer_buy(df, signal = 'signal4')
 #tree_model(df, signal = 'signal3')
