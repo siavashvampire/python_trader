@@ -54,9 +54,8 @@ def LSTM_model(df, signal = 'signal1'):
     return model
 
 
-def LSTM_model_buy(df, signal = 'signal1'):
+def LSTM_model_buy(df, signal = 'signal4'):
     x, y = x_y_extract(df, n=100, signal = signal)
-    y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
     x_train, y_train, x_val, y_val = Sampling(x_train, y_train, x_val, y_val)
     model, history = lstm_model(x_train, y_train, x_val, y_val, out = 1)

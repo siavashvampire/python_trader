@@ -31,6 +31,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pickle
 import imblearn
 from imblearn.under_sampling import RandomUnderSampler
+from imblearn.over_sampling import RandomOverSampler
 
 
 
@@ -77,8 +78,8 @@ def test_train(x, y):
 def model_train(x_train, y_train, x_val, y_val, out = 3):
     n = x_train.shape[1]
     model = Sequential([layers.Input(n),
-                        layers.Dense(128, activation='relu'),
-                        layers.Dense(128, activation='relu'),
+                        layers.Dense(64, activation='relu'),
+                        layers.Dense(64, activation='relu'),
                         layers.Dense(out)])
 
     cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='auto',
@@ -271,7 +272,7 @@ def full_model(x_train, y_train, x_test, y_test):
 
 
 def Sampling(x_train, y_train, x_val, y_val):
-    rus = RandomUnderSampler(random_state=42, replacement=True)# fit predictor and target variable
+    rus = RandomOverSampler(random_state=42)# fit predictor and target variable
     x_train, y_train = rus.fit_resample(x_train, y_train)
     x_val, y_val = rus.fit_resample(x_val, y_val)
     return x_train, y_train, x_val, y_val

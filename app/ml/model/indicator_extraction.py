@@ -183,9 +183,12 @@ def solving_nans(df):
 
 def adding_percent_change(df):
     df["Percent_Change_5"] = 0
+    df["Percent_Change_1"] = 0
+
     df["Percent_Change_3"] = 0
     df["Percent_Change_10"] = 0
     for i in list(df.index.values)[:-10]:
+        df["Percent_Change_1"][i] = ((df["Close"][i + 1] - df["Close"][i]) / df["Close"][i]) * 100
         df["Percent_Change_5"][i] = ((df["Close"][i + 5] - df["Close"][i]) / df["Close"][i]) * 100
         df["Percent_Change_3"][i] = ((df["Close"][i + 3] - df["Close"][i]) / df["Close"][i]) * 100
         df["Percent_Change_10"][i] = ((df["Close"][i + 10] - df["Close"][i]) / df["Close"][i]) * 100
@@ -235,3 +238,19 @@ def winning_policy_3(df):
     print('percent of buy = ', len(df1.index)/len(df.index))
     #print('percent of sell = ', len(df2.index)/len(df.index))
     return df
+
+
+def winning_policy_4(df, treshold):
+    df["signal4"] = 0
+    for i in list(df.index.values):
+        if df["Percent_Change_1"][i] > treshold:
+            df.loc[i,"signal4"] = 1
+        #if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
+        #    df.loc[i,"signal2"] = -1
+
+    df1 = df[df["signal4"]==1]
+    #df2 = df[df["signal2"]==-1]
+    print('percent of buy = ', len(df1.index)/len(df.index))
+    #print('percent of sell = ', len(df2.index)/len(df.index))
+    return df
+
