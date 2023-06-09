@@ -1,7 +1,7 @@
 import requests
 
 from app.market_trading.api import get_trading
-from app.ml3.model.ml_trading import MlTrading
+from app.ml_avidmech.model.ml_trading import MlTrading
 from app.oanda.api import get_last_candle_oanda
 
 # # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key

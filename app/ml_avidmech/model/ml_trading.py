@@ -14,10 +14,10 @@ class MlTrading:
     candle: str
 
     def __init__(self, trade: TradingModel) -> None:
-        main_root = 'app/ml3/file/trade_models/'
+        main_root = 'app/ml_avidmech/file/trade_models/'
 
 
-        data_file_root = 'app/ml3/file/trade_data/'
+        data_file_root = 'app/ml_avidmech/file/trade_data/'
         data_file_root += 'trade_data_history_' + self.trade.currency_disp("_") + '_' + self.candle + '.csv'
 
         self.trade = trade
@@ -30,7 +30,7 @@ class MlTrading:
         self.get_last_candle = lambda: self.data_connector.get_last_candle(self.trade.currency_disp("_"), self.candle)
         # self.get_history = lambda start_time, end_time: self.data_connector.get_history(
         #     name=self.trade.currency_disp("_"), start_time=start_time, end_time=end_time, candle=self.candle,
-        #     csv_path='app/ml3/file/trade_data/' + 'trade_data_history_' + self.trade.currency_disp(
+        #     csv_path='app/ml_avidmech/file/trade_data/' + 'trade_data_history_' + self.trade.currency_disp(
         #         "_") + '_' + self.candle + '.csv')
         self.get_history = lambda start_time, end_time: self.data_connector.get_history(
             name=self.trade.currency_disp("_"), start_time=start_time, end_time=end_time, candle=self.candle)

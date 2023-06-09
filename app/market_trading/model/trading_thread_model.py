@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
 from app.market_trading.model.trading_model import TradingModel
-from app.ml3.model.ml_trading import MlTrading
+from app.ml_avidmech.model.ml_trading import MlTrading
 
 
 class TradingThreadModel:
