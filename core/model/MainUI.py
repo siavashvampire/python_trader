@@ -129,7 +129,7 @@ class MainUi(QFrame):
                 align = 0
 
             q_labels = self.add_trade(alignment, "test", "0")
-            trade_threads.append(TradingThreadModel(trade,q_labels[0],q_labels[1]))
+            trade_threads.append(TradingThreadModel(trade, q_labels[0], q_labels[1]))
 
         self.logo_label_setting = self.findChild(QLabel, "logo_label_setting")
         self.logo_label_trade_status = self.findChild(QLabel, "logo_label_trade_status")
@@ -169,4 +169,4 @@ class MainUi(QFrame):
 
         i = verticalLayout_trade_left.count()
         verticalLayout_trade_left.insertLayout(i - 2, h1)
-        return [q_label_name,q_label_value]
+        return [q_label_name, q_label_value]

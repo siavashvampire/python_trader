@@ -52,9 +52,6 @@ class Main:
 
         self.create_db_path()
 
-        self.main_ui = MainUi()
-        self.login_ui = LoginUI(self.main_ui)
-
         self.start_splash.show_message("\t\t initializing database connection")
         create_db()
         # TODO:nemidonam age kar nakone v db nabashe chi mishe
@@ -63,6 +60,8 @@ class Main:
 
         # TODO:bayad interneto check kone v check kone on dar gahi k mikhaim vasle ya na
 
+        self.main_ui = MainUi()
+        self.login_ui = LoginUI(self.main_ui)
         # ------------------------
 
         # self.main_ui.Backup_Submit_pb.clicked.connect(self.backup_thread.update_app)

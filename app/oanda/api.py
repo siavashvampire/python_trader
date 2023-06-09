@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 tpqoa_api = TPQOA("File/Config/oanda.cfg")
 
 
-def get_real_time_data(name: str) -> ClientPrice:
+def get_real_time_data_oanda(name: str) -> ClientPrice:
     return tpqoa_api.stream_one_data(name)
 
 
-def get_history(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
+def get_history_oanda(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
     # tpqoa_api.get_history("EUR_USD", "2020-08-03", "2023-05-21", "M1", "A")
     data = tpqoa_api.get_history(name, start_time, end_time, candle, "A")
 
@@ -22,7 +22,7 @@ def get_history(name: str, start_time: str, end_time: str, candle: str, csv_path
     return data
 
 
-def get_last_candle(name: str, candle: str) -> DataFrame:
+def get_last_candle_oanda(name: str, candle: str) -> DataFrame:
     """
     :param name: ex. "EUR_USD"
     :param candle: "S5" or "M1"
@@ -47,7 +47,7 @@ def get_last_candle(name: str, candle: str) -> DataFrame:
     return data.tail(1)
 
 
-def create_order(name: str, unit: int) -> None:
+def create_order_oanda(name: str, unit: int) -> None:
     tpqoa_api.create_order(instrument=name, units=unit, sl_distance=0.1)
 
 # api.get_account_summary()

@@ -3,6 +3,8 @@ import os
 from tinydb import TinyDB
 import hashlib
 
+from app.data_connector.model.enums import APIUsed
+
 config_path = "File/Config/"
 config_db_name = 'config.json'
 config_table_name = 'config'
@@ -193,6 +195,11 @@ count_for_send_list = int(sAll["count_for_send_list"])
 boundary_for_payload = sAll["boundary_for_payload"]
 # end  URL Config
 
+
+# Start  API Config
+api_used = APIUsed().oanda
+
+# end  API Config
 # Start  Developer Config
 developer_config = sAll["developer_config"]
 

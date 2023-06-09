@@ -1,6 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
+from app.candle.model.candle_model import CandleModel
 from app.country.model.country_model import CountryModel
 from core.database.Base import Base
 from core.database.database import session
@@ -12,9 +13,11 @@ class TradingModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     country_from = Column(ForeignKey("country.id"))
     country_to = Column(ForeignKey("country.id"))
+    candle = Column(ForeignKey("candle.id"))
 
     country_from_rel = relationship("CountryModel", foreign_keys=[country_from])
     country_to_rel = relationship("CountryModel", foreign_keys=[country_to])
+    candle_rel = relationship("CandleModel", foreign_keys=[candle])
 
     def __init__(self, id: int = 0, country_from: int = 0, country_to: int = 0) -> None:
         try:
@@ -35,7 +38,8 @@ class TradingModel(Base):
 
     def __repr__(self):
         if self.country_from_rel is not None:
-            return "<Trading(%r, %r, %r)>" % (self.country_from_rel.name, self.country_to_rel.name, self.id)
+            return "<Trading(%r,%r, %r, %r)>" % (
+            self.currency_disp(), self.country_from_rel.name, self.country_to_rel.name, self.id)
         else:
             return "<Trading(%r, %r, %r)>" % (self.country_from, self.country_to, self.id)
 

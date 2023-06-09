@@ -6,14 +6,14 @@ from app.ml.model.indicator_extraction import data_import_meta, adding_raw_indic
     solving_nans, adding_percent_change, winning_policy_1
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot, results
 from app.ml.model.LSTM_model import x_y_extract, lstm_model
-from app.oanda.api import get_history, get_last_candle
+from app.oanda.api import get_history_oanda, get_last_candle_oanda
 
 # not finished yet
 csv_file_path_in = 'app/ml/file/testing.csv'
-df = get_history("EUR_USD", "2023-05-25", "2023-05-26", "M1", csv_file_path_in)
+df = get_history_oanda("EUR_USD", "2023-05-25", "2023-05-26", "S5", csv_file_path_in)
 sleep(5)
 for i in range(1000):
-    df.iloc[[0, -1]] = get_last_candle("EUR_USD", "S5")
+    df.iloc[[0, -1]] = get_last_candle_oanda("EUR_USD", "S5")
     df = adding_raw_indicators(df[:-600])
     df = adding_percent_change(df)
     df = winning_policy_4(df, 0.01)

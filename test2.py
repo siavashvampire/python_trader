@@ -1,6 +1,6 @@
 from app.ml.main import indicator_extraction, indication_trainer, LSTM_model
 from app.ml.model.indicator_extraction import data_import_sia
-from app.oanda.api import get_history
+from app.oanda.api import get_history_oanda
 import pandas as pd
 import tensorflow as tf
 csv_file_path_in = 'app/ml/file/EURUSD_S5_sia.csv'
@@ -9,7 +9,7 @@ h5_file_path_out = 'app/ml/file/EUR_USD_model.h5'
 #csv_file_path_in = 'File/test3.csv'
 #from tensorflow.keras.models import Model
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
-df = get_history("EUR_USD", "2023-05-1", "2023-05-26", "S5",csv_file_path_in)
+df = get_history_oanda("EUR_USD", "2023-05-1", "2023-05-26", "S5", csv_file_path_in)
 
 '''
 df = data_import_sia(csv_file_path_in)

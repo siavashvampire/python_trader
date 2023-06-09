@@ -27,11 +27,13 @@ session = sessionmaker(bind=engine)()
 def create_db() -> None:
     from app.user.model.user_model import UserDB
     from app.country.model.country_model import CountryModel
+    from app.candle.model.candle_model import CandleModel
     from app.market_trading.model.trading_model import TradingModel
     from app.logging.model.log_model import LogModel
 
     UserDB()
     CountryModel()
+    CandleModel()
     TradingModel()
     LogModel()
     Base.metadata.create_all(engine)
