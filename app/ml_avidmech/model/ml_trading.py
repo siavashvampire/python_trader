@@ -14,14 +14,14 @@ class MlTrading:
     candle: str
 
     def __init__(self, trade: TradingModel) -> None:
-        main_root = 'app/ml_avidmech/file/trade_models/'
+        self.trade = trade
+        self.candle = trade.candle_rel.name
 
+        main_root = 'app/ml_avidmech/file/trade_models/'
 
         data_file_root = 'app/ml_avidmech/file/trade_data/'
         data_file_root += 'trade_data_history_' + self.trade.currency_disp("_") + '_' + self.candle + '.csv'
 
-        self.trade = trade
-        self.candle = trade.candle_rel.name
         # self.model = joblib.load('model_1min_EUR_USD.pkl')
         self.model_name = main_root + 'trade_model_' + self.trade.currency_disp("_") + '_' + self.candle + '.pkl'
         self.model = joblib.load(self.model_name)
@@ -45,9 +45,9 @@ class MlTrading:
         self.df = self.get_history_from_file()
 
         # self.df = self.get_last_candle()
-        self.df = self.df.drop(['time', 'volume', 'complete'], axis=1)
+        self.df = self.df.drop(['volume', 'complete'], axis=1)
         self.df = self.df * 10000
-        self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
+        self.df['trend'] = self.df['o'] - self.df['c']
         self.df['MA_20'] = self.df['c'].rolling(window=20).mean()  # moving average 20
         self.df['MA_50'] = self.df['c'].rolling(window=50).mean()  # moving average 50
 
@@ -59,10 +59,15 @@ class MlTrading:
 
         self.df['EMA_20'] = self.df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
         self.df['EMA_50'] = self.df['c'].ewm(span=50, adjust=False).mean()
+
+        self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
         self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 5 else 1 if x <= -5 else 2)
-        self.df = self.df.dropna()
+        # self.df = self.df.dropna()
 
         return self.df
+
+    # def last_process(self):
+    #     self.
 
     def update(self):
         self.model.fit(self.get_last_candle())
@@ -81,5 +86,7 @@ class MlTrading:
 
         # TODO:ino man nemidonam chetori bayad vorodi bedid , zahmatesh miofte bara khodeton
         # print(self.df.iloc[-1, :].values.reshape(1, -1))
-        pred = self.model.predict(self.df.iloc[-1, :].values.reshape(1, -1))
+        # last_candle = self.get_last_candle()
+        # self.last_candle.preprocess()
+        pred = self.model.predict(self.df.iloc[-1, :-2].values.reshape(1, -1))
         return pred

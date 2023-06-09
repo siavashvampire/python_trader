@@ -27,7 +27,8 @@ class TradingThreadModel:
         self.get_real_time_data = lambda: self.data_connector.get_real_time_data(self.name)
 
         self.q_label_name.setText(self.name)
-        self. ml_trading = MlTrading(trade)
+        self.ml_trading = MlTrading(trade)
+        self.ml_trading.preprocess()
 
         self.Thread = Thread(target=self.getting_data_thread,
                              args=(lambda: self.stop_thread,))
@@ -41,7 +42,7 @@ class TradingThreadModel:
             sleep(1)
 
             if (datetime.now() - self.last_update_time).seconds > 60:
-                print("inja bayad update beshe")
+                predict = self.ml_trading.predict()
                 self.last_update_time = datetime.now()
 
             if stop_thread():
