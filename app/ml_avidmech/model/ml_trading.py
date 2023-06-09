@@ -88,5 +88,5 @@ class MlTrading:
         # print(self.df.iloc[-1, :].values.reshape(1, -1))
         # last_candle = self.get_last_candle()
         # self.last_candle.preprocess()
-        pred = self.model.predict(self.df.iloc[-1, :-2].values.reshape(1, -1))
+        pred = self.model.predict(self.df[-1, :-2].values.reshape(1, -1))
         return pred
