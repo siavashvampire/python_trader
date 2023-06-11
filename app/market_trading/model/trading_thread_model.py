@@ -6,6 +6,7 @@ from typing import Callable
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
+from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.ml_trading import MlTrading
 
@@ -41,10 +42,12 @@ class TradingThreadModel:
             self.q_label_value.setText(value)
             sleep(1)
 
-            if (datetime.now() - self.last_update_time).seconds > 60:
-                predict = self.ml_trading.predict()
-                self.last_update_time = datetime.now()
-
+            if (datetime.now() - self.last_update_time).seconds > 10:
+                try:
+                    predict = self.ml_trading.predict()
+                    self.last_update_time = datetime.now()
+                except Exception as e:
+                    add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
                 print("Main Rendering Thread", "Stop")
                 break

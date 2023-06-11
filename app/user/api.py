@@ -1,36 +1,38 @@
-from app.user.model.user_model import UserDB
+from app.user.model.user_model import UserModel
 from core.database.database import session
 
 
-def get_user(id_in: int = 0, user_id: int = 0, user: User = None) -> UserDB:
-    id_check = 0
+def get_user(id_in: int = 0, first_name: str = "", last_name: str = "") -> UserModel:
+    # TODO:get fght ro id has bayad ro first and last ham bere
+
+    # TODO:check nashode bayad check beshe
 
     if id_in != 0:
-        id_check = id_in
-
-    if user is not None:
-        id_check = user.id
-
-    if id_check != 0:
-        temp = session.query(UserDB).filter(UserDB.id == id_check).first()
-        if temp is not None:
-            return temp
-    if user_id != 0:
-        temp = session.query(UserDB).filter(UserDB.user_id == user_id).first()
+        temp = session.query(UserModel).filter(UserModel.id == id_in).first()
         if temp is not None:
             return temp
 
-    return UserDB(id=user.id, username=user.username, first_name=user.first_name,
-                  last_name=user.last_name)
+    if first_name != "" and last_name != "":
+        temp = session.query(UserModel).filter(UserModel.first_name == first_name,
+                                               UserModel.last_name == last_name).first()
+        if temp is not None:
+            return temp
+
+    return UserModel(id=id_in, first_name=first_name, last_name=last_name)
 
 
-def add_user(user_in: User) -> bool:
-    return get_user(user=user_in).insert_user()
+def add_user(first_name: str = "", last_name: str = "") -> bool:
+    return get_user(first_name=first_name, last_name=last_name).insert_user()
 
 
-def get_all_user() -> list[UserDB]:
-    return session.query(UserDB).all()
+# TODO:check nashode bayad check beshe
 
 
-def check_exist_user(user_in: User) -> bool:
-    return get_user(user=user_in).check_exist_user()
+def get_all_user() -> list[UserModel]:
+    return session.query(UserModel).all()
+    # TODO:check nashode bayad check beshe
+
+
+def check_exist_user(id_in: int = 0, first_name: str = "", last_name: str = "") -> bool:
+    return get_user(id_in, first_name, last_name).check_exist_user()
+    # TODO:check nashode bayad check beshe

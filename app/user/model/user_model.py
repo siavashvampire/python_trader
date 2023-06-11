@@ -1,14 +1,14 @@
-from sqlalchemy import Column, String, Integer, BigInteger, DateTime, Boolean
+from sqlalchemy import Column, String, Integer, DateTime, Boolean
 
 from core.database.Base import Base
 from core.database.database import session
 from datetime import datetime
 
 
-class UserDB(Base):
+class UserModel(Base):
     __tablename__ = 'users'
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True, unique=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     first_name = Column(String(50))
     last_name = Column(String(50))
     admin_check_flag = Column(Boolean, default=0)
@@ -16,7 +16,7 @@ class UserDB(Base):
 
     def __init__(self, id: int = 0, first_name: str = "", last_name: str = "") -> None:
         try:
-            temp: UserDB = session.query(UserDB).filter(UserDB.id == id).first()
+            temp: UserModel = session.query(UserModel).filter(UserModel.id == id).first()
             self.id = temp.id
             self.first_name = temp.first_name
             self.last_name = temp.last_name
@@ -30,7 +30,7 @@ class UserDB(Base):
         Base.__init__(self)
 
     def insert_user(self) -> bool:
-        temp: UserDB = session.query(UserDB).filter(UserDB.id == self.id).first()
+        temp: UserModel = session.query(UserModel).filter(UserModel.id == self.id).first()
         if temp is not None:
             return False
         try:
@@ -41,7 +41,7 @@ class UserDB(Base):
             return False
 
     def check_exist_user(self) -> bool:
-        temp: UserDB = session.query(UserDB).filter(UserDB.id == self.id).first()
+        temp: UserModel = session.query(UserModel).filter(UserModel.id == self.id).first()
         if temp is not None:
             return True
         return False

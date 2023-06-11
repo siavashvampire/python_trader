@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship
 
 from app.market_trading.api import get_trading
@@ -13,15 +13,13 @@ class LogModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     user_id = Column(ForeignKey("users.id"))
     trading_id = Column(ForeignKey("trading.id"))
-    country_from = Column(ForeignKey("country.id"))
-    country_to = Column(ForeignKey("country.id"))
-    predict = Column(Boolean, default=0)
+    title = Column(ForeignKey("log_title.id"))
+    text = Column(String(50))
     insert_time = Column(DateTime, default=datetime.now)
 
-    user_rel = relationship("UserDB", foreign_keys=[user_id])
+    user_rel = relationship("UserModel", foreign_keys=[user_id])
     trading_rel = relationship("TradingModel", foreign_keys=[trading_id])
-    country_from_rel = relationship("CountryModel", foreign_keys=[country_from])
-    country_to_rel = relationship("CountryModel", foreign_keys=[country_to])
+    title_rel = relationship("LogTitleModel", foreign_keys=[title])
 
     def __init__(self, id: int = 0, user_id: int = 0, trading_id: int = 0, predict: int = 0) -> None:
         try:

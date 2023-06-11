@@ -62,12 +62,35 @@ class MlTrading:
 
         self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
         self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 5 else 1 if x <= -5 else 2)
+
+        self.v = self.df.drop(['time', 'next_trend', 'label'], axis=1)
+        self.to_predict = self.v.iloc[-1]
         # self.df = self.df.dropna()
 
         return self.df
 
     # def last_process(self):
-    #     self.
+    #     self.df = self.get_last_candle()
+    #     self.df = self.df.drop(['volume', 'complete'], axis=1)
+    #     self.df = self.df * 10000
+    #     self.df['trend'] = self.df['o'] - self.df['c']
+    #     self.df['MA_20'] = self.df['c'].rolling(window=20).mean()  # moving average 20
+    #     self.df['MA_50'] = self.df['c'].rolling(window=50).mean()  # moving average 50
+    #
+    #     self.df['L14'] = self.df['l'].rolling(window=14).min()
+    #     self.df['H14'] = self.df['h'].rolling(window=14).max()
+    #     self.df['%K'] = 100 * (
+    #             (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscilator
+    #     self.df['%D'] = self.df['%K'].rolling(window=3).mean()
+    #
+    #     self.df['EMA_20'] = self.df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
+    #     self.df['EMA_50'] = self.df['c'].ewm(span=50, adjust=False).mean()
+    #
+    #     # self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
+    #     # self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 5 else 1 if x <= -5 else 2)
+    #     # self.df = self.df.dropna()
+    #
+    #     return self.df
 
     def update(self):
         self.model.fit(self.get_last_candle())
@@ -87,6 +110,11 @@ class MlTrading:
         # TODO:ino man nemidonam chetori bayad vorodi bedid , zahmatesh miofte bara khodeton
         # print(self.df.iloc[-1, :].values.reshape(1, -1))
         # last_candle = self.get_last_candle()
-        # self.last_candle.preprocess()
-        pred = self.model.predict(self.df[-1, :-2].values.reshape(1, -1))
-        return pred
+        # self.last_process()
+        # self.get_last_candle().preprocess()
+        # self.get_last_candle().drop(['next_trend', 'label'])
+        #  pred = self.model.predict(self.df['o', 'h', 'l', 'c', 'trend', 'MA_20', 'MA_50', 'L14', 'H14', '%K', '%D',
+        # 'EMA_20', 'EMA_50'].iloc[-1].values.reshape(1, -1))
+
+        pred = self.model.predict(self.to_predict.values.reshape(1, -1))
+        return pred[0]
