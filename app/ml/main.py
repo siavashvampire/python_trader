@@ -5,6 +5,8 @@ from app.ml.model.indicator_extraction import adding_raw_indicators, adding_indi
 from app.ml.model.training_tf import getting_x_y, y_encoder, test_train, model_train, model_plot,\
      results, results_buy, results_tree, model_dtree, full_model, Sampling
 from app.ml.model.LSTM_model import x_y_extract, lstm_model
+import numpy as np
+
 
 
 def indicator_extraction(df):
@@ -20,6 +22,19 @@ def indication_trainer(df, signal = 'signal1'):
     x, y = getting_x_y(df, signal = signal)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
+    x_train, y_train, x_val, y_val = Sampling(x_train, y_train, x_val, y_val)
+    y_pred = y_val
+    num_correct_buy = 0
+    num_pred_buy = 0
+    num_test_buy = 0
+    for i in range(len(y_pred)):
+        if int(y_pred[i][0]) == 1:
+            num_correct_buy += 1
+        if int(y_pred[i][2]) == 1:
+            num_pred_buy += 1
+        if int(y_pred[i][1]) == 1:
+            num_test_buy += 1
+    print(len(y_pred),num_correct_buy,num_pred_buy,num_test_buy)
     model, history = model_train(x_train, y_train, x_val, y_val)
     model_plot(history)
     results(model, x_test, y_test)

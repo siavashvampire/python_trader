@@ -32,6 +32,7 @@ import pickle
 import imblearn
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import SMOTE
 
 
 
@@ -78,11 +79,11 @@ def test_train(x, y):
 def model_train(x_train, y_train, x_val, y_val, out = 3):
     n = x_train.shape[1]
     model = Sequential([layers.Input(n),
-                        layers.Dense(256, activation='relu'),
-                        layers.Dense(256, activation='relu'),
-                        layers.Dense(out)])
+                        layers.Dense(128, activation='relu'),
+                        layers.Dense(128, activation='relu'),
+                        layers.Dense(out, activation = 'Softmax')])
 
-    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='auto',
+    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
                           restore_best_weights=True)
 
     model.compile(loss=tf.keras.losses.binary_crossentropy,
@@ -119,14 +120,15 @@ def model_plot(history):
 
 
 def results(model, x_test, y_test):
+
     y_pred = model.predict(x_test)
-    y_pred = np.round(y_pred)
+    y_pred = y = tf.one_hot(tf.argmax(y_pred, axis=1), y_pred.shape[1])
     num_correct_buy = 0
     num_pred_buy = 0
     num_test_buy = 0
 
-    print(y_pred)
-    print(y_test)
+    print(y_pred.shape)
+    print(y_test.shape)
     for i in range(len(y_pred)):
         if int(y_pred[i][2]) == 1 and int(y_test[i][2]) == 1:
             num_correct_buy += 1
@@ -272,7 +274,7 @@ def full_model(x_train, y_train, x_test, y_test):
 
 
 def Sampling(x_train, y_train, x_val, y_val):
-    rus = RandomOverSampler(random_state=42)# fit predictor and target variable
+    rus = SMOTE() # fit predictor and target variable
     x_train, y_train = rus.fit_resample(x_train, y_train)
     x_val, y_val = rus.fit_resample(x_val, y_val)
     return x_train, y_train, x_val, y_val
