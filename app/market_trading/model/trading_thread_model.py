@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QLabel
 from app.data_connector.model.data_connector import DataConnector
 from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
+from app.ml_avidmech.model.enums import PredictEnums
 from app.ml_avidmech.model.ml_trading import MlTrading
 
 
@@ -21,6 +22,8 @@ class TradingThreadModel:
         self.q_label_value = q_label_value
         self.stop_thread = False
         self.last_update_time = datetime.now()
+        self.state = PredictEnums().neutral
+        self.state_unit = 0
 
         self.name = self.trade.currency_disp("_")
         self.data_connector = DataConnector()
@@ -45,6 +48,7 @@ class TradingThreadModel:
             if (datetime.now() - self.last_update_time).seconds > 10:
                 try:
                     predict = self.ml_trading.predict()
+                    # self.data_connector.create_order("asdxcv")
                     self.last_update_time = datetime.now()
                 except Exception as e:
                     add_log(1, self.trade.id, 1, str(e))

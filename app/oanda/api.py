@@ -43,7 +43,6 @@ def get_last_candle_oanda(name: str, candle: str) -> DataFrame:
         return DataFrame()
 
     data = tpqoa_api.retrieve_data(name, start, end, candle, "A")
-
     return data.tail(1)
 
 

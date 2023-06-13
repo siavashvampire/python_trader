@@ -22,16 +22,15 @@ def data_import_meta(csv_file):  # function for importing metatrader data and ch
 def data_import_sia(csv_file):  # function for importing metatrader data and changing it to our form.
     df = pd.read_csv(csv_file, sep=',')
     df.rename(columns={
-                       'o': 'Open',
-                       'h': 'High',
-                       'l': 'Low',
-                       'c': 'Close',
-                       'volume': 'Volume'},
-              inplace=True, errors='raise')
+        'o': 'Open',
+        'h': 'High',
+        'l': 'Low',
+        'c': 'Close',
+        'volume': 'Volume'},
+        inplace=True, errors='raise')
 
-    df = df[[ 'Open', 'High', 'Low', 'Close', 'Volume']]
+    df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
     return df
-
 
 
 def adding_raw_indicators(df):  # function for adding raw indicators to our dataframe.
@@ -203,44 +202,47 @@ def winning_policy_1(df, treshold):
     df["signal1"] = 0
     for i in list(df.index.values):
         if df["Percent_Change_5"][i] > treshold:
-            df.loc[i,"signal1"] = 1
+            df.loc[i, "signal1"] = 1
         elif df["Percent_Change_5"][i] < -treshold:
-            df.loc[i,"signal1"] = -1
-    df1 = df[df["signal1"]==1]
-    df2 = df[df["signal1"]==-1]
+            df.loc[i, "signal1"] = -1
+    df1 = df[df["signal1"] == 1]
+    df2 = df[df["signal1"] == -1]
 
-    print('percent of buy = ', len(df1.index)/len(df.index))
-    print('percent of sell = ', len(df2.index)/len(df.index))
+    print('percent of buy = ', len(df1.index) / len(df.index))
+    print('percent of sell = ', len(df2.index) / len(df.index))
     return df
 
 
 def winning_policy_2(df):
     df["signal2"] = 0
     for i in list(df.index.values)[:-4]:
-        if df['Close'][i+1]-df['Close'][i] > 0 and df['Close'][i+2]-df['Close'][i+1] > 0 and df['Close'][i+3]-df['Close'][i+2] > 0:
-            df.loc[i,"signal2"] = 1
-        if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
-            df.loc[i,"signal2"] = -1
+        if df['Close'][i + 1] - df['Close'][i] > 0 and df['Close'][i + 2] - df['Close'][i + 1] > 0 and df['Close'][
+            i + 3] - df['Close'][i + 2] > 0:
+            df.loc[i, "signal2"] = 1
+        if df['Close'][i + 1] - df['Close'][i] < 0 and df['Close'][i + 2] - df['Close'][i + 1] < 0 and df['Close'][
+            i + 3] - df['Close'][i + 2] < 0:
+            df.loc[i, "signal2"] = -1
 
-    df1 = df[df["signal2"]==1]
-    df2 = df[df["signal2"]==-1]
-    print('percent of buy = ', len(df1.index)/len(df.index))
-    print('percent of sell = ', len(df2.index)/len(df.index))
+    df1 = df[df["signal2"] == 1]
+    df2 = df[df["signal2"] == -1]
+    print('percent of buy = ', len(df1.index) / len(df.index))
+    print('percent of sell = ', len(df2.index) / len(df.index))
     return df
 
 
 def winning_policy_3(df):
     df["signal3"] = 0
     for i in list(df.index.values)[:-4]:
-        if df['Close'][i+1]-df['Close'][i] > 0 and df['Close'][i+2]-df['Close'][i+1] > 0 and df['Close'][i+3]-df['Close'][i+2] > 0:
-            df.loc[i,"signal3"] = 1
-        #if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
+        if df['Close'][i + 1] - df['Close'][i] > 0 and df['Close'][i + 2] - df['Close'][i + 1] > 0 and df['Close'][
+            i + 3] - df['Close'][i + 2] > 0:
+            df.loc[i, "signal3"] = 1
+        # if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
         #    df.loc[i,"signal2"] = -1
 
-    df1 = df[df["signal3"]==1]
-    #df2 = df[df["signal2"]==-1]
-    print('percent of buy = ', len(df1.index)/len(df.index))
-    #print('percent of sell = ', len(df2.index)/len(df.index))
+    df1 = df[df["signal3"] == 1]
+    # df2 = df[df["signal2"]==-1]
+    print('percent of buy = ', len(df1.index) / len(df.index))
+    # print('percent of sell = ', len(df2.index)/len(df.index))
     return df
 
 
@@ -248,14 +250,14 @@ def winning_policy_4(df, treshold):
     df["signal4"] = 0
     for i in list(df.index.values):
         if df["Percent_Change_1"][i] > treshold:
-            df.loc[i,"signal4"] = 1
-        #if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
+            df.loc[i, "signal4"] = 1
+        # if df['Close'][i+1]-df['Close'][i] < 0 and df['Close'][i+2]-df['Close'][i+1] < 0 and df['Close'][i+3]-df['Close'][i+2] < 0:
         #    df.loc[i,"signal2"] = -1
 
-    df1 = df[df["signal4"]==1]
-    #df2 = df[df["signal2"]==-1]
-    print('percent of buy = ', len(df1.index)/len(df.index))
-    #print('percent of sell = ', len(df2.index)/len(df.index))
+    df1 = df[df["signal4"] == 1]
+    # df2 = df[df["signal2"]==-1]
+    print('percent of buy = ', len(df1.index) / len(df.index))
+    # print('percent of sell = ', len(df2.index)/len(df.index))
     return df
 
 

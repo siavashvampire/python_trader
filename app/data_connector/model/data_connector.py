@@ -18,6 +18,6 @@ class DataConnector:
             self.create_order = create_order_oanda
 
     @staticmethod
-    def get_history_from_file(name:str)->pd.DataFrame:
+    def get_history_from_file(name: str) -> pd.DataFrame:
         df = pd.read_csv(name)
         return df
