@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Union
 
 import joblib
 import pandas as pd
@@ -7,6 +8,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 from app.data_connector.model.data_connector import DataConnector
 from app.market_trading.model.trading_model import TradingModel
+from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 
 
 class MlTrading:
@@ -138,7 +140,7 @@ class MlTrading:
 
         return last_candle
 
-    def predict(self) -> int:
+    def predict(self) -> Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]:
         """
 
         :return:
@@ -148,7 +150,16 @@ class MlTrading:
         """
         self.update()
 
-        return self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))
+        predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
+
+        if predict == 0:
+            return PredictEnums().sell
+        elif predict == 1:
+            return PredictEnums().buy
+        elif predict == 2:
+            return PredictEnums().neutral
+        else:
+            return PredictEnums().neutral
 
     def check_update_df(self, last_candle: DataFrame) -> bool:
         last_candle_time = pd.Timestamp(last_candle['time'].values[0])
@@ -163,7 +174,4 @@ class MlTrading:
         else:
             temp_df_time = pd.Timestamp(temp_df_time_str)
 
-        # print(temp_df_time.timestamp())
-        # print(last_candle_time.timestamp())
-        # print(temp_df_time.timestamp() == last_candle_time.timestamp())
         return not temp_df_time.timestamp() == last_candle_time.timestamp()
