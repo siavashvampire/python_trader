@@ -75,6 +75,19 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="open_trade_window_pb">
+      <property name="geometry">
+       <rect>
+        <x>820</x>
+        <y>480</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>open trade window</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="trade_status">
      <attribute name="title">
