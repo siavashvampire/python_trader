@@ -1,22 +1,23 @@
 from datetime import datetime
+from typing import Optional, Any
 
 from PyQt5 import uic
-from PyQt5.QtCore import QSize
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QCheckBox, QLabel, QTextEdit, QPushButton, QLineEdit, QTabWidget, \
-    QDesktopWidget, QHBoxLayout, QVBoxLayout
-from PyQt5.QtWidgets import QFileDialog, QWidget
+from PyQt5.QtWidgets import QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QFrame
 
 from MainCode import path
+from app.data_connector.model.data_connector import DataConnector
 from app.market_trading.api import get_all_trading
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from core.theme.color.color import label_Text_color, PB_BG_color_active
 
 
 class MainUi(QFrame):
+    open_trade_window_pb: QPushButton
     # init backup
     # Backup_Name: list[QLineEdit]
     # Backup_Path: list[QLineEdit]
@@ -139,6 +140,9 @@ class MainUi(QFrame):
         self.logo_label_trade_status.setPixmap(Pics.Logo)
         self.main_logo_label.setPixmap(Pics.Logo)
 
+        self.open_trade_window_pb = self.findChild(QPushButton, "open_trade_window_pb")
+        data_connector = DataConnector()
+        self.open_trade_window_pb.clicked.connect(lambda :data_connector.open_trade_window())
         # self.Setting.DebugPrintFlag = self.findChild(QCheckBox, "DebugPrintFlag")
 
         # self.Setting.TestSensor_lineEdit = self.findChild(QLineEdit, "TestSensor_lineEdit")
