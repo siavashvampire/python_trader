@@ -18,7 +18,7 @@ def get_history_oanda(name: str, start_time: str, end_time: str, candle: str, cs
 
     if csv_path != "":
         data.to_csv(csv_path, index=True, encoding='utf-8')
-
+    data = data.reset_index()
     return data
 
 
@@ -43,7 +43,8 @@ def get_last_candle_oanda(name: str, candle: str) -> DataFrame:
         return DataFrame()
 
     data = tpqoa_api.retrieve_data(name, start, end, candle, "A")
-    return data.tail(1)
+    data = data.tail(1).reset_index()
+    return data
 
 
 def create_order_oanda(name: str, unit: int) -> None:
