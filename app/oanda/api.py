@@ -6,6 +6,7 @@ from app.oanda.model.tpqoa import TPQOA
 from datetime import datetime, timedelta
 
 tpqoa_api = TPQOA("File/Config/oanda.cfg")
+trade_window_url_oanda = 'https://trade.oanda.com/'
 
 
 def get_real_time_data_oanda(name: str) -> ClientPrice:
