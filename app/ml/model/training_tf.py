@@ -121,7 +121,7 @@ def model_plot(history):
 
 def results(model, x_test, y_test):
 
-    y_pred = model.predict(x_test)
+    y_pred = model.predict(x_test) + [-0.1,0,-0.1]
     y_pred = y = tf.one_hot(tf.argmax(y_pred, axis=1), y_pred.shape[1])
     num_correct_buy = 0
     num_pred_buy = 0
@@ -274,7 +274,8 @@ def full_model(x_train, y_train, x_test, y_test):
 
 
 def Sampling(x_train, y_train, x_val, y_val):
-    rus = SMOTE() # fit predictor and target variable
+    #rus = SMOTE() # fit predictor and target variable
+    rus = RandomUnderSampler(random_state=42, replacement=True)
     x_train, y_train = rus.fit_resample(x_train, y_train)
     x_val, y_val = rus.fit_resample(x_val, y_val)
     return x_train, y_train, x_val, y_val
