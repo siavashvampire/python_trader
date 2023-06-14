@@ -119,6 +119,7 @@ class TPQOA(object):
         data: pd.DataFrame
             pandas DataFrame object with data
         """
+        end_total = end
         if granularity.startswith('S') or granularity.startswith('M'):
             if granularity.startswith('S'):
                 freq = '4h'
@@ -126,12 +127,19 @@ class TPQOA(object):
                 freq = 'D'
             data = pd.DataFrame()
             dr = pd.date_range(start, end, freq=freq)
+
             for t in range(len(dr) - 1):
                 start = self.transform_datetime(dr[t])
                 end = self.transform_datetime(dr[t + 1])
                 batch = self.retrieve_data(instrument, start, end,
                                            granularity, price)
                 data = pd.concat([data, batch])
+
+            start = self.transform_datetime(dr[t + 1])
+            end =self.transform_datetime(end_total)
+            batch = self.retrieve_data(instrument, start, end,
+                                       granularity, price)
+            data = pd.concat([data, batch])
         else:
             start = self.transform_datetime(start)
             end = self.transform_datetime(end)
