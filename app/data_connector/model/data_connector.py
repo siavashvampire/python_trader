@@ -38,7 +38,7 @@ class DataConnector:
         # self.driver = webdriver.Chrome(options=option)
         self.driver = webdriver.Chrome()
         self.driver.get(self.trade_window_url)
-        sleep(40)
+        sleep(10)
         username_element = self.driver.find_element(By.ID, "username")
         password_element = self.driver.find_element(By.ID, "password")
 
