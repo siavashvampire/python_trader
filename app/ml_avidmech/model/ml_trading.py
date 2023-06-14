@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Union
 
 import joblib
@@ -42,7 +42,8 @@ class MlTrading:
         #     csv_path='app/ml_avidmech/file/trade_data/' + 'trade_data_history_' + self.trade.currency_disp(
         #         "_") + '_' + self.candle + '.csv')
         self.get_history = lambda start_time, end_time: self.data_connector.get_history(
-            name=self.trade.currency_disp("_"), start_time=start_time, end_time=end_time, candle=self.candle)
+            name=self.trade.currency_disp("_"), start_time=start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            end_time=end_time.strftime('%Y-%m-%d %H:%M:%S'), candle=self.candle)
 
         self.get_history_from_file = lambda: self.data_connector.get_history_from_file(data_file_root)
         # preprocessed = trading.preprocess(last_candle)
@@ -51,8 +52,12 @@ class MlTrading:
         # print(f"Prediction: {predicted_value}")
 
     def preprocess(self) -> DataFrame:
-        self.df = self.get_history_from_file()
-        # self.df = self.get_last_candle()
+        # self.df = self.get_history_from_file()
+        
+        start_time = datetime.utcnow() - timedelta(hours=8)
+        end_time = datetime.utcnow()
+        self.df = self.get_history(start_time, end_time)
+
         self.df = self.df.drop(['volume', 'complete'], axis=1)
 
         self.df['trend'] = self.df['o'] - self.df['c']
