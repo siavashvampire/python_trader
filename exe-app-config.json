@@ -7,7 +7,7 @@
   },
   {
    "optionDest": "filenames",
-   "value": "D:/project/manufactor/Version/V_0/MainCode.py"
+   "value": "D:/project/avid mechanic/project/com-462-self/python_trader/MainCode.py"
   },
   {
    "optionDest": "onefile",
@@ -19,11 +19,11 @@
   },
   {
    "optionDest": "icon_file",
-   "value": "D:/project/manufactor/Version/V_0/core/theme/icons/logo.ico"
+   "value": "D:/project/avid mechanic/project/com-462-self/python_trader/core/theme/icons/logo.ico"
   },
   {
    "optionDest": "name",
-   "value": "Mersad_System_V0"
+   "value": "AvidMech_System_V0"
   },
   {
    "optionDest": "ascii",
@@ -70,20 +70,16 @@
    "value": false
   },
   {
-   "optionDest": "datas",
-   "value": "D:/project/manufactor/Version/V_0/core;core/"
+   "optionDest": "argv_emulation",
+   "value": false
   },
   {
    "optionDest": "datas",
-   "value": "D:/project/manufactor/Version/V_0/app;app/"
+   "value": "D:/project/avid mechanic/project/com-462-self/python_trader/core;core/"
   },
   {
    "optionDest": "datas",
-   "value": "D:/project/manufactor/Version/V_0/singleton.py;."
-  },
-  {
-   "optionDest": "datas",
-   "value": "D:/project/manufactor/Version/V_0/sololearn.py;."
+   "value": "D:/project/avid mechanic/project/com-462-self/python_trader/app;app/"
   }
  ],
  "nonPyinstallerOptions": {

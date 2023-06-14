@@ -23,7 +23,6 @@ engine = get_connection()
 
 session = sessionmaker(bind=engine)()
 
-
 def create_db() -> None:
     from app.user.model.user_model import UserModel
     from app.country.model.country_model import CountryModel

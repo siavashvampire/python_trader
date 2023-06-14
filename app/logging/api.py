@@ -1,3 +1,4 @@
+from app.logging.main import log_sender
 from app.logging.model.log_model import LogModel
 from app.market_trading.api import get_trading
 from app.user.api import get_user
@@ -24,13 +25,8 @@ def get_log_by_user(telegram_id: int = 0, user_id: int = 0) -> list[LogModel]:
 
 
 def add_log(user_id: int, trading_id: int, title: int, text: str) -> bool:
-    temp = LogModel()
-    trading = get_trading(trading_id)
-    temp.user_id = user_id
-    temp.trading_id = trading.id
-    temp.title = title
-    temp.text = text
-    return temp.insert()
+    log_sender.log_queue.put([user_id, trading_id, title, text])
+    return True
 
 
 def get_all_trading() -> list[LogModel]:

@@ -25,9 +25,11 @@ class MlTrading:
         self.counter = 0
         self.counter2 = 0
 
-        main_root = 'app/ml_avidmech/file/trade_models/'
+        # main_root = 'app/ml_avidmech/file/trade_models/'
+        main_root = 'File/trade_models/'
 
-        data_file_root = 'app/ml_avidmech/file/trade_data/'
+        # data_file_root = 'app/ml_avidmech/file/trade_data/'
+        data_file_root = 'File/trade_data/'
         data_file_root += 'trade_data_history_' + self.trade.currency_disp("_") + '_' + self.candle + '.csv'
 
         # self.model = joblib.load('model_1min_EUR_USD.pkl')
