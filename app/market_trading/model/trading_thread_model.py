@@ -1,20 +1,21 @@
 from datetime import datetime
 from threading import Thread
 from time import sleep
-from typing import Callable
+from typing import Callable, Union
 
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
 from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
-from app.ml_avidmech.model.enums import PredictEnums
+from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 from app.ml_avidmech.model.ml_trading import MlTrading
 
 
 class TradingThreadModel:
     thread: Thread
     name: str
+    state: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]
 
     def __init__(self, trade: TradingModel, q_label_name: QLabel, q_label_value: QLabel) -> None:
         self.trade = trade
@@ -48,10 +49,46 @@ class TradingThreadModel:
             if (datetime.now() - self.last_update_time).seconds > 10:
                 try:
                     predict = self.ml_trading.predict()
-                    # self.data_connector.create_order("asdxcv")
+
+                    # for test
+                    # if isinstance(self.state, PredictNeutralEnums):
+                    #     predict = PredictSellEnums()
+                    # elif isinstance(self.state, PredictSellEnums):
+                    #     predict = PredictBuyEnums()
+
+                    if isinstance(self.state, PredictNeutralEnums):
+                        if not isinstance(predict, PredictNeutralEnums):
+                            self.create_order_from_predict(predict)
+                            print("we are ", predict, self.name)
+                            if isinstance(predict, PredictBuyEnums):
+                                add_log(1, self.trade.id, 4, "we are open buying " + self.name)
+                            elif isinstance(predict, PredictSellEnums):
+                                add_log(1, self.trade.id, 2, "we are open selling " + self.name)
+                            # TODO:inja bayad ba TRUE False k az order migire moshakhas kone state ro
+                            self.state = predict
+
+                    elif isinstance(self.state, PredictBuyEnums):
+                        if not isinstance(predict, PredictBuyEnums):
+                            self.create_order_from_predict(PredictSellEnums())
+                            add_log(1, self.trade.id, 5, "we are close buying " + self.name)
+                            print("we are ", PredictNeutralEnums())
+                            self.state = PredictNeutralEnums()
+
+                    elif isinstance(self.state, PredictSellEnums):
+                        if not isinstance(predict, PredictSellEnums):
+                            self.create_order_from_predict(PredictBuyEnums())
+                            add_log(1, self.trade.id, 3, "we are close selling " + self.name)
+                            print("we are ", PredictNeutralEnums())
+                            self.state = PredictNeutralEnums()
+
                     self.last_update_time = datetime.now()
                 except Exception as e:
                     add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
                 print("Main Rendering Thread", "Stop")
                 break
+
+    def create_order_from_predict(self, predict: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]):
+        if predict != PredictNeutralEnums:
+            # TODO:vaghti mikhare v mifroshe neveshte mide serfan bayad y True False bede
+            self.data_connector.create_order(self.name, predict.get_unit())
