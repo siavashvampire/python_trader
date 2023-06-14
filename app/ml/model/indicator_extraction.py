@@ -187,10 +187,10 @@ def adding_percent_change(df):
     df["Percent_Change_3"] = 0
     df["Percent_Change_10"] = 0
     for i in list(df.index.values)[:-10]:
-        df.loc[i,"Percent_Change_1"] = ((df["Close"][i + 1] - df["Close"][i]) / df["Close"][i]) * 100
-        df.loc[i,"Percent_Change_3"] = ((df["Close"][i + 3] - df["Close"][i]) / df["Close"][i]) * 100
-        df.loc[i,"Percent_Change_5"] = ((df["Close"][i + 5] - df["Close"][i]) / df["Close"][i]) * 100
-        df.loc[i,"Percent_Change_10"] = ((df["Close"][i + 10] - df["Close"][i]) / df["Close"][i]) * 100
+        df.loc[i, "Percent_Change_1"] = ((df["Close"][i + 1] - df["Close"][i]) / df["Close"][i]) * 100
+        df.loc[i, "Percent_Change_3"] = ((df["Close"][i + 3] - df["Close"][i]) / df["Close"][i]) * 100
+        df.loc[i, "Percent_Change_5"] = ((df["Close"][i + 5] - df["Close"][i]) / df["Close"][i]) * 100
+        df.loc[i, "Percent_Change_10"] = ((df["Close"][i + 10] - df["Close"][i]) / df["Close"][i]) * 100
         # df["Percent_Change_1"][i] = ((df["Close"][i + 1] - df["Close"][i]) / df["Close"][i]) * 100
         # df["Percent_Change_5"][i] = ((df["Close"][i + 5] - df["Close"][i]) / df["Close"][i]) * 100
         # df["Percent_Change_3"][i] = ((df["Close"][i + 3] - df["Close"][i]) / df["Close"][i]) * 100
@@ -265,12 +265,12 @@ def winning_policy_5(df, treshold):
     df["signal5"] = 0
     for i in list(df.index.values):
         if df["Percent_Change_1"][i] > treshold:
-            df.loc[i,"signal5"] = 1
+            df.loc[i, "signal5"] = 1
         if df["Percent_Change_1"][i] < -treshold:
-            df.loc[i,"signal5"] = -1
+            df.loc[i, "signal5"] = -1
 
-    df1 = df[df["signal5"]==1]
-    df2 = df[df["signal5"]==-1]
-    print('percent of buy = ', len(df1.index)/len(df.index))
-    print('percent of sell = ', len(df2.index)/len(df.index))
+    df1 = df[df["signal5"] == 1]
+    df2 = df[df["signal5"] == -1]
+    print('percent of buy = ', len(df1.index) / len(df.index))
+    print('percent of sell = ', len(df2.index) / len(df.index))
     return df
