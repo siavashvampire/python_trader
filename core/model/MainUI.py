@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Optional, Any
+from time import sleep
+from typing import Optional, Any, List
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QObject
@@ -17,6 +18,7 @@ from core.theme.color.color import label_Text_color, PB_BG_color_active
 
 
 class MainUi(QFrame):
+    trade_threads: list[TradingThreadModel]
     open_trade_window_pb: QPushButton
     # init backup
     # Backup_Name: list[QLineEdit]
@@ -119,7 +121,7 @@ class MainUi(QFrame):
 
         align = 0
 
-        trade_threads = []
+        self.trade_threads = []
 
         for trade in trades:
             if align == 0:
@@ -130,7 +132,8 @@ class MainUi(QFrame):
                 align = 0
 
             q_labels = self.add_trade(alignment, "test", "0")
-            trade_threads.append(TradingThreadModel(trade, q_labels[0], q_labels[1]))
+            self.trade_threads.append(TradingThreadModel(trade, q_labels[0], q_labels[1]))
+
 
         self.logo_label_setting = self.findChild(QLabel, "logo_label_setting")
         self.logo_label_trade_status = self.findChild(QLabel, "logo_label_trade_status")

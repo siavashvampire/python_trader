@@ -62,6 +62,12 @@ class Main:
 
         self.main_ui = MainUi()
         self.login_ui = LoginUI(self.main_ui)
+
+        for trade in self.main_ui.trade_threads:
+            self.start_splash.show_message("\t\t getting data for trade " + trade.name)
+            trade.Thread.start()
+            sleep(2)
+
         # ------------------------
 
         # self.main_ui.Backup_Submit_pb.clicked.connect(self.backup_thread.update_app)
@@ -77,7 +83,7 @@ class Main:
         # self.main_ui.Threads.ThS_Render.clicked.connect(self.line_monitoring.state_thread)
         # self.main_ui.Threads.ThS_PLC.clicked.connect(self.da_units.state_thread)
 
-        # self.run_thread()
+        self.run_thread()
 
         # self.sender_thread.run_thread()
         # self.backup_thread.run_thread()
@@ -89,16 +95,15 @@ class Main:
         while True:
             sleep(5)
             try:
-                self.check_threads()
-                self.check_plc_status()
+                self.check_trade_threads()
                 if self.loginFlag:
                     login_diff = datetime.now() - self.main_ui.LoginNow
                     # TODO:check konim k login bayad koja etefagh biofte
                     if login_diff.seconds > logout_time:
-                        self.logout()
+                        pass
+                        # self.logout()
                 if stop_thread():
                     # Logging.bale_log("Main Send Thread", "Stop")
-                    print("stop Bale Send")
                     break
             except Exception as e:
                 # Logging.main_log("Main_Try", str(e))
@@ -120,28 +125,10 @@ class Main:
                 "color: rgba(" + DA_unit_bad_status_label_bot_text + ");")
             self.main_ui.Status_label_bot.setText("PLCs Disconnected!")
 
-    def check_threads(self):
-        stylesheet = "background: transparent;"
-        self.main_ui.Threads.ThS_Bale.setStyleSheet(stylesheet)
-        self.main_ui.Threads.ThS_Render.setStyleSheet(stylesheet)
-        self.main_ui.Threads.ThS_Sender.setStyleSheet(stylesheet)
-        self.main_ui.Threads.ThS_PLC.setStyleSheet(stylesheet)
-        if not self.stopCheckThread:
-            self.bale_org.check()
-            self.sender_thread.check()
-            self.backup_thread.check()
-            self.da_units.check()
-            self.line_monitoring.check()
-        #     TODO:hameye check haw bayad check beshan done done k ghat beshan vasl mishan ya na
-        else:
-            self.main_ui.Threads.ThS_Bale.setIcon(self.PicsOff)
-            self.main_ui.Threads.ThS_Sender.setIcon(self.PicsOff)
-            self.main_ui.Threads.ThS_PLC.setIcon(self.PicsOff)
-            self.main_ui.Threads.ThS_Render.setIcon(self.PicsOff)
-            self.bale_org.state = False
-            self.sender_thread.state = False
-            self.backup_thread.state = False
-            self.da_units.state = False
+    def check_trade_threads(self):
+        for trade in self.main_ui.trade_threads:
+            trade.check()
+            sleep(0.5)
 
     def stop_all_threads(self):
         self.stopCheckThread = True

@@ -33,13 +33,13 @@ class TradingThreadModel:
 
         self.q_label_name.setText(self.name)
         self.ml_trading = MlTrading(trade)
-        self.ml_trading.preprocess()
 
-        self.Thread = Thread(target=self.getting_data_thread,
-                             args=(lambda: self.stop_thread,))
-        self.Thread.start()
+        self.Thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
+        # self.Thread.start()
 
     def getting_data_thread(self, stop_thread: Callable[[], bool]):
+        self.ml_trading.preprocess()
+
         while True:
             response = self.get_real_time_data()
             value = str(response.asks[0].dict()['price'])
@@ -92,3 +92,14 @@ class TradingThreadModel:
         if predict != PredictNeutralEnums:
             # TODO:vaghti mikhare v mifroshe neveshte mide serfan bayad y True False bede
             self.data_connector.create_order(self.name, predict.get_unit())
+
+    def check(self) -> None:
+        if not (self.Thread.is_alive()):
+            self.stop_thread = False
+            self.restart_thread()
+
+    def restart_thread(self) -> None:
+        if not (self.Thread.is_alive()):
+            self.stop_thread = False
+            self.Thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
+            self.Thread.start()

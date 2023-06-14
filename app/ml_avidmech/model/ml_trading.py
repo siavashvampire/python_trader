@@ -53,7 +53,7 @@ class MlTrading:
 
     def preprocess(self) -> DataFrame:
         # self.df = self.get_history_from_file()
-        
+
         start_time = datetime.utcnow() - timedelta(hours=8)
         end_time = datetime.utcnow()
         self.df = self.get_history(start_time, end_time)
