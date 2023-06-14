@@ -31,7 +31,7 @@ def lstm_model(x_train, y_train, x_val, y_val, out = 3):
                         layers.Dense(32, activation='relu'),
                         layers.Dense(out)])
 
-    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
+    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto',
                           restore_best_weights=True)
 
     model.compile(loss=tf.keras.losses.binary_crossentropy,
@@ -40,5 +40,5 @@ def lstm_model(x_train, y_train, x_val, y_val, out = 3):
                            tf.keras.metrics.Precision(name='precision'),
                            tf.keras.metrics.Recall(name='recall')])
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20, callbacks=[cback])
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20, callbacks=[cback], batch_size = 512)
     return model, history

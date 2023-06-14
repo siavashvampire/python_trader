@@ -63,7 +63,10 @@ def LSTM_model(df, signal = 'signal1'):
     x, y = x_y_extract(df, n=100, signal = signal)
     y = y_encoder(y)
     x_train, y_train, x_val, y_val, x_test, y_test = test_train(x, y)
+    x_train, y_train, x_val, y_val = Sampling(x_train, y_train, x_val, y_val)
     model, history = lstm_model(x_train, y_train, x_val, y_val)
+    h5_file_path_out = 'app/ml/file/EUR_USD_M1_lstm.h5'
+    model.save(h5_file_path_out)
     model_plot(history)
     results(model, x_test, y_test)
     return model
