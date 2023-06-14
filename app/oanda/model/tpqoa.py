@@ -134,9 +134,10 @@ class TPQOA(object):
                 batch = self.retrieve_data(instrument, start, end,
                                            granularity, price)
                 data = pd.concat([data, batch])
+                start = dr[t + 1]
 
-            start = self.transform_datetime(dr[t + 1])
-            end =self.transform_datetime(end_total)
+            start = self.transform_datetime(start)
+            end = self.transform_datetime(end_total)
             batch = self.retrieve_data(instrument, start, end,
                                        granularity, price)
             data = pd.concat([data, batch])
