@@ -1,1 +1,0 @@
-{"db_units": {"1": {"id": 1, "label": "\u0641\u0627\u0632 7", "IP": "192.168.1.240", "type": "PLC_delta_DVP_12SE", "testPort": 0, "app": "LineMonitoring"}, "2": {"id": 2, "label": "\u067e\u0633\u062a 8", "IP": "192.168.1.238", "type": "MERSAD_GATEWAY", "testPort": 0, "app": "ElectricalSubstation_1"}}}
