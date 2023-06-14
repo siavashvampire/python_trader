@@ -264,10 +264,10 @@ def winning_policy_4(df, treshold):
 def winning_policy_5(df, treshold):
     df["signal5"] = 0
     for i in list(df.index.values):
-        if df["Percent_Change_1"][i] > treshold:
-            df.loc[i, "signal5"] = 1
-        if df["Percent_Change_1"][i] < -treshold:
-            df.loc[i, "signal5"] = -1
+        if df["Percent_Change_10"][i] > treshold:
+            df.loc[i,"signal5"] = 1
+        if df["Percent_Change_10"][i] < -treshold:
+            df.loc[i,"signal5"] = -1
 
     df1 = df[df["signal5"] == 1]
     df2 = df[df["signal5"] == -1]
