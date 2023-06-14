@@ -22,7 +22,7 @@ while True:
     df = adding_raw_indicators(df)
     df = adding_percent_change(df)
     df = adding_indicator_signal(df)
-    df = winning_policy_5(df, 0.01)
+    df = winning_policy_5(df, 0.05)
     df = solving_nans(df)
     x, y = getting_x_y(df, signal = 'signal5')
     model = tf.keras.models.load_model('app/ml/file/EUR_USD_M1.h5')

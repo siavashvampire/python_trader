@@ -79,11 +79,11 @@ def test_train(x, y):
 def model_train(x_train, y_train, x_val, y_val, out = 3):
     n = x_train.shape[1]
     model = Sequential([layers.Input(n),
-                        layers.Dense(128, activation='relu'),
-                        layers.Dense(128, activation='relu'),
+                        layers.Dense(32, activation='relu'),
+                        layers.Dense(16, activation='relu'),
                         layers.Dense(out, activation = 'Softmax')])
 
-    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto',
+    cback = EarlyStopping(monitor='val_loss', min_delta=0, patience=3, verbose=0, mode='auto',
                           restore_best_weights=True)
 
     model.compile(loss=tf.keras.losses.binary_crossentropy,
@@ -93,7 +93,7 @@ def model_train(x_train, y_train, x_val, y_val, out = 3):
                       tf.keras.metrics.Precision(name='precision'),
                       tf.keras.metrics.Recall(name='recall')], )
 
-    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback], batch_size = 128)
+    history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=30, callbacks=[cback], batch_size = 256)
 
     return model, history
 
@@ -121,7 +121,7 @@ def model_plot(history):
 
 def results(model, x_test, y_test):
 
-    y_pred = model.predict(x_test) + [-0.1,0,-0.1]
+    y_pred = model.predict(x_test) + [-0.06,0,-0.06]
     y_pred = y = tf.one_hot(tf.argmax(y_pred, axis=1), y_pred.shape[1])
     num_correct_buy = 0
     num_pred_buy = 0
@@ -158,7 +158,17 @@ def results(model, x_test, y_test):
     print(num_pred_sell)
     print("cr/pred", num_correct_sell / num_pred_sell)
     print("cr/test", num_correct_sell / num_test_sell)
+    
+    wrong_buy = 0
+    wrong_sell = 0
+    for i in range(len(y_pred)):
+        if y_pred[i][2] == 1 and y_test[i][0] == 1:
+            wrong_buy += 1
+        if y_pred[i][0] == 1 and y_test[i][2] == 1:
+            wrong_sell += 1
 
+    print("very wrong buy", wrong_buy / num_pred_buy)
+    print("very wrong sell", wrong_sell / num_pred_sell)
 
 def results_buy(model, x_test, y_test):
     y_pred = model.predict(x_test)
@@ -274,8 +284,8 @@ def full_model(x_train, y_train, x_test, y_test):
 
 
 def Sampling(x_train, y_train, x_val, y_val):
-    #rus = SMOTE() # fit predictor and target variable
-    rus = RandomUnderSampler(random_state=42, replacement=True)
+    rus = SMOTE() # fit predictor and target variable
+    #rus = RandomUnderSampler(random_state=42, replacement=True)
     x_train, y_train = rus.fit_resample(x_train, y_train)
     x_val, y_val = rus.fit_resample(x_val, y_val)
     return x_train, y_train, x_val, y_val

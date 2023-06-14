@@ -12,7 +12,7 @@ import numpy as np
 
 csv_file_path_in = 'app/ml/file/EURUSD_M1_sia.csv'
 csv_file_path_out = 'app/ml/file/EURUSD_M1_indicator_meta.csv'
-h5_file_path_out = 'app/ml/file/EUR_USD_M1_lstm.h5'
+h5_file_path_out = 'app/ml/file/EUR_USD_M1.h5'
 #df = data_import_meta(csv_file_path_in)
 #print(df['Close'][7])
 
@@ -26,10 +26,10 @@ df = pd.read_csv(csv_file_path_out)
 df = adding_percent_change(df)
 
 #df = winning_policy_1(df, 0.001)
-df = winning_policy_5(df, 0.01)
+df = winning_policy_5(df, 0.05)
 
-#model = indication_trainer(df, signal = 'signal5')
-model, history = LSTM_model(df, signal = 'signal5')
+model = indication_trainer(df, signal = 'signal5')
+#model, history = LSTM_model(df, signal = 'signal5')
 #tree_model(df, signal = 'signal3')
 #full_model_full(df, signal = 'signal4')
 # model = LSTM_model_buy(df)
