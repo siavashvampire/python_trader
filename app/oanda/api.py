@@ -5,6 +5,11 @@ from app.oanda.model.tpqoa import TPQOA
 
 from datetime import datetime, timedelta
 
+
+def prepare_api_oanda():
+    pass
+
+
 tpqoa_api = TPQOA("File/Config/oanda.cfg")
 trade_window_url_oanda = 'https://trade.oanda.com/'
 
@@ -50,6 +55,10 @@ def get_last_candle_oanda(name: str, candle: str) -> DataFrame:
 
 def create_order_oanda(name: str, unit: int) -> None:
     tpqoa_api.create_order(instrument=name, units=unit, sl_distance=0.1)
+
+
+def close_api_oanda() -> None:
+    pass
 
 # api.get_account_summary()
 #

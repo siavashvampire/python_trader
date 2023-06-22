@@ -83,7 +83,8 @@ class TradingThreadModel:
 
                     self.last_update_time = datetime.now()
                 except Exception as e:
-                    add_log(1, self.trade.id, 1, str(e))
+                    pass
+                    # add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
                 print("Main Rendering Thread", "Stop")
                 break

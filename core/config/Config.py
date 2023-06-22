@@ -197,7 +197,8 @@ boundary_for_payload = sAll["boundary_for_payload"]
 
 
 # Start  API Config
-api_used = APIUsed().oanda
+# api_used = APIUsed().oanda
+api_used = APIUsed().quotex
 
 # end  API Config
 # Start  Developer Config

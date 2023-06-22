@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QFrame
 
 from MainCode import path
 from app.data_connector.model.data_connector import DataConnector
-from app.market_trading.api import get_all_trading
+from app.market_trading.api import get_all_trading, get_trading
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from core.theme.color.color import label_Text_color, PB_BG_color_active
 
@@ -117,7 +117,8 @@ class MainUi(QFrame):
 
         #   End     Colors
 
-        trades = get_all_trading()
+        # trades = get_all_trading()
+        trades = [get_trading(6)]
 
         align = 0
 
