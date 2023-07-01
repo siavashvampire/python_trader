@@ -1,3 +1,4 @@
+from app.country.api import get_country
 from app.market_trading.model.trading_model import TradingModel
 from core.database.database import session
 
@@ -7,6 +8,28 @@ def get_trading(id_in: int = 0) -> TradingModel:
 
     if id_in != 0:
         temp: TradingModel = session.query(TradingModel).filter(TradingModel.id == id_in).first()
+
+    if temp is not None:
+        return temp
+
+    return TradingModel()
+
+
+def get_trading_by_country_currency(currency_from: str, country_to: str) -> TradingModel:
+    """
+        get trade by country currency
+    :param currency_from: country from currency
+    :param country_to: country to currency
+    :return:
+        get trade or None if cant find any trade
+    """
+    country_from = get_country(currency=currency_from)
+    country_to = get_country(currency=country_to)
+    temp = None
+    # country_to =
+    if country_from.id != 0 and country_to.id != 0:
+        temp: TradingModel = session.query(TradingModel).filter(TradingModel.country_from == country_from.id,
+                                                                TradingModel.country_to == country_to.id).first()
 
     if temp is not None:
         return temp

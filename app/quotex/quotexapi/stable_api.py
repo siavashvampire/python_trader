@@ -30,7 +30,6 @@ def ping_server(self):
             pingInterval = 0
 
 
-
 class Quotex:
     __version__ = "2.2"
 
@@ -101,7 +100,6 @@ class Quotex:
         return json.loads(r.text)
 
     def close(self):
-
         self._thread_ping_server.do_run = False
 
     def connect(self):
@@ -366,10 +364,10 @@ class Quotex:
     def check_win(self, ticket, polling=1):
         while True:
             time.sleep(polling)
-            if self.check_win_raw(ticket, self.api) != None:
+            if self.check_win_raw(ticket, self.api) is not None:
                 return self.check_win_raw(ticket, self.api)
 
-            if self.check_win_raw(ticket, self.api_real) != None:
+            if self.check_win_raw(ticket, self.api_real) is not None:
                 return self.check_win_raw(ticket, self.api_real)
 
     def get_server_time(self):

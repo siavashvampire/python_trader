@@ -35,14 +35,14 @@ choose_of_sms = 2
 choose_of_whatsApp = 3
 # end  Bale Config
 
-# start  format Config
+# start format Config
 time_format = sAll["time_format"]
 send_time_format = sAll["send_time_format"]
 day_time_format = sAll["day_time_format"]
 adminUnit = int(sAll["adminUnit"])
 # end  format Config
 
-# Start  PLC Config
+# Start PLC Config
 register_for_start_read = int(sAll["register_for_start_read"])
 register_for_end_read = int(sAll["register_for_end_read"])
 register_for_data = int(sAll["register_for_data"])
@@ -57,7 +57,7 @@ plc_sleep_time_step_up = float(sAll["plc_sleep_time_step_up"])
 time_between_read_from_each_device = float(sAll["time_between_read_from_each_device"])
 # end  PLC Config
 
-# Start  Timeouts Config
+# Start Timeouts Config
 bale_get_timeout = int(sAll["bale_get_timeout"])
 login_timeout = int(sAll["login_timeout"])
 send_timeout = int(sAll["send_timeout"])
@@ -78,9 +78,9 @@ shift_cache_time = int(sAll["shift_cache_time"])
 shift_check_time = int(sAll["shift_check_time"])
 
 modbus_timeout = int(sAll["modbus_timeout"])
-# end  Timeouts Config
+# end Timeouts Config
 
-# Start  System Config
+# Start System Config
 logout_time = int(sAll["logout_time"])
 backup_time = int(sAll["backup_time"])
 sensor_on_off_time = int(sAll["sensor_on_off_time"])
@@ -89,12 +89,12 @@ merge_time = int(sAll["merge_time"])
 update_time = int(sAll["update_time"])
 update_system_timeout = int(sAll["update_system_timeout"])
 update_system_sleep_time = int(sAll["update_system_sleep_time"])
-# end  System Config
+# end System Config
 
-# Start  CamSwitch Config
+# Start CamSwitch Config
 off_cam_switch_value = int(sAll["off_cam_switch_value"])
 on_cam_switch_value = int(sAll["on_cam_switch_value"])
-# end  CamSwitch Config
+# end CamSwitch Config
 
 # Start  DB Config
 system_version = "Monitoring Version: 0.0"
@@ -196,12 +196,12 @@ boundary_for_payload = sAll["boundary_for_payload"]
 # end  URL Config
 
 
-# Start  API Config
+# Start API Config
 # api_used = APIUsed().oanda
 api_used = APIUsed().quotex
 
-# end  API Config
-# Start  Developer Config
+# end API Config
+# Start Developer Config
 developer_config = sAll["developer_config"]
 
 login_developer = False

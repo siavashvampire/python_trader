@@ -30,21 +30,21 @@ class MlTrading:
 
         # data_file_root = 'app/ml_avidmech/file/trade_data/'
         data_file_root = 'File/trade_data/'
-        data_file_root += 'trade_data_history_' + self.trade.currency_disp("_") + '_' + self.candle + '.csv'
+        data_file_root += 'trade_data_history_' + self.trade.currency_disp() + '_' + self.candle + '.csv'
 
         # self.model = joblib.load('model_1min_EUR_USD.pkl')
-        self.model_name = main_root + 'trade_model_' + self.trade.currency_disp("_") + '_' + self.candle + '.pkl'
+        self.model_name = main_root + 'trade_model_' + self.trade.currency_disp() + '_' + self.candle + '.pkl'
         self.model = joblib.load(self.model_name)
 
         self.data_connector = DataConnector()
 
-        self.get_last_candle = lambda: self.data_connector.get_last_candle(self.trade.currency_disp("_"), self.candle)
+        self.get_last_candle = lambda: self.data_connector.get_last_candle(self.trade.currency_disp(), self.candle)
         # self.get_history = lambda start_time, end_time: self.data_connector.get_history(
         #     name=self.trade.currency_disp("_"), start_time=start_time, end_time=end_time, candle=self.candle,
         #     csv_path='app/ml_avidmech/file/trade_data/' + 'trade_data_history_' + self.trade.currency_disp(
         #         "_") + '_' + self.candle + '.csv')
         self.get_history = lambda start_time, end_time: self.data_connector.get_history(
-            name=self.trade.currency_disp("_"), start_time=start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            name=self.trade.currency_disp(), start_time=start_time.strftime('%Y-%m-%d %H:%M:%S'),
             end_time=end_time.strftime('%Y-%m-%d %H:%M:%S'), candle=self.candle)
 
         self.get_history_from_file = lambda: self.data_connector.get_history_from_file(data_file_root)
@@ -59,8 +59,6 @@ class MlTrading:
         start_time = datetime.utcnow() - timedelta(hours=8)
         end_time = datetime.utcnow()
         self.df = self.get_history(start_time, end_time)
-
-        self.df = self.df.drop(['volume', 'complete'], axis=1)
 
         self.df['trend'] = self.df['o'] - self.df['c']
         self.df['MA_20'] = self.df['c'].rolling(window=20).mean()  # moving average 20
@@ -85,8 +83,6 @@ class MlTrading:
         return self.df
 
     def preprocess_last(self, last_candle: DataFrame):
-        last_candle = last_candle.drop(['volume', 'complete'], axis=1)
-
         temp_df: DataFrame = self.df.iloc[-50:].reset_index(drop=True)
         temp_df = pd.concat([temp_df, last_candle], axis=0)
 
@@ -144,10 +140,9 @@ class MlTrading:
 
         if flag:
             self.preprocess_last(last_candle)
-
         return last_candle
 
-    def predict(self) -> Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]:
+    def predict(self) -> [Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums], float]:
         """
 
         :return:
@@ -155,18 +150,20 @@ class MlTrading:
             1:buy
             2:neutral
         """
-        self.update()
-
+        # self.update()
         predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
+        accuracy = round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2)
 
-        if predict == 0:
-            return PredictEnums().sell
-        elif predict == 1:
-            return PredictEnums().buy
-        elif predict == 2:
-            return PredictEnums().neutral
-        else:
-            return PredictEnums().neutral
+        if predict == 2:
+            return PredictEnums().neutral, accuracy
+
+        if predict == 0 and accuracy >= 0.8:
+            return PredictEnums().sell, accuracy
+
+        if predict == 1 and accuracy >= 0.8:
+            return PredictEnums().buy, accuracy
+
+        return PredictEnums().neutral, accuracy
 
     def check_update_df(self, last_candle: DataFrame) -> bool:
         last_candle_time = pd.Timestamp(last_candle['time'].values[0])

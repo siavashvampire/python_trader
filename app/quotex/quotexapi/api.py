@@ -170,7 +170,6 @@ class quotexapi(object):
 
     @property
     def subscribe_realtime_candle(self):
-
         return changeSymbol(self)
 
     @property
@@ -179,7 +178,6 @@ class quotexapi(object):
 
     @property
     def logout(self):
-
         return Logout(self)
 
     @property
@@ -188,7 +186,6 @@ class quotexapi(object):
 
     @property
     def login(self):
-
         return Login(self)
 
     @property
@@ -209,12 +206,10 @@ class quotexapi(object):
 
     @property
     def Get_Balance(self):
-
         return get_balance(self)
 
     @property
     def Get_Asset_Data(self):
-
         return get_asset_data(self)
 
     @property
@@ -282,7 +277,6 @@ class quotexapi(object):
 
     @property
     def getcandles(self):
-
         return loadHistoryPeriod(self)
 
     @property

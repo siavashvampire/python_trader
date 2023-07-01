@@ -65,8 +65,10 @@ class Main:
 
         for trade in self.main_ui.trade_threads:
             self.start_splash.show_message("\t\t getting data for trade " + trade.name)
-            trade.Thread.start()
             sleep(2)
+
+        self.main_ui.start_trade_threads()
+        self.main_ui.close_pb.clicked.connect(self.close)
 
         # ------------------------
 
@@ -131,32 +133,13 @@ class Main:
             sleep(0.5)
 
     def stop_all_threads(self):
-        self.stopCheckThread = True
-        self.close_splash.show_message("closing Bale system")
-        self.bale_org.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("Bale system closed!")
+        self.close_splash.show_message("closing trades system")
+        self.main_ui.stop_trade_threads()
+        self.close_splash.add_saved_text("trades system closed!")
 
-        self.close_splash.show_message("closing shift system")
-        self.shift.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("shift system closed!")
-
-        self.close_splash.show_message("closing DA units system")
-        self.da_units.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("DA units system closed!")
-
-        self.close_splash.show_message("closing backup system")
-        self.backup_thread.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("backup system closed!")
-
-        self.close_splash.show_message("closing line monitoring system")
-        self.line_monitoring.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("line monitoring system closed!")
-
-        self.close_splash.show_message("disconnecting database")
-        self.sender_thread.state_thread(state=False, program=True)
-        self.close_splash.add_saved_text("database connection ended!")
-
-        # TODO:bayad check konim k hatman doroste ya na
+        self.close_splash.show_message("closing main system")
+        self.main_ui.main_trading_stop_thread()
+        self.close_splash.add_saved_text("main system closed!")
 
     def logout(self):
         self.loginFlag = 0
@@ -177,15 +160,13 @@ class Main:
         self.login_ui.lineEdit_Pass.setTextMargins(10, 0, 10, 0)
 
     def close(self):
-        r = self.login_ui.checking_user_pass()
-        if r == "Success":
-            self.login_ui.close()
-            self.close_splash.show()
-            self.close_splash.show_message("start closing")
-            self.stop_all_threads()
-            self.close_splash.finish(self.main_ui)
-            self.main_ui.close()
-            os._exit(0)
+        self.login_ui.close()
+        self.close_splash.show()
+        self.close_splash.show_message("start closing")
+        self.stop_all_threads()
+        self.close_splash.finish(self.main_ui)
+        self.main_ui.close()
+        os._exit(0)
 
     @staticmethod
     def create_db_path():

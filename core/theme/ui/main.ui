@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1101</width>
+    <width>564</width>
     <height>706</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1070</width>
+      <width>551</width>
       <height>580</height>
      </rect>
     </property>
@@ -53,10 +53,10 @@
      <widget class="QLabel" name="Main_Logo_label">
       <property name="geometry">
        <rect>
-        <x>331</x>
-        <y>90</y>
-        <width>400</width>
-        <height>400</height>
+        <x>0</x>
+        <y>0</y>
+        <width>111</width>
+        <height>91</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -78,14 +78,330 @@
      <widget class="QPushButton" name="open_trade_window_pb">
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>480</y>
-        <width>191</width>
-        <height>41</height>
+        <x>10</x>
+        <y>370</y>
+        <width>250</width>
+        <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>open trade window</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="amount_spinBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>170</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="prefix">
+       <string>$</string>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>1000</number>
+      </property>
+      <property name="value">
+       <number>10</number>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="time_comboBox">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>120</y>
+        <width>80</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <item>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="amount_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>55</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Amount</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="time_label">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>100</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Time(min)</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="start_trading_pb">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>480</y>
+        <width>250</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Start trading</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="optimal_strategy_radioButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>250</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="tabletTracking">
+       <bool>false</bool>
+      </property>
+      <property name="acceptDrops">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Optimal strategy
+Recommended balance: from $50 to
+$500</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="balance_label">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>10</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>DEMO ACCOUNT</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="balance_value_label">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>30</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color:orange</string>
+      </property>
+      <property name="text">
+       <string>$ 0.00</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="trading_asset_value_label">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>120</y>
+        <width>250</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="trading_asset_label">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>100</y>
+        <width>100</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Trading asset</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="trading_asset_prop_label">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>120</y>
+        <width>40</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="stop_trading_pb">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>480</y>
+        <width>250</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Stop trading</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="close_pb">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>10</y>
+        <width>140</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>close</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="go_to_account_pb">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>480</y>
+        <width>250</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Go to account</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="open_instructions_pb">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>370</y>
+        <width>250</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>open instructions</string>
       </property>
      </widget>
     </widget>
@@ -93,38 +409,22 @@
      <attribute name="title">
       <string>trade status</string>
      </attribute>
-     <widget class="QLabel" name="logo_label_trade_status">
-      <property name="geometry">
-       <rect>
-        <x>870</x>
-        <y>360</y>
-        <width>190</width>
-        <height>190</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>10</y>
-        <width>1061</width>
+        <width>541</width>
         <height>541</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_trade">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_trade_left">
+        <layout class="QVBoxLayout" name="verticalLayout_trade">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_trade_left_label">
+          <layout class="QHBoxLayout" name="horizontalLayout_trade_label">
            <item>
-            <widget class="QLabel" name="label_product_2">
+            <widget class="QLabel" name="label_trade">
              <property name="text">
               <string>trade</string>
              </property>
@@ -134,9 +434,29 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_weight_2">
+            <widget class="QLabel" name="label_current">
              <property name="text">
               <string>current</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_accuracy">
+             <property name="text">
+              <string>accuracy</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_predict">
+             <property name="text">
+              <string>predict</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -149,7 +469,7 @@
           <layout class="QHBoxLayout" name="horizontalLayout_trade_right_label"/>
          </item>
          <item>
-          <spacer name="verticalSpacer_2">
+          <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -166,53 +486,6 @@
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_trade_right">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_product">
-             <property name="text">
-              <string>Product</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_weight">
-             <property name="text">
-              <string>Weight</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout"/>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>515</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3"/>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -223,7 +496,7 @@
      <widget class="QWidget" name="formLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>10</x>
         <y>60</y>
         <width>281</width>
         <height>111</height>
@@ -271,9 +544,9 @@
      <widget class="QWidget" name="formLayoutWidget_6">
       <property name="geometry">
        <rect>
-        <x>680</x>
-        <y>60</y>
-        <width>221</width>
+        <x>10</x>
+        <y>180</y>
+        <width>281</width>
         <height>111</height>
        </rect>
       </property>
@@ -351,7 +624,7 @@
      <rect>
       <x>10</x>
       <y>600</y>
-      <width>1070</width>
+      <width>550</width>
       <height>35</height>
      </rect>
     </property>
@@ -374,7 +647,7 @@
      <rect>
       <x>10</x>
       <y>650</y>
-      <width>1070</width>
+      <width>550</width>
       <height>30</height>
      </rect>
     </property>

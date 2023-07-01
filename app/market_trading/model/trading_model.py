@@ -39,7 +39,7 @@ class TradingModel(Base):
     def __repr__(self):
         if self.country_from_rel is not None:
             return "<Trading(%r,%r, %r, %r)>" % (
-            self.currency_disp(), self.country_from_rel.name, self.country_to_rel.name, self.id)
+                self.currency_disp("/"), self.country_from_rel.name, self.country_to_rel.name, self.id)
         else:
             return "<Trading(%r, %r, %r)>" % (self.country_from, self.country_to, self.id)
 
@@ -51,5 +51,5 @@ class TradingModel(Base):
         except:
             return False
 
-    def currency_disp(self, between: str = "/") -> str:
+    def currency_disp(self, between: str = "_") -> str:
         return self.country_from_rel.currency + between + self.country_to_rel.currency

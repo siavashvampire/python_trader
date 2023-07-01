@@ -25,6 +25,15 @@ def get_log_by_user(telegram_id: int = 0, user_id: int = 0) -> list[LogModel]:
 
 
 def add_log(user_id: int, trading_id: int, title: int, text: str) -> bool:
+    """
+        insert log to database
+    :param user_id: user id
+    :param trading_id: trade id
+    :param title: title id
+    :param text: text
+    :return:
+        return boolean that shows its insert correctly or not
+    """
     log_sender.log_queue.put([user_id, trading_id, title, text])
     return True
 

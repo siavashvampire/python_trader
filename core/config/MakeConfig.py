@@ -34,7 +34,7 @@ config_db.update({"help_file_name": str(help_file_name)})
 config_db.update({"help_pdf_timeout": str(help_pdf_timeout)})
 # end  Bale Config
 
-# start  format Config
+# start format Config
 time_format = '%Y-%m-%d %H:%M:%S'
 send_time_format = '%y-%m-%d %H:%M:%S'
 day_time_format = '%Y/%m/%d'
@@ -80,7 +80,7 @@ config_db.update({"plc_sleep_time_step_up": str(plc_sleep_time_step_up)})
 config_db.update({"time_between_read_from_each_device": str(time_between_read_from_each_device)})
 # end  PLC Config
 
-# Start  Timeouts Config
+# Start Timeouts Config
 bale_get_timeout = 80
 login_timeout = 5
 send_timeout = 200
@@ -126,9 +126,9 @@ config_db.update({"shift_cache_time": str(shift_cache_time)})
 config_db.update({"shift_check_time": str(shift_check_time)})
 
 config_db.update({"modbus_timeout": str(modbus_timeout)})
-# end  Timeouts Config
+# end Timeouts Config
 
-# Start  System Config
+# Start System Config
 logout_time = 3600
 backup_time = 30
 sensor_on_off_time = 10
@@ -146,15 +146,15 @@ config_db.update({"merge_time": str(merge_time)})
 config_db.update({"update_time": str(update_time)})
 config_db.update({"update_system_timeout": str(update_system_timeout)})
 config_db.update({"update_system_sleep_time": str(update_system_sleep_time)})
-# end  System Config
+# end System Config
 
-# Start  CamSwitch Config
+# Start CamSwitch Config
 off_cam_switch_value = 13000
 on_cam_switch_value = 26000
 
 config_db.update({"off_cam_switch_value": str(off_cam_switch_value)})
 config_db.update({"on_cam_switch_value": str(on_cam_switch_value)})
-# end  CamSwitch Config
+# end CamSwitch Config
 
 
 # Start  DB Config
@@ -176,7 +176,7 @@ config_db.update({"costumer": str(costumer)})
 config_db.update({"remove_db_flag": str(remove_db_flag)})
 # end  DB Config
 
-# Start  SMS Config
+# Start SMS Config
 sms_username = "HafezManufactor"
 sms_password = "HafezAAaa1234"
 sms_phone = "3000505"
@@ -188,7 +188,7 @@ config_db.update({"sms_phone": str(sms_phone)})
 config_db.update({"phone_timeout": str(phone_timeout)})
 # end  SMS Config
 
-# Start  LocalDB Config
+# Start LocalDB Config
 db_path = "File/DataBase/"
 logging_db_name = 'logging_db.json'
 phone_db_name = 'phone_property_db.json'
@@ -230,7 +230,7 @@ config_db.update({"device_db_name": str(device_db_name)})
 config_db.update({"device_table_name": str(device_table_name)})
 # end  LocalDB Config
 
-# Start  URL Config
+# Start URL Config
 if developer:
     main_url = "http://localhost/Hafez/"
 else:

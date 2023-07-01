@@ -1,6 +1,8 @@
 import json
 from time import sleep
 
+import pandas as pd
+from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,9 +11,9 @@ import undetected_chromedriver as uc
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 
+# from app.logging.api import add_log
+from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
-
-from datetime import datetime
 
 trade_window_url_quotex = 'https://quotex.com/en/sign-in/'
 
@@ -132,6 +134,11 @@ qx_api, check, reason = prepare_api_quotex()
 
 
 def get_balance_quotex() -> int:
+    """
+        get balance of an account in quotex
+    :return:
+        return int that shows balance of an account in quotex
+    """
     return qx_api.get_balance()
 
 
@@ -139,18 +146,38 @@ def get_balance_quotex() -> int:
 # qx_api.check_win()
 
 
-def create_order_quotex(name: str, unit: int) -> None:
+def create_order_quotex(name: str, unit: int, duration: int = 60) -> dict:
+    """
+
+    :param name: name = "EUR_USD" that should to convert to asset = "EURUSD"
+    :param unit: unit = 10 or -10, "call" or "put"
+    :param duration: durations in second
+    :return: buy_info that have id of order
+    {'id': 'bf09a6e0-e0b2-482d-85b6-9b9e9c2a6fdd', 'openTime': '2023-07-01 11:43:47', 'closeTime': '2023-07-01 11:45:00', 'openTimestamp': 1688211827, 'closeTimestamp': 1688211900, 'uid': 24692142, 'isDemo': 1, 'tournamentId': 0, 'amount': 1000, 'purchaseTime': 1688211870, 'profit': 870, 'percentProfit': 87, 'percentLoss': 100, 'openPrice': 1.08269, 'copyTicket': '', 'closePrice': 0, 'command': 0, 'asset': 'EURUSD_otc', 'nickname': '#24692142', 'accountBalance': 10000, 'requestId': '1', 'openMs': 388, 'currency': 'USD'}
+
+    """
+    # name = "EUR_USD"
     # asset = "EURUSD"
-    asset = name
+
+    currencies = name.split("_")
+    country_from = currencies[0]
+    country_to = currencies[1]
+    # asset = country_from + country_to
+    asset = country_from + country_to + "_otc"
+
     amount = abs(unit)
 
+    trade = get_trading_by_country_currency(country_from, country_to)
+
     if unit > 0:
+        # add_log(1, trade.id, 4, "we are buying " + trade.currency_disp())
         direction = "call"  # or "put"
     else:
+        # add_log(1, trade.id, 2, "we are selling " + trade.currency_disp())
         direction = "put"  # or "put"
 
-    duration = 60
     c, buy_info = qx_api.buy(asset, amount, direction, duration)
+    return buy_info
 
 
 def close_api_quotex() -> None:
@@ -158,15 +185,96 @@ def close_api_quotex() -> None:
 
 
 def get_real_time_data_quotex(name: str) -> float:
+    currencies = name.split("_")
+    country_from = currencies[0]
+    country_to = currencies[1]
+    name = country_from + country_to
+
     qx_api.start_candles_stream(name, 2)
     temp = qx_api.get_realtime_candles(name)[0]
     qx_api.stop_candles_stream(name)
 
+    # from datetime import datetime
     # timestamp = temp['time']
     # dt_object = datetime.fromtimestamp(timestamp)
     # print(dt_object)
+    # TODO:inja time ham mide fekr konam inja bayad check konim k time age ba alan yeki nabod None pass bede
+
     return temp['price']
 
+
+def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
+    """
+    :param name: ex. "EUR_USD"
+    :param candle: "S5" or "M1"
+    :return:
+        return DataFrame that has Five columns 'time','o',h','l','c'
+    """
+    # if candle.startswith('S'):
+    #     last_hour_date_time = datetime.utcnow() - timedelta(seconds=6)
+    #
+    #     start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M:%S'))
+    #     end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
+    #
+    # elif candle.startswith('M'):
+    #     last_hour_date_time = datetime.utcnow() - timedelta(minutes=2)
+    #
+    #     start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M'))
+    #     end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M'))
+    # else:
+    #     return DataFrame()
+    #
+    # data = tpqoa_api.retrieve_data(name, start, end, candle, "A")
+    # try:
+    #     data = data.drop(['volume', 'complete'], axis=1)
+    # except:
+    #     pass
+    #
+    # data = data.tail(1).reset_index()
+    data = DataFrame()
+    return data
+
+
+def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
+    """
+        get history of data in candles
+
+    :param name: name of trade
+    :param start_time: start time of trade in '%Y-%m-%d %H:%M:%S' :"2020-08-03"
+    :param end_time: end time of trade in '%Y-%m-%d %H:%M:%S' :"2023-05-21"
+    :param candle:candle of trade in candle model "M1"
+    :param csv_path:csv that want to save it
+    :return:
+        return DataFrame that has Five columns 'time','o',h','l','c'
+    """
+
+    # # tpqoa_api.get_history("EUR_USD", "2020-08-03", "2023-05-21", "M1", "A")
+    # data = tpqoa_api.get_history(name, start_time, end_time, candle, "A")
+    #
+    # if csv_path != "":
+    #     data.to_csv(csv_path, index=True, encoding='utf-8')
+    # data = data.reset_index()
+
+    qx_api.get_candle()
+    data = DataFrame()
+    return data
+
+
+def open_trade_window_quotex() -> None:
+    """
+        open web driver
+    """
+    try:
+        # option = Options()
+        # option.add_argument("detach")
+        # Use a specific version of Chrome
+        # driver = uc.Chrome(options=option)
+        driver = uc.Chrome()
+
+        login_quotex(driver)
+    except Exception as e:
+        print("error in quotex api : " + str(e))
+    # webdriver.Chrome(options=options).get(trade_window_url_quotex)
 # qx_api.get_balance()
 # self.qx_api = qx_api
 # self.qx_api.change_balance("PRACTICE")  # or "REAL"

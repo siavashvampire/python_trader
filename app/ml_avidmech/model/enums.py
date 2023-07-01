@@ -6,8 +6,8 @@ class PredictSellEnums:
         self.id = 0
 
     @staticmethod
-    def get_unit() -> int:
-        return -main_unit
+    def get_unit(unit: int = main_unit) -> int:
+        return -unit
 
     def __repr__(self) -> str:
         return "Sell"
@@ -18,8 +18,8 @@ class PredictBuyEnums:
         self.id = 1
 
     @staticmethod
-    def get_unit() -> int:
-        return main_unit
+    def get_unit(unit: int = main_unit) -> int:
+        return unit
 
     def __repr__(self) -> str:
         return "Buy"
@@ -30,7 +30,12 @@ class PredictNeutralEnums:
         self.id = 2
 
     @staticmethod
-    def get_unit() -> int:
+    def get_unit(unit: int = main_unit) -> int:
+        """
+        get neutral unit as 0
+        :param unit:
+        :return:
+        """
         return 0
 
     def __repr__(self) -> str:

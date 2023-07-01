@@ -59,7 +59,7 @@
     </font>
    </property>
    <property name="text">
-    <string>ورود</string>
+    <string>enter</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_User">
@@ -78,7 +78,7 @@
     </font>
    </property>
    <property name="placeholderText">
-    <string>نام کاربری را وارد کنید</string>
+    <string>please enter your username</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_Pass">
@@ -96,8 +96,11 @@
      <pointsize>10</pointsize>
     </font>
    </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
    <property name="placeholderText">
-    <string>رمز عبور را وارد کنید</string>
+    <string>please enter your password</string>
    </property>
   </widget>
   <widget class="QLabel" name="User_Icon_Label">
@@ -134,7 +137,7 @@
     </font>
    </property>
    <property name="text">
-    <string>فراموشی رمز عبور</string>
+    <string>forget password</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_Logo">
