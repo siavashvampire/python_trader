@@ -1,12 +1,12 @@
 import json
+from datetime import datetime
 from time import sleep
 
-import pandas as pd
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 import undetected_chromedriver as uc
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
@@ -22,13 +22,13 @@ def login_quotex(driver: WebDriver):
     driver.get("https://qxbroker.com/en/sign-in")
     wait = WebDriverWait(driver, 10)
     email_input = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[1]/input")))
+        ec.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[1]/input")))
     email_input.send_keys("eng.tit0@yahoo.com")
     pass_input = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[2]/input")))
+        ec.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[2]/input")))
     pass_input.send_keys("titometi2")
     sign_button = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="tab-1"]/form/button')))
+        ec.presence_of_element_located((By.XPATH, '//*[@id="tab-1"]/form/button')))
     sign_button.click()
 
 
@@ -103,10 +103,10 @@ def extract_ssid_quotex(driver: WebDriver):
 
 
 def prepare_api_quotex():
-    option = Options()
-    option.add_argument("--disable-extensions")
-    option.add_argument("--disable-notifications")
-    option.add_argument("--window-size=720,720")
+    # option = Options()
+    # option.add_argument("--disable-extensions")
+    # option.add_argument("--disable-notifications")
+    # option.add_argument("--window-size=720,720")
     # Use a specific version of Chrome
 
     d = DesiredCapabilities.CHROME
@@ -120,17 +120,27 @@ def prepare_api_quotex():
 
     ssid, websocket_cookie, user_agent, host = extract_ssid_quotex(driver)
 
-    qx_api = Quotex(set_ssid=ssid, host=host, user_agent=user_agent, websocket_cookie=websocket_cookie)
+    # print(ssid)
+    # print(host)
+    # print(user_agent)
+    # print(websocket_cookie)
 
-    # check if connection to Quotex API was successful and change balance type
-    check, reason = qx_api.connect()
+    # ssid = """42["authorization",{"session":"Ev6gXi5BrbSZofsQIYmf4lv1VnWuuocWEWCeR0Gr","isDemo":0,"tournamentId":0}]"""
+    # host = "qxbroker.com"  # qxbroker.com
+    # user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    # websocket_cookie = "referer=https%3A%2F%2Fwww.google.com%2F; _ga_L4T5GBPFHJ=GS1.1.1688309181.1.1.1688309186.0.0.0; _ga=GA1.1.192026297.1688309182; lang=en; nas=[%22EURUSD_otc%22]; z=[[%22graph%22%2C2%2C0%2C0%2C0.8333333]]; _vid_t=Ti4cw3aCg42SaP6EWmRSuci3XkX0feu50ka0dogV30MfAMubT2fUp6kTKpBe5PHcw5/xKb7Z9QczEQ==; __vid_l3=04131deb-ae03-4bd1-b975-13ebd852c998; __cf_bm=5ZDQ.k9B8nWZ.t1Ppzt6zdcNfr903LpRX.Qg7iTpdyY-1688309182-0-Aa3BGVqtzdfn5Js37EtZ0ooR3+WesIlWwQ8aXYte0cG/O40nSGybQwvwPZtxvvp9Tg2LtsSRmc5iY1DUIG7PSJ4+DS+JhVJD06t9UnmZdsTb"
 
-    qx_api.change_balance("PRACTICE")
+    qx_api_temp = Quotex(set_ssid=ssid, host=host, user_agent=user_agent, websocket_cookie=websocket_cookie)
 
-    return qx_api, check, reason
+    # check if connection to Quotex API was successful and change a balance type
+    check, reason = qx_api_temp.connect()
+
+    qx_api_temp.change_balance("PRACTICE")
+
+    return qx_api_temp
 
 
-qx_api, check, reason = prepare_api_quotex()
+qx_api = prepare_api_quotex()
 
 
 def get_balance_quotex() -> int:
@@ -158,12 +168,15 @@ def create_order_quotex(name: str, unit: int, duration: int = 60) -> dict:
     """
     # name = "EUR_USD"
     # asset = "EURUSD"
-
     currencies = name.split("_")
     country_from = currencies[0]
     country_to = currencies[1]
     # asset = country_from + country_to
-    asset = country_from + country_to + "_otc"
+    asset = country_from + country_to
+
+    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
+    if otc_check():
+        asset += "_otc"
 
     amount = abs(unit)
 
@@ -181,6 +194,9 @@ def create_order_quotex(name: str, unit: int, duration: int = 60) -> dict:
 
 
 def close_api_quotex() -> None:
+    """
+        closing qpi quotex
+    """
     qx_api.close()
 
 
@@ -188,11 +204,15 @@ def get_real_time_data_quotex(name: str) -> float:
     currencies = name.split("_")
     country_from = currencies[0]
     country_to = currencies[1]
-    name = country_from + country_to
+    asset = country_from + country_to
 
-    qx_api.start_candles_stream(name, 2)
-    temp = qx_api.get_realtime_candles(name)[0]
-    qx_api.stop_candles_stream(name)
+    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
+    if otc_check():
+        asset += "_otc"
+
+    qx_api.start_candles_stream(asset, 2)
+    temp = qx_api.get_realtime_candles(asset)[0]
+    qx_api.stop_candles_stream(asset)
 
     # from datetime import datetime
     # timestamp = temp['time']
@@ -210,32 +230,43 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
     :return:
         return DataFrame that has Five columns 'time','o',h','l','c'
     """
-    # if candle.startswith('S'):
-    #     last_hour_date_time = datetime.utcnow() - timedelta(seconds=6)
-    #
-    #     start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M:%S'))
-    #     end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
-    #
-    # elif candle.startswith('M'):
-    #     last_hour_date_time = datetime.utcnow() - timedelta(minutes=2)
-    #
-    #     start = tpqoa_api.transform_datetime(last_hour_date_time.strftime('%Y-%m-%d %H:%M'))
-    #     end = tpqoa_api.transform_datetime(datetime.utcnow().strftime('%Y-%m-%d %H:%M'))
-    # else:
-    #     return DataFrame()
-    #
-    # data = tpqoa_api.retrieve_data(name, start, end, candle, "A")
-    # try:
-    #     data = data.drop(['volume', 'complete'], axis=1)
-    # except:
-    #     pass
-    #
-    # data = data.tail(1).reset_index()
-    data = DataFrame()
-    return data
+    try:
+        currencies = name.split("_")
+        country_from = currencies[0]
+        country_to = currencies[1]
+        asset = country_from + country_to
 
+        # TODO:zaman otc ro check kone k age otc bod az otc bekhare
+        if otc_check():
+            asset += "_otc"
+
+
+        _time = datetime.utcnow().timestamp()
+
+        offset = 120  # how much sec want to get     _time-offset --->your candle <---_time
+
+        if candle == "M1":
+            period = 60  # candle size in sec
+        else:
+            period = 60  # candle size in sec
+
+        data = qx_api.get_candle(asset, _time, offset, period)['data'][-1]
+
+
+        data2 = {
+            'time': [datetime.fromtimestamp(data['time'])],
+            'o': [data['open']],
+            'c': [data['close']],
+            'h': [data['high']],
+            'l': [data['low']],
+        }
+
+        return DataFrame(data2)
+    except:
+        return DataFrame()
 
 def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
+    # TODO:irad dare dakhele OTC 2 saat akharo bishtar nemide
     """
         get history of data in candles
 
@@ -248,16 +279,60 @@ def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, c
         return DataFrame that has Five columns 'time','o',h','l','c'
     """
 
-    # # tpqoa_api.get_history("EUR_USD", "2020-08-03", "2023-05-21", "M1", "A")
-    # data = tpqoa_api.get_history(name, start_time, end_time, candle, "A")
-    #
-    # if csv_path != "":
-    #     data.to_csv(csv_path, index=True, encoding='utf-8')
-    # data = data.reset_index()
+    currencies = name.split("_")
+    country_from = currencies[0]
+    country_to = currencies[1]
+    asset = country_from + country_to
 
-    qx_api.get_candle()
-    data = DataFrame()
-    return data
+    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
+    if otc_check():
+        asset += "_otc"
+
+    # check_connect, message = qx_api.connect()
+    # print(check_connect)
+
+    start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+    end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+    _time = end_time.timestamp()
+
+    # _time = int(time())  # the candle end of time
+    offset = _time - start_time.timestamp() + 60 # how much sec want to get     _time-offset --->your candle <---_time
+
+    if candle == "M1":
+        period = 60  # candle size in sec
+    else:
+        period = 60  # candle size in sec
+
+    data = qx_api.get_candle(asset, _time, offset, period)['data']
+
+    # datas = qx_api.get_candle_v2(asset,offset)
+    # a=qx_api.get_candle_v2("NZDUSD_otc",180)
+
+    # print(datetime.fromtimestamp(data['time']))
+
+    o = []
+    c = []
+    h = []
+    l = []
+
+    time_temp = []
+
+    for temp_data in data:
+        time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
+        o.append(temp_data['open'])
+        c.append(temp_data['close'])
+        h.append(temp_data['high'])
+        l.append(temp_data['low'])
+
+    data2 = {
+        'time': time_temp,
+        'o': o,
+        'c': c,
+        'h': h,
+        'l': l,
+    }
+
+    return DataFrame(data2)
 
 
 def open_trade_window_quotex() -> None:
@@ -267,13 +342,25 @@ def open_trade_window_quotex() -> None:
     try:
         # option = Options()
         # option.add_argument("detach")
-        # Use a specific version of Chrome
+        # Use a specific version of a Chrome
         # driver = uc.Chrome(options=option)
         driver = uc.Chrome()
 
         login_quotex(driver)
     except Exception as e:
         print("error in quotex api : " + str(e))
+
+
+def otc_check() -> bool:
+    """
+        Check the time, and if otc activate, it returns True otherwise returns False
+    :return:
+        True->if market is close
+        False->if market is open
+    """
+
+    _time = datetime.utcnow()
+    return True
     # webdriver.Chrome(options=options).get(trade_window_url_quotex)
 # qx_api.get_balance()
 # self.qx_api = qx_api

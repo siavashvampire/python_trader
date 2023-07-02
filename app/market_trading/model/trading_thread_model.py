@@ -77,6 +77,7 @@ class TradingThreadModel:
                     self.q_label_predict.setText(self.predict.__repr__())
                     self.last_update_time = datetime.now()
                 except Exception as e:
+                    sleep(1)
                     print("error in trading thread : " + str(e))
                     # add_log(1, self.trade.id, 1, str(e))
             if stop_thread():

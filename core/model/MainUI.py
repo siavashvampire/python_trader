@@ -122,8 +122,8 @@ class MainUi(QFrame):
 
         #   End Colors
 
-        # trades = get_all_trading()
-        trades = [get_trading(6)]
+        trades = get_all_trading()
+        # trades = [get_trading(6)]
 
         self.add_trade_to_trade_threads(trades)
         # self.start_trade_threads()

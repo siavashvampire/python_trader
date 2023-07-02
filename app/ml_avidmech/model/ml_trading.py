@@ -110,24 +110,6 @@ class MlTrading:
         self.df.iloc[-1, self.df.columns.get_loc('next_trend')] = second
         self.df = pd.concat([self.df, last], axis=0)
 
-        # Check if the counter reaches 10
-        # if self.counter == 10:
-        #     # Call update when 10 candles are added
-        #     self.update_model()
-        #     self.counter = 0
-        # print(self.temp_df.iloc[-1])
-        # # if self.counter2 == 2:
-        # self.df = pd.concat([self.temp_df.iloc[-1], self.df])
-        # #     self.counter2 = 0
-        #
-        # # self.v = self.df.drop(['time'], axis=1)
-        # # self.to_predict = self.v
-        # # self.df = self.df.dropna()
-
-        # print(self.temp_df)
-        # print(self.df.tail())
-        # return self.temp_df, self.df
-
     def update_model(self):
         self.model.fit(self.df.iloc[:, :-2], self.df.iloc[:, -2:])
         joblib.dump(self.model, self.model_name)
@@ -151,31 +133,37 @@ class MlTrading:
             2:neutral
         """
         # self.update()
-        predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
-        accuracy = round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2)
+        try:
+            predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
+            accuracy = round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2)
 
-        if predict == 2:
+            if predict == 2:
+                return PredictEnums().neutral, accuracy
+
+            if predict == 0 and accuracy >= 0.8:
+                return PredictEnums().sell, accuracy
+
+            if predict == 1 and accuracy >= 0.8:
+                return PredictEnums().buy, accuracy
+
             return PredictEnums().neutral, accuracy
-
-        if predict == 0 and accuracy >= 0.8:
-            return PredictEnums().sell, accuracy
-
-        if predict == 1 and accuracy >= 0.8:
-            return PredictEnums().buy, accuracy
-
-        return PredictEnums().neutral, accuracy
+        except:
+            return PredictEnums().neutral, 0.0
 
     def check_update_df(self, last_candle: DataFrame) -> bool:
-        last_candle_time = pd.Timestamp(last_candle['time'].values[0])
+        try:
+            last_candle_time = pd.Timestamp(last_candle['time'].values[0])
 
-        temp_df_time_str = self.df.tail(1)['time'].values[0]
-        type_temp_df_time_str = type(temp_df_time_str)
+            temp_df_time_str = self.df.tail(1)['time'].values[0]
+            type_temp_df_time_str = type(temp_df_time_str)
 
-        if type_temp_df_time_str == str:
-            temp_df_time = datetime.strptime(temp_df_time_str, '%Y-%m-%d %H:%M:%S+00:00')
-        elif type_temp_df_time_str == Timestamp:
-            temp_df_time = pd.Timestamp(temp_df_time_str)
-        else:
-            temp_df_time = pd.Timestamp(temp_df_time_str)
+            if type_temp_df_time_str == str:
+                temp_df_time = datetime.strptime(temp_df_time_str, '%Y-%m-%d %H:%M:%S+00:00')
+            elif type_temp_df_time_str == Timestamp:
+                temp_df_time = pd.Timestamp(temp_df_time_str)
+            else:
+                temp_df_time = pd.Timestamp(temp_df_time_str)
 
-        return not temp_df_time.timestamp() == last_candle_time.timestamp()
+            return not temp_df_time.timestamp() == last_candle_time.timestamp()
+        except:
+            return False

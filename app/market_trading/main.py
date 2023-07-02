@@ -34,20 +34,23 @@ class MainTradingThreadModel:
             sleep(1)
 
             if (datetime.now() - self.last_check_time).seconds > 10:
-                self.make_all_trade_off_color()
-                max_trade = self.find_max_trade()
-                if max_trade is not None:
-                    self.max_trading_label.setText(max_trade.name)
-                    self.max_trading_value_label.setText(str(round(max_trade.accuracy * 100, 2)) + "%")
-                    max_trade.change_color(True)
-                    self.create_order_from_trade(max_trade)
-                    # print(max_trade.accuracy)
-                else:
-                    self.max_trading_label.setText("nothing")
-                    self.max_trading_value_label.setText("0%")
+                try:
+                    self.make_all_trade_off_color()
+                    max_trade = self.find_max_trade()
+                    if max_trade is not None:
+                        self.max_trading_label.setText(max_trade.name)
+                        self.max_trading_value_label.setText(str(round(max_trade.accuracy * 100, 2)) + "%")
+                        max_trade.change_color(True)
+                        self.create_order_from_trade(max_trade)
+                        # print(max_trade.accuracy)
+                    else:
+                        self.max_trading_label.setText("nothing")
+                        self.max_trading_value_label.setText("0%")
 
-                self.balance_value_label.setText(str(self.data_connector.get_balance()) + "$")
-                self.last_check_time = datetime.now()
+                    self.balance_value_label.setText("$" + str(self.data_connector.get_balance()))
+                    self.last_check_time = datetime.now()
+                except:
+                    sleep(1)
 
             if stop_thread():
                 # print("Main Rendering Thread", "Stop")
@@ -82,7 +85,7 @@ class MainTradingThreadModel:
         temp_accuracy = 0.80
         temp_trade = None
         for trade in self.trade_threads:
-            if temp_accuracy < trade.accuracy and trade.predict != PredictEnums().neutral:
+            if temp_accuracy < trade.accuracy and not isinstance(trade.predict, PredictNeutralEnums):
                 temp_accuracy = trade.accuracy
                 temp_trade = trade
 
