@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 from PyQt5.QtWidgets import QApplication
 
@@ -20,5 +21,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     from core.app_provider.admin.main import Main
 
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
     main = Main()
     sys.exit(app.exec_())
