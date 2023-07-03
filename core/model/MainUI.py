@@ -221,7 +221,7 @@ class MainUi(QFrame):
         q_label_name = QLabel(name)
         q_label_value = QLabel(value)
         q_label_accuracy = QLabel("0")
-        q_label_predict = QLabel("neutral")
+        q_label_predict = QLabel("Neutral")
 
         q_label_name.setAlignment(Qt.AlignCenter)
         q_label_value.setAlignment(Qt.AlignCenter)
