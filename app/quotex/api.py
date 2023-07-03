@@ -228,7 +228,7 @@ def check_connection(qx_api_temp: Quotex) -> None:
     :param qx_api_temp:
     """
     check, reason = qx_api_temp.connect()
-    print("check : ",check)
+
     if not check:  # happens if connections are lost
         ssid, websocket_cookie, user_agent, host = extract_ssid_from_web()
         write_config_to_file(ssid, websocket_cookie, user_agent, host)
@@ -242,10 +242,9 @@ if api_used == APIUsed().quotex:
 def check_connection_decoration(func):
     def inner1(*args, **kwargs):
         try:
-            print("miad inja")
             # TODO:nemidonam k in func bayad dakhele try bashe ya na
             check_connection(qx_api)
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except Exception as e:
             print(e)
             pass
@@ -364,6 +363,7 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
         else:
             period = 60  # candle size in sec
 
+
         data = qx_api.get_candle(asset, _time, offset, period)['data'][-1]
 
         data2 = {
@@ -375,7 +375,8 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
         }
 
         return DataFrame(data2)
-    except:
+    except Exception as e:
+        print(e)
         return DataFrame()
 
 
