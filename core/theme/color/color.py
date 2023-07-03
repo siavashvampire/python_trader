@@ -25,9 +25,11 @@ login_text_color = "{r}, {g}, {b}, {a}".format(r=38, g=17, b=0, a=255)  # login 
 login_border_color = "{r}, {g}, {b}, {a}".format(r=38, g=17, b=0, a=255)  # login border color
 login_bg_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # login background color
 
-trade_on_bg_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # trade on background color
+# trade_on_bg_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # trade on background color
+trade_on_bg_color = "transparent"  # trade on background color
 trade_on_text_color = "{r}, {g}, {b}, {a}".format(r=0, g=255, b=0, a=255)  # trade on text color
-trade_off_bg_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # trade off background color
+# trade_off_bg_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # trade off background color
+trade_off_bg_color = "transparent"  # trade off background color
 trade_off_text_color = "{r}, {g}, {b}, {a}".format(r=255, g=40, b=40, a=255)  # trade off text color
 
 DA_unit_ok_status_label_bot_bg = "{r}, {g}, {b}, {a}".format(r=19, g=164, b=70,
