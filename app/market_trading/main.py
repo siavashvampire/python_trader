@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from threading import Thread
 from time import sleep
 from typing import Callable, Optional
@@ -6,8 +6,11 @@ from typing import Callable, Optional
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
+from app.logging.api import add_log
 from app.market_trading.model.trading_thread_model import TradingThreadModel
-from app.ml_avidmech.model.enums import PredictNeutralEnums, PredictBuyEnums, PredictSellEnums, PredictEnums
+from app.ml_avidmech.model.enums import PredictNeutralEnums, PredictBuyEnums
+
+Force2Trade = False
 
 
 class MainTradingThreadModel:
@@ -19,6 +22,7 @@ class MainTradingThreadModel:
     max_trading_value_label: QLabel = None
     balance_value_label: QLabel = None
     trading: bool = False
+    buy_time: datetime = datetime.now() - timedelta(minutes=8)
 
     def __init__(self, trade_threads: list[TradingThreadModel]) -> None:
         self.trade_threads = trade_threads
@@ -32,7 +36,6 @@ class MainTradingThreadModel:
     def main_thread(self, stop_thread: Callable[[], bool]) -> None:
         while True:
             sleep(1)
-
             if (datetime.now() - self.last_check_time).seconds > 10:
                 try:
                     self.make_all_trade_off_color()
@@ -89,6 +92,11 @@ class MainTradingThreadModel:
                 temp_accuracy = trade.accuracy
                 temp_trade = trade
 
+        if Force2Trade:
+            temp_trade = self.trade_threads[1]
+            temp_trade.predict = PredictBuyEnums
+            temp_trade.accuracy = 0.90
+
         return temp_trade
 
     def make_all_trade_off_color(self):
@@ -115,41 +123,11 @@ class MainTradingThreadModel:
         :param trade:
         """
         self.trading = True
-        if not isinstance(trade.predict, PredictNeutralEnums):
+        if not isinstance(trade.predict, PredictNeutralEnums) and (datetime.now() - self.buy_time).seconds > 65:
             # TODO:vaghti mikhare v mifroshe neveshte mide serfan bayad y True False bede v in aslan ham doros nis v
             #  bayad prop ham tosh check beshe
-            buy_info = self.data_connector.create_order(trade.name,
-                                                        trade.predict.get_unit(self.amount), self.time)
-            sleep(65)
+            buy_info = self.data_connector.create_order(trade.name, trade.predict.get_unit(self.amount), self.time)
+            # print("buy_info : ", buy_info)
+            if 'error' not in buy_info.keys():
+                self.buy_time = datetime.now()
             # print("Get: ", self.qx_api.check_win(buy_info["id"]))
-
-        # for test
-        # if isinstance(self.state, PredictNeutralEnums):
-        #     predict = PredictSellEnums()
-        # elif isinstance(self.state, PredictSellEnums):
-        #     predict = PredictBuyEnums()
-
-        # if isinstance(self.state, PredictNeutralEnums):
-        #     if not isinstance(predict, PredictNeutralEnums):
-        #         self.create_order_from_predict(predict)
-        #         print("we are ", predict, self.name)
-        #         if isinstance(predict, PredictBuyEnums):
-        #             add_log(1, self.trade.id, 4, "we are open buying " + self.name)
-        #         elif isinstance(predict, PredictSellEnums):
-        #             add_log(1, self.trade.id, 2, "we are open selling " + self.name)
-        #         # TODO:inja bayad ba TRUE False k az order migire moshakhas kone state ro
-        #         self.state = predict
-        #
-        # elif isinstance(self.state, PredictBuyEnums):
-        #     if not isinstance(predict, PredictBuyEnums):
-        #         self.create_order_from_predict(PredictSellEnums())
-        #         add_log(1, self.trade.id, 5, "we are close buying " + self.name)
-        #         print("we are ", PredictNeutralEnums())
-        #         self.state = PredictNeutralEnums()
-        #
-        # elif isinstance(self.state, PredictSellEnums):
-        #     if not isinstance(predict, PredictSellEnums):
-        #         self.create_order_from_predict(PredictBuyEnums())
-        #         add_log(1, self.trade.id, 3, "we are close selling " + self.name)
-        #         print("we are ", PredictNeutralEnums())
-        #         self.state = PredictNeutralEnums()
