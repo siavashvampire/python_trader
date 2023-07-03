@@ -308,6 +308,7 @@ class Quotex:
         # the min duration is 30
 
         duration = get_expiration_time_quotex(time.time(), duration)
+
         if self.account_mode_isDemo == 1:
             c_func = self.api
         elif self.account_mode_isDemo == 0:
