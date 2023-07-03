@@ -1,6 +1,5 @@
 from app.logging.main import log_sender
 from app.logging.model.log_model import LogModel
-from app.market_trading.api import get_trading
 from app.user.api import get_user
 from core.database.database import session
 

@@ -29,9 +29,8 @@ class LogSender:
                 user_id, trading_id, title, text = self.log_queue.get(timeout=1)
 
                 temp = LogModel()
-                trading = get_trading(trading_id)
                 temp.user_id = user_id
-                temp.trading_id = trading.id
+                temp.trading_id = trading_id
                 temp.title = title
                 temp.text = text
                 temp.insert()

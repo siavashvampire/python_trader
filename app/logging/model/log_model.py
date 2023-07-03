@@ -21,7 +21,7 @@ class LogModel(Base):
     trading_rel = relationship("TradingModel", foreign_keys=[trading_id])
     title_rel = relationship("LogTitleModel", foreign_keys=[title])
 
-    def __init__(self, id: int = 0, user_id: int = 0, trading_id: int = 0, predict: int = 0) -> None:
+    def __init__(self, id: int = 0, user_id: int = 0, trading_id: int = 0, title: int = 0, text: str = "") -> None:
         try:
             if id != 0:
                 temp: LogModel = session.query(LogModel).filter(LogModel.id == id).first()
@@ -30,23 +30,21 @@ class LogModel(Base):
 
             self.id = temp.id
         except:
-            trading = get_trading(trading_id)
             self.id = 0
             self.user_id = user_id
             self.trading_id = trading_id
-            self.country_from = trading.country_from
-            self.country_to = trading.country_to
-            self.predict = predict
+            self.title = title
+            self.text = text
 
         Base.__init__(self)
 
     def __repr__(self):
-        if self.country_from_rel is not None:
-            return "<Log(%r, %r, %r, %r, %r)>" % (
-                self.user_rel.first_name, self.country_from_rel.name, self.country_to_rel.name, self.predict, self.id)
+        if self.user_rel is not None:
+            return "<Log(%r, %r, %r, %r)>" % (
+                self.user_rel.first_name, self.trading_rel.currency_disp(), self.title_rel.name, self.text)
         else:
-            return "<Log(%r, %r, %r, %r, %r)>" % (
-                self.user_id, self.country_from, self.country_to, self.predict, self.id)
+            return "<Log(%r, %r, %r, %r,%r)>" % (
+                self.user_id, self.trading_id, self.title, self.text, self.id)
 
     def insert(self) -> bool:
         try:
