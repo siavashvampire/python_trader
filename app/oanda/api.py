@@ -1,17 +1,22 @@
 from pandas import DataFrame
 from selenium import webdriver
 
+from app.data_connector.model.enums import APIUsed
 from app.oanda.model.tpqoa import TPQOA
 
 from datetime import datetime, timedelta
+
+from core.config.Config import api_used
 
 
 def prepare_api_oanda():
     pass
 
 
-tpqoa_api = TPQOA("File/Config/oanda.cfg")
 trade_window_url_oanda = 'https://trade.oanda.com/'
+
+if api_used == APIUsed().oanda:
+    tpqoa_api = TPQOA("File/Config/oanda.cfg")
 
 
 def get_real_time_data_oanda(name: str) -> float:
