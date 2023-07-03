@@ -10,6 +10,7 @@ from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 from app.ml_avidmech.model.ml_trading import MlTrading
+from core.database.database import session
 from core.theme.color.color import trade_on_bg_color, trade_on_text_color, trade_off_text_color, trade_off_bg_color
 
 
@@ -50,9 +51,9 @@ class TradingThreadModel:
 
     def change_color(self, state: bool = False):
         if state:
-            css = "background-color: rgba(" + trade_on_bg_color + ");color: rgba(" + trade_on_text_color + ");"
+            css = "background-color:" + trade_on_bg_color + ";color: rgba(" + trade_on_text_color + ");"
         else:
-            css = "background-color: rgba(" + trade_off_bg_color + ");color: rgba(" + trade_off_text_color + ");"
+            css = "background-color: " + trade_off_bg_color + ";color: rgba(" + trade_off_text_color + ");"
 
         self.q_label_name.setStyleSheet(css)
         self.q_label_value.setStyleSheet(css)
@@ -65,7 +66,7 @@ class TradingThreadModel:
         while True:
             sleep(1)
 
-            if (datetime.now() - self.last_update_time).seconds > 10:
+            if (datetime.now() - self.last_update_time).seconds > 40:
                 try:
                     self.ml_trading.update()
                     self.predict, self.accuracy = self.ml_trading.predict()
@@ -79,6 +80,7 @@ class TradingThreadModel:
                 except Exception as e:
                     sleep(1)
                     print("error in trading thread : " + str(e))
+                    session.rollback()
                     # add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
                 print("Main Rendering Thread", "Stop")
