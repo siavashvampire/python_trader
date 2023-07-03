@@ -1,6 +1,8 @@
 import json
+import os
 from datetime import datetime
 from time import sleep
+from typing import Optional
 
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -9,16 +11,70 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import undetected_chromedriver as uc
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.chrome.options import Options
+import configparser
 
+from app.data_connector.model.enums import APIUsed
 # from app.logging.api import add_log
 from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
+from core.config.Config import api_used
 
 trade_window_url_quotex = 'https://quotex.com/en/sign-in/'
+config_file_path = "File/Config/qoutex.cfg"
+section_name = 'qoutex'
 
 
-def login_quotex(driver: WebDriver):
+def read_config_from_file() -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
+    """
+        read config file and extract ssid and host and user_agent and websocket_cookie
+    :return:
+        return str, str, str, str or None,None, None, None if something went wrong
+    """
+
+    config = configparser.RawConfigParser()
+    config.read(config_file_path)
+    try:
+        ssid = config.get(section_name, 'ssid')
+        host = config.get(section_name, 'host')
+        user_agent = config.get(section_name, 'user_agent')
+        websocket_cookie = config.get(section_name, 'websocket_cookie')
+        return ssid, websocket_cookie, user_agent, host
+    except Exception as e:
+        # print(e)
+        return None, None, None, None
+
+
+def write_config_to_file(ssid: str, websocket_cookie: str, user_agent: str, host: str) -> bool:
+    """
+        write to config file and fill ssid and host and user_agent and websocket_cookie
+    :return:
+        return True if write correctly and return False if something happens
+    """
+    try:
+        if os.path.exists(config_file_path):
+            os.remove(config_file_path)  # one file at a time
+
+        cfg_file = open(config_file_path, 'w')
+        config = configparser.RawConfigParser()
+        config.add_section(section_name)
+
+        config.set(section_name, 'ssid', ssid)
+        config.set(section_name, 'websocket_cookie', websocket_cookie)
+        config.set(section_name, 'user_agent', user_agent)
+        config.set(section_name, 'host', host)
+
+        config.write(cfg_file)
+        cfg_file.close()
+        return True
+    except:
+        return False
+
+
+def login_with_driver_quotex(driver: WebDriver) -> None:
+    """
+        login with a driver in a quotex
+    :param driver: driver that open quotex site
+    """
     driver.get("https://qxbroker.com/en/sign-in")
     wait = WebDriverWait(driver, 10)
     email_input = WebDriverWait(driver, 20).until(
@@ -32,7 +88,16 @@ def login_quotex(driver: WebDriver):
     sign_button.click()
 
 
-def extract_ssid_quotex(driver: WebDriver):
+def extract_ssid_from_driver_quotex(driver: WebDriver) -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
+    """
+        extract ssid and host and user_agent and websocket_cookie from driver
+    :param driver:
+    :return:
+        ssid
+        host
+        user_agent
+        websocket_cookie
+    """
     # Extract the SSID token from the network logs
     ssid = None
     while True:
@@ -102,7 +167,7 @@ def extract_ssid_quotex(driver: WebDriver):
     return ssid, websocket_cookie, user_agent, host
 
 
-def prepare_api_quotex():
+def extract_ssid_from_web() -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
     # option = Options()
     # option.add_argument("--disable-extensions")
     # option.add_argument("--disable-notifications")
@@ -116,15 +181,33 @@ def prepare_api_quotex():
     # self.driver = uc.Chrome(options=option, desired_capabilities=d)
     driver.delete_all_cookies()
 
-    login_quotex(driver)
+    login_with_driver_quotex(driver)
 
-    ssid, websocket_cookie, user_agent, host = extract_ssid_quotex(driver)
+    return extract_ssid_from_driver_quotex(driver)
 
+
+def extract_ssid() -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
+    ssid, websocket_cookie, user_agent, host = read_config_from_file()
+
+    if ssid is None:  # happens if file not exists
+        ssid, websocket_cookie, user_agent, host = extract_ssid_from_web()
+        write_config_to_file(ssid, websocket_cookie, user_agent, host)
+
+    return ssid, websocket_cookie, user_agent, host
+
+
+def prepare_api_quotex():
+    """
+        prepare api and login
+    :return:
+    """
+    ssid, websocket_cookie, user_agent, host = extract_ssid()
+    #
     # print(ssid)
     # print(host)
     # print(user_agent)
     # print(websocket_cookie)
-
+    # ssid, websocket_cookie, user_agent, host = read_config_from_file()
     # ssid = """42["authorization",{"session":"Ev6gXi5BrbSZofsQIYmf4lv1VnWuuocWEWCeR0Gr","isDemo":0,"tournamentId":0}]"""
     # host = "qxbroker.com"  # qxbroker.com
     # user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
@@ -133,16 +216,44 @@ def prepare_api_quotex():
     qx_api_temp = Quotex(set_ssid=ssid, host=host, user_agent=user_agent, websocket_cookie=websocket_cookie)
 
     # check if connection to Quotex API was successful and change a balance type
-    check, reason = qx_api_temp.connect()
 
     qx_api_temp.change_balance("PRACTICE")
 
     return qx_api_temp
 
 
-qx_api = prepare_api_quotex()
+def check_connection(qx_api_temp: Quotex) -> None:
+    """
+        check connection and if connections are lost extract from web and write to config file
+    :param qx_api_temp:
+    """
+    check, reason = qx_api_temp.connect()
+    print("check : ",check)
+    if not check:  # happens if connections are lost
+        ssid, websocket_cookie, user_agent, host = extract_ssid_from_web()
+        write_config_to_file(ssid, websocket_cookie, user_agent, host)
 
 
+if api_used == APIUsed().quotex:
+    qx_api = prepare_api_quotex()
+    check_connection(qx_api)
+
+
+def check_connection_decoration(func):
+    def inner1(*args, **kwargs):
+        try:
+            print("miad inja")
+            # TODO:nemidonam k in func bayad dakhele try bashe ya na
+            check_connection(qx_api)
+            func(*args, **kwargs)
+        except Exception as e:
+            print(e)
+            pass
+
+    return inner1
+
+
+@check_connection_decoration
 def get_balance_quotex() -> int:
     """
         get balance of an account in quotex
@@ -152,10 +263,9 @@ def get_balance_quotex() -> int:
     return qx_api.get_balance()
 
 
-# qx_api.get_candle()
 # qx_api.check_win()
 
-
+@check_connection_decoration
 def create_order_quotex(name: str, unit: int, duration: int = 60) -> dict:
     """
 
@@ -174,7 +284,6 @@ def create_order_quotex(name: str, unit: int, duration: int = 60) -> dict:
     # asset = country_from + country_to
     asset = country_from + country_to
 
-    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
     if otc_check():
         asset += "_otc"
 
@@ -200,13 +309,19 @@ def close_api_quotex() -> None:
     qx_api.close()
 
 
+@check_connection_decoration
 def get_real_time_data_quotex(name: str) -> float:
+    """
+        get real time data
+    :param name: asset  ex. "EUR_USD"
+    :return:
+        return real time value in float
+    """
     currencies = name.split("_")
     country_from = currencies[0]
     country_to = currencies[1]
     asset = country_from + country_to
 
-    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
     if otc_check():
         asset += "_otc"
 
@@ -223,6 +338,7 @@ def get_real_time_data_quotex(name: str) -> float:
     return temp['price']
 
 
+@check_connection_decoration
 def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
     """
     :param name: ex. "EUR_USD"
@@ -236,10 +352,8 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
         country_to = currencies[1]
         asset = country_from + country_to
 
-        # TODO:zaman otc ro check kone k age otc bod az otc bekhare
         if otc_check():
             asset += "_otc"
-
 
         _time = datetime.utcnow().timestamp()
 
@@ -251,7 +365,6 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
             period = 60  # candle size in sec
 
         data = qx_api.get_candle(asset, _time, offset, period)['data'][-1]
-
 
         data2 = {
             'time': [datetime.fromtimestamp(data['time'])],
@@ -265,6 +378,8 @@ def get_last_candle_quotex(name: str, candle: str) -> DataFrame:
     except:
         return DataFrame()
 
+
+@check_connection_decoration
 def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, csv_path: str = "") -> DataFrame:
     # TODO:irad dare dakhele OTC 2 saat akharo bishtar nemide
     """
@@ -284,19 +399,14 @@ def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, c
     country_to = currencies[1]
     asset = country_from + country_to
 
-    # TODO:zaman otc ro check kone k age otc bod az otc bekhare
     if otc_check():
         asset += "_otc"
-
-    # check_connect, message = qx_api.connect()
-    # print(check_connect)
 
     start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
     end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
     _time = end_time.timestamp()
 
-    # _time = int(time())  # the candle end of time
-    offset = _time - start_time.timestamp() + 60 # how much sec want to get     _time-offset --->your candle <---_time
+    offset = _time - start_time.timestamp() + 60  # how much sec want to get     _time-offset --->your candle <---_time
 
     if candle == "M1":
         period = 60  # candle size in sec
@@ -304,11 +414,6 @@ def get_history_quotex(name: str, start_time: str, end_time: str, candle: str, c
         period = 60  # candle size in sec
 
     data = qx_api.get_candle(asset, _time, offset, period)['data']
-
-    # datas = qx_api.get_candle_v2(asset,offset)
-    # a=qx_api.get_candle_v2("NZDUSD_otc",180)
-
-    # print(datetime.fromtimestamp(data['time']))
 
     o = []
     c = []
@@ -346,7 +451,7 @@ def open_trade_window_quotex() -> None:
         # driver = uc.Chrome(options=option)
         driver = uc.Chrome()
 
-        login_quotex(driver)
+        login_with_driver_quotex(driver)
     except Exception as e:
         print("error in quotex api : " + str(e))
 
@@ -359,8 +464,7 @@ def otc_check() -> bool:
         False->if market is open
     """
 
-    _time = datetime.utcnow()
-    return True
+    return datetime.utcnow().weekday() in [6, 7]
     # webdriver.Chrome(options=options).get(trade_window_url_quotex)
 # qx_api.get_balance()
 # self.qx_api = qx_api
