@@ -277,7 +277,7 @@ class QuotexAPI:
     # qx_api.check_win()
 
     @check_connection_decoration
-    def create_order_quotex(self, name: str, unit: int, duration: int = 60) -> dict:
+    def create_order_quotex(self, name: str, unit: int, duration: int = 60) -> tuple[bool, dict]:
         """
     
         :param name: name = "EUR_USD" that should to convert to asset = "EURUSD"
@@ -315,10 +315,12 @@ class QuotexAPI:
 
         if 'error' in buy_info.keys():
             add_log(1, trade.id, 1, buy_info['error'] + ", in trade " + trade.currency_disp())
+
+            return False,buy_info
         else:
             add_log(1, trade.id, 6, str(buy_info))
+            return True, buy_info
 
-        return buy_info
 
     def close_api_quotex(self) -> None:
         """

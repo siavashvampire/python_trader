@@ -82,7 +82,7 @@ def get_last_candle_oanda(name: str, candle: str) -> DataFrame:
     return data
 
 
-def create_order_oanda(name: str, unit: int, duration: int = 60) -> dict:
+def create_order_oanda(name: str, unit: int, duration: int = 60) -> tuple[bool, dict]:
     """
         create order
     :param name: name of trade (EUR_USD)
@@ -90,7 +90,7 @@ def create_order_oanda(name: str, unit: int, duration: int = 60) -> dict:
     :param duration: duration of trade(60s)
     """
     tpqoa_api.create_order(instrument=name, units=unit, sl_distance=0.1)
-    return {}
+    return True, {}
 
 
 def get_balance_oanda() -> float:
