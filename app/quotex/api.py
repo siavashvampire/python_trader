@@ -4,6 +4,7 @@ from datetime import datetime
 from time import sleep
 from typing import Optional
 
+import holidays
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -117,7 +118,7 @@ class QuotexAPI:
     def extract_ssid_from_driver_quotex(self, driver: WebDriver) -> [Optional[str], Optional[str], Optional[str],
                                                                      Optional[str]]:
         """
-            extract ssid and host and user_agent and websocket_cookie from driver
+            extract ssid and host and user_agent and websocket_cookie from a driver
         :param driver:
         :return:
             ssid
@@ -316,11 +317,10 @@ class QuotexAPI:
         if 'error' in buy_info.keys():
             add_log(1, trade.id, 1, buy_info['error'] + ", in trade " + trade.currency_disp())
 
-            return False,buy_info
+            return False, buy_info
         else:
             add_log(1, trade.id, 6, str(buy_info))
             return True, buy_info
-
 
     def close_api_quotex(self) -> None:
         """
@@ -473,7 +473,7 @@ class QuotexAPI:
         except Exception as e:
             print("error in quotex api : " + str(e))
 
-    def otc_check(self) -> bool:
+    def otc_check(self, date_in: datetime = datetime.utcnow()) -> bool:
         """
             Check the time, and if otc activate, it returns True otherwise returns False
         :return:
@@ -481,7 +481,7 @@ class QuotexAPI:
             False->if market is open
         """
 
-        return datetime.utcnow().weekday() in [6, 7]
+        return (date_in.weekday() in [6, 7]) or date_in in holidays.XNYS()
 
 
 if api_used == APIUsed().quotex:
