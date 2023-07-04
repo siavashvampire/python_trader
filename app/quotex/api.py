@@ -317,6 +317,7 @@ class QuotexAPI:
             add_log(1, trade.id, 1, buy_info['error'] + ", in trade " + trade.currency_disp())
         else:
             add_log(1, trade.id, 6, str(buy_info))
+
         return buy_info
 
     def close_api_quotex(self) -> None:

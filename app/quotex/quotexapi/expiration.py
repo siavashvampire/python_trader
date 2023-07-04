@@ -19,7 +19,7 @@ def get_expiration_time_quotex(timestamp, duration):
     shift = 0
     if now_date.second >= 30:
         shift = 1
-    # in 2 ta bayad uncomment beshe khate 26 comment beshe
+
     exp_date = now_date.replace(second=0, microsecond=0)
 
     exp_date = exp_date + timedelta(minutes=int(duration / 60) + shift)

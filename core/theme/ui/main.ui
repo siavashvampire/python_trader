@@ -40,6 +40,13 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="focusPolicy">
      <enum>Qt::StrongFocus</enum>
     </property>
@@ -53,10 +60,10 @@
      <widget class="QLabel" name="Main_Logo_label">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>111</width>
-        <height>91</height>
+        <x>330</x>
+        <y>160</y>
+        <width>161</width>
+        <height>191</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -107,6 +114,13 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -132,6 +146,13 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -150,6 +171,13 @@
         <height>16</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -165,6 +193,13 @@
         <width>71</width>
         <height>16</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -201,9 +236,16 @@
        <rect>
         <x>10</x>
         <y>210</y>
-        <width>250</width>
+        <width>301</width>
         <height>100</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="tabletTracking">
        <bool>false</bool>
@@ -229,11 +271,19 @@ $500</string>
      <widget class="QLabel" name="balance_label">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>260</x>
         <y>10</y>
-        <width>100</width>
+        <width>120</width>
         <height>20</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -248,11 +298,17 @@ $500</string>
      <widget class="QLabel" name="balance_value_label">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>260</x>
         <y>30</y>
-        <width>100</width>
+        <width>120</width>
         <height>20</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="styleSheet">
        <string notr="true">color:orange</string>
@@ -273,6 +329,13 @@ $500</string>
         <height>25</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -289,6 +352,13 @@ $500</string>
         <height>16</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -304,6 +374,13 @@ $500</string>
         <width>40</width>
         <height>25</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -323,7 +400,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>12</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -369,7 +446,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>12</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
