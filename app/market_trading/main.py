@@ -124,11 +124,11 @@ class MainTradingThreadModel:
         """
         self.trading = True
         if not isinstance(trade.predict, PredictNeutralEnums) and (datetime.now() - self.buy_time).seconds > 65:
-            # TODO:vaghti mikhare v mifroshe neveshte mide serfan bayad y True False bede v in aslan ham doros nis v
-            #  bayad prop ham tosh check beshe
-            buy_info = self.data_connector.create_order(trade.name, trade.predict.get_unit(self.amount), self.time)
-            # print("buy_info : ", buy_info)
-            if 'error' not in buy_info.keys():
+            # TODO: in aslan ham doros nis v bayad prop ham tosh check beshe
+            flag, buy_info = self.data_connector.create_order(trade.name, trade.predict.get_unit(self.amount),
+                                                              self.time)
+
+            if flag:
                 self.buy_time = datetime.now()
             else:
                 print("buy_info : ", buy_info)

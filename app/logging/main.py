@@ -35,11 +35,7 @@ class LogSender:
                     temp.text = text
                     temp.insert()
                 except Exception as e:
-                    print(user_id)
-                    print(trading_id)
-                    print(title)
-                    print(text)
-                    print(e)
+                    print("log model : " + e)
                 self.log_queue.task_done()
             except:
                 if stop_thread():

@@ -64,12 +64,12 @@ class TradingThreadModel:
         while True:
             sleep(1)
 
-            if (datetime.now() - self.last_update_time).seconds > 40:
+            if (datetime.now() - self.last_update_time).seconds > 5:
                 try:
                     self.ml_trading.update()
                     self.predict, self.accuracy = self.ml_trading.predict()
-
-                    value = str(self.get_real_time_data())
+                    # value = str(self.get_real_time_data())
+                    value = str(0)
                     self.q_label_value.setText(value)
 
                     self.q_label_accuracy.setText(str(round(self.accuracy * 100, 2)) + "%")

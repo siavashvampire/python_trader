@@ -32,7 +32,7 @@ def check_connection_decoration(func):
             qx_api_class.check_connection()
             return func(*args, **kwargs)
         except Exception as e:
-            print(e)
+            print("check connection decoration : ",e)
             pass
 
     return inner1
@@ -290,17 +290,14 @@ class QuotexAPI:
         """
         # name = "EUR_USD"
         # asset = "EURUSD"
-        currencies = name.split("_")
-        country_from = currencies[0]
-        country_to = currencies[1]
-        # asset = country_from + country_to
-        asset = country_from + country_to
 
-        if self.otc_check():
-            asset += "_otc"
+        asset = self.get_asset_from_name(name)
 
         amount = abs(unit)
 
+        currencies = name.split("_")
+        country_from = currencies[0]
+        country_to = currencies[1]
         trade = get_trading_by_country_currency(country_from, country_to)
 
         if unit > 0:
@@ -312,7 +309,7 @@ class QuotexAPI:
             add_log(1, trade.id, 2, "we are selling " + trade.currency_disp())
             direction = "put"  # or "put"
 
-        c, buy_info = self.qx_api.buy(asset, amount, direction, duration)
+        c, buy_info = self.qx_api.buy_exact(asset, amount, direction, duration)
 
         if 'error' in buy_info.keys():
             add_log(1, trade.id, 1, buy_info['error'] + ", in trade " + trade.currency_disp())
@@ -328,6 +325,14 @@ class QuotexAPI:
         """
         self.qx_api.close()
 
+    def start_candles_stream_quotex(self, name):
+        asset = self.get_asset_from_name(name)
+        self.qx_api.start_candles_stream(asset, 2)
+
+    def stop_candles_stream_quotex(self, name):
+        asset = self.get_asset_from_name(name)
+        self.qx_api.stop_candles_stream(asset)
+
     @check_connection_decoration
     def get_real_time_data_quotex(self, name: str) -> float:
         """
@@ -336,17 +341,11 @@ class QuotexAPI:
         :return:
             return real time value in float
         """
-        currencies = name.split("_")
-        country_from = currencies[0]
-        country_to = currencies[1]
-        asset = country_from + country_to
+        asset = self.get_asset_from_name(name)
 
-        if self.otc_check():
-            asset += "_otc"
-
-        self.qx_api.start_candles_stream(asset, 2)
+        self.start_candles_stream_quotex(name)
         temp = self.qx_api.get_realtime_candles(asset)[0]
-        self.qx_api.stop_candles_stream(asset)
+        self.stop_candles_stream_quotex(name)
 
         # from datetime import datetime
         # timestamp = temp['time']
@@ -365,13 +364,7 @@ class QuotexAPI:
             return DataFrame that has Five columns 'time','o',h','l','c'
         """
         try:
-            currencies = name.split("_")
-            country_from = currencies[0]
-            country_to = currencies[1]
-            asset = country_from + country_to
-
-            if self.otc_check():
-                asset += "_otc"
+            asset = self.get_asset_from_name(name)
 
             _time = datetime.utcnow().timestamp()
 
@@ -382,7 +375,10 @@ class QuotexAPI:
             else:
                 period = 60  # candle size in sec
 
-            data = self.qx_api.get_candle(asset, _time, offset, period)['data'][-1]
+            data = self.qx_api.get_candle(asset, _time, offset, period)['data']
+            if len(data) == 0:
+                return DataFrame()
+            data = data[-1]
 
             data2 = {
                 'time': [datetime.fromtimestamp(data['time'])],
@@ -394,7 +390,7 @@ class QuotexAPI:
 
             return DataFrame(data2)
         except Exception as e:
-            print(e)
+            print("get last candle quotex : " + str(e))
             return DataFrame()
 
     @check_connection_decoration
@@ -413,13 +409,7 @@ class QuotexAPI:
             return DataFrame that has Five columns 'time','o',h','l','c'
         """
 
-        currencies = name.split("_")
-        country_from = currencies[0]
-        country_to = currencies[1]
-        asset = country_from + country_to
-
-        if self.otc_check():
-            asset += "_otc"
+        asset = self.get_asset_from_name(name)
 
         start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
         end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
@@ -482,6 +472,17 @@ class QuotexAPI:
         """
 
         return (date_in.weekday() in [6, 7]) or date_in in holidays.XNYS()
+
+    def get_asset_from_name(self, name: str) -> str:
+        currencies = name.split("_")
+        country_from = currencies[0]
+        country_to = currencies[1]
+        asset = country_from + country_to
+
+        if self.otc_check():
+            asset += "_otc"
+
+        return asset
 
 
 if api_used == APIUsed().quotex:

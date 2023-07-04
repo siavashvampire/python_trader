@@ -282,6 +282,9 @@ class quotexapi(object):
     @property
     def buy(self):
         return buy_binary(self)
+    @property
+    def buy_exact(self):
+        return buy_exact_binary(self)
 
     @property
     def subscribe_signal(self):

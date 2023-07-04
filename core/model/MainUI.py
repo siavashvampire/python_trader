@@ -109,7 +109,7 @@ class MainUi(QFrame):
         #              "MainUi { background-image: url(" + path + "core/theme/pic/pic/Main.jpg);" + \
         #              "background-repeat: no-repeat;background-position:center;} "
         stylesheet = "QTabBar::tab:selected {background-color: rgba(" + tab_selected_bg_color + ");" + \
-                     "color: rgba(" + tab_selected_text_color + ");font-size: 8pt;}" + \
+                     "color: rgba(" + tab_selected_text_color + ");font-size: 10pt;}" + \
                      "QTabWidget>QWidget>QWidget{border-image: url(" + path + \
                      "core/theme/pic/pic/Main.jpg);background-repeat: no-repeat;background-position:center;}" + \
                      "MainUi { border-image: url(" + path + "core/theme/pic/pic/Main.jpg);" + \

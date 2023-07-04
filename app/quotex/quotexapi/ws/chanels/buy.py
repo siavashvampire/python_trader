@@ -22,11 +22,26 @@ class buy_binary(Base):
         openorder["requestId"] = req_id
         openorder["isDemo"] = global_value.account_mode_isDemo[self.api.object_id]
         openorder["time"] = duration  # sec
-        print("end_time : ", datetime.fromtimestamp(duration))
-        print("now : ", datetime.now())
-        print("asset : ", asset)
-        print("dir : ", dir)
-        print("amount : ", amount)
+        openorder["optionType"] = option_type
+        data.append(openorder)
+        self.send_websocket_request("42" + str(data))
+
+class buy_exact_binary(Base):
+    def __call__(self, asset, amount, dir, duration, req_id, option_type=100):
+        session = global_value.SSID[self.api.object_id]
+        """
+        42["orders/open",{"asset":"CADJPY_otc","amount":1,"time":60,"action":"put","isDemo":1,"requestId":1627137205,"optionType":100}]
+        """
+        data = []
+        data.append("orders/open")
+        openorder = {}
+        # openorder["session"]=json.loads(session[2:])[1]["session"].replace("\"","\\\"")
+        openorder["asset"] = asset
+        openorder["amount"] = amount
+        openorder["action"] = dir
+        openorder["requestId"] = req_id
+        openorder["isDemo"] = global_value.account_mode_isDemo[self.api.object_id]
+        openorder["time"] = duration  # sec
         openorder["optionType"] = option_type
         data.append(openorder)
         self.send_websocket_request("42" + str(data))

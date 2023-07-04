@@ -18,7 +18,7 @@ line_edit_Text_color: str = "{r}, {g}, {b}, {a}".format(r=240, g=240, b=240, a=2
 label_Text_BG: str = "transparent"  # label background color
 label_Text_color: str = "{r}, {g}, {b}, {a}".format(r=0, g=90, b=90, a=255)  # label Text color
 
-tab_selected_bg_color = "{r}, {g}, {b}, {a}".format(r=139, g=56, b=0, a=255)  # tab selected background color
+tab_selected_bg_color = "{r}, {g}, {b}, {a}".format(r=60, g=120, b=160, a=255)  # tab selected background color
 tab_selected_text_color = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # tab selected Text color
 
 login_text_color = "{r}, {g}, {b}, {a}".format(r=38, g=17, b=0, a=255)  # login Text color
@@ -45,9 +45,9 @@ login_line_edit_text = "{r}, {g}, {b}, {a}".format(r=146, g=146, b=146, a=255)  
 login_line_edit_border = "{r}, {g}, {b}, {a}".format(r=38, g=17, b=0, a=255)  # login line edit Border color
 
 login_forget_pb_bg = "{r}, {g}, {b}, {a}".format(r=119, g=65, b=1, a=0)  # login forget push button background color
-login_forget_pb_text = "{r}, {g}, {b}, {a}".format(r=119, g=65, b=1, a=255)  # login forget push button Text color
+login_forget_pb_text = "{r}, {g}, {b}, {a}".format(r=60, g=120, b=160, a=255)  # login forget push button Text color
 
-login_enter_pb_bg = "{r}, {g}, {b}, {a}".format(r=139, g=56, b=0, a=255)  # login enters pushButton background color
+login_enter_pb_bg = "{r}, {g}, {b}, {a}".format(r=60, g=120, b=160, a=255)  # login enters pushButton background color
 login_enter_pb_text = "{r}, {g}, {b}, {a}".format(r=255, g=255, b=255, a=255)  # login forget push button Text color
 
 start_splash_align = PyQt5.QtCore.Qt.AlignHCenter | PyQt5.QtCore.Qt.AlignBottom  # start splash text alignment

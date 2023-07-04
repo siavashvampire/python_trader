@@ -330,6 +330,29 @@ class Quotex:
             pass
         return True, _tmp
 
+
+    def buy_exact(self, asset, amount, dir, duration):
+        if self.account_mode_isDemo == 1:
+            c_func = self.api
+        elif self.account_mode_isDemo == 0:
+            c_func = self.api_real
+
+        req_id = global_value.get_req_id(c_func.object_id)
+        c_func.request_data[req_id] = None
+        c_func.buy_exact(asset, amount, dir, duration, req_id)
+        while c_func.request_data[req_id] == None:
+            time.sleep(0.1)
+            pass
+        _tmp = c_func.request_data[req_id]
+
+        del c_func.request_data[req_id]
+        try:
+            self.api.buy_info[_tmp["id"]] = _tmp
+            self.api_real.buy_info[_tmp["id"]] = _tmp
+        except:
+            pass
+        return True, _tmp
+
     def sell_option(self, id):
         # the min duration is 30
         self.api.sell_option(id)
