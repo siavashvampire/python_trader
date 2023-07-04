@@ -15,7 +15,6 @@ import configparser
 
 from app.data_connector.model.enums import APIUsed
 from app.logging.api import add_log
-# from app.logging.api import add_log
 from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
 from core.config.Config import api_used
@@ -304,9 +303,11 @@ class QuotexAPI:
         trade = get_trading_by_country_currency(country_from, country_to)
 
         if unit > 0:
+            # print("we are buying "+ trade.currency_disp())
             add_log(1, trade.id, 4, "we are buying " + trade.currency_disp())
             direction = "call"  # or "put"
         else:
+            # print("we are selling "+ trade.currency_disp())
             add_log(1, trade.id, 2, "we are selling " + trade.currency_disp())
             direction = "put"  # or "put"
 

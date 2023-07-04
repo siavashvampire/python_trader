@@ -1,14 +1,17 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy import insert
 
 from app.market_trading.api import get_trading
 from core.database.Base import Base
-from core.database.database import session
+from core.database.database import session, engine
 from datetime import datetime
+
+table_name = 'log'
 
 
 class LogModel(Base):
-    __tablename__ = 'log'
+    __tablename__ = table_name
 
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     user_id = Column(ForeignKey("users.id"))
@@ -48,8 +51,14 @@ class LogModel(Base):
 
     def insert(self) -> bool:
         try:
-            session.add(self)
-            session.commit()
+            engine.dispose()
+            stmt = insert(LogModel).values(user_id=self.user_id, trading_id=self.trading_id, title=self.title,
+                                             text=self.text)
+            with engine.connect() as conn:
+                conn.execute(stmt)
+                conn.commit()
+            # session.add(self)
+            # session.commit()
             return True
         except:
             return False

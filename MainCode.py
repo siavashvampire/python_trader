@@ -22,5 +22,6 @@ if __name__ == '__main__':
     from core.app_provider.admin.main import Main
 
     warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings("ignore")
     main = Main()
     sys.exit(app.exec_())

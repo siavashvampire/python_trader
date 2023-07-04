@@ -6,7 +6,7 @@ from typing import Callable, Optional
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
-from app.logging.api import add_log
+# from app.logging.api import add_log
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from app.ml_avidmech.model.enums import PredictNeutralEnums, PredictBuyEnums
 
@@ -130,4 +130,6 @@ class MainTradingThreadModel:
             # print("buy_info : ", buy_info)
             if 'error' not in buy_info.keys():
                 self.buy_time = datetime.now()
+            else:
+                print("buy_info : ", buy_info)
             # print("Get: ", self.qx_api.check_win(buy_info["id"]))

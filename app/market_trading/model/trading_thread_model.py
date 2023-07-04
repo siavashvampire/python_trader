@@ -6,11 +6,9 @@ from typing import Callable, Union
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
-from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 from app.ml_avidmech.model.ml_trading import MlTrading
-from core.database.database import session
 from core.theme.color.color import trade_on_bg_color, trade_on_text_color, trade_off_text_color, trade_off_bg_color
 
 
@@ -80,7 +78,6 @@ class TradingThreadModel:
                 except Exception as e:
                     sleep(1)
                     print("error in trading thread : " + str(e))
-                    session.rollback()
                     # add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
                 print("Main Rendering Thread", "Stop")

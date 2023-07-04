@@ -27,13 +27,19 @@ class LogSender:
         while True:
             try:
                 user_id, trading_id, title, text = self.log_queue.get(timeout=1)
-
-                temp = LogModel()
-                temp.user_id = user_id
-                temp.trading_id = trading_id
-                temp.title = title
-                temp.text = text
-                temp.insert()
+                try:
+                    temp = LogModel()
+                    temp.user_id = user_id
+                    temp.trading_id = trading_id
+                    temp.title = title
+                    temp.text = text
+                    temp.insert()
+                except Exception as e:
+                    print(user_id)
+                    print(trading_id)
+                    print(title)
+                    print(text)
+                    print(e)
                 self.log_queue.task_done()
             except:
                 if stop_thread():
