@@ -37,6 +37,8 @@ class DataConnector:
             self.get_history = qx_api_class.get_history_quotex
             self.close_api = qx_api_class.close_api_quotex
             self.open_trade_window = qx_api_class.open_trade_window_quotex
+            self.start_candles_stream = qx_api_class.start_candles_stream_quotex
+            self.stop_candles_stream = qx_api_class.stop_candles_stream_quotex
 
     @staticmethod
     def get_history_from_file(name: str) -> pd.DataFrame:
