@@ -11,16 +11,16 @@ from app.market_trading.api import get_trading
 class LogSender:
     stop_thread: bool
     log_queue: Queue[list[int, int, int, str]]
-    Thread: Thread
+    thread: Thread
 
     def __init__(self):
         self.log_queue = Queue()
-        self.Thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
+        self.thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
         self.stop_thread = False
         self.run_thread()
 
     def run_thread(self) -> None:
-        self.Thread.start()
+        self.thread.start()
 
     def inserting_log(self, stop_thread) -> None:
         sleep(1)
@@ -43,21 +43,21 @@ class LogSender:
             sleep(1)
 
     def restart_thread(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
-            self.Thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
-            self.Thread.start()
+            self.thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
+            self.thread.start()
 
     def stop_func(self) -> None:
         self.stop_thread = True
-        self.Thread.join()
+        self.thread.join()
 
     def start_func(self) -> None:
         self.stop_thread = False
         self.restart_thread()
 
     def check(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
             self.restart_thread()
 

@@ -23,7 +23,7 @@ class SplashScreen:
         self.__saved_text = ""
         self.__last_text = ""
         self.stop_Thread = False
-        self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
+        self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
         if text is not None:
             self.show_message(text)
 
@@ -32,13 +32,13 @@ class SplashScreen:
 
     def hide(self):
         self.stop_Thread = True
-        self.Thread.join()
+        self.thread.join()
         self.splash.hide()
 
     def show_message(self, message, program=False):
-        if self.Thread.is_alive() and not program:
+        if self.thread.is_alive() and not program:
             self.stop_Thread = True
-            self.Thread.join()
+            self.thread.join()
 
         if self.save_text_show and not program:
             message = self.__saved_text + message
@@ -46,8 +46,8 @@ class SplashScreen:
         if not program:
             self.__last_text = message
             self.stop_Thread = False
-            self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
-            self.Thread.start()
+            self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
+            self.thread.start()
 
         self.splash.showMessage(message, self.alignment, self.color)
         QApplication.instance().processEvents()
@@ -58,7 +58,7 @@ class SplashScreen:
 
     def finish(self, ui):
         self.stop_Thread = True
-        self.Thread.join()
+        self.thread.join()
         self.splash.finish(ui)
 
     def set_font(self, font_size, font_weight=None):

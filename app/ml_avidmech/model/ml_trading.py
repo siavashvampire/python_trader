@@ -12,7 +12,7 @@ from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, Predi
 
 
 class MlTrading:
-    df: DataFrame
+    df: DataFrame = DataFrame()
     model: GradientBoostingClassifier
     model_name: str
     get_last_candle: callable
@@ -53,12 +53,15 @@ class MlTrading:
         # predicted_value = trading.predict(preprocessed)
         # print(f"Prediction: {predicted_value}")
 
-    def preprocess(self) -> DataFrame:
+    def preprocess(self) -> bool:
         # self.df = self.get_history_from_file()
 
         start_time = datetime.utcnow() - timedelta(hours=8)
         end_time = datetime.utcnow()
         self.df = self.get_history(start_time, end_time)
+
+        if self.df is None or self.df.empty:
+            return False
 
         self.df['trend'] = self.df['o'] - self.df['c']
         self.df['MA_20'] = self.df['c'].rolling(window=20).mean()  # moving average 20
@@ -80,7 +83,7 @@ class MlTrading:
         # self.to_predict = self.v.iloc[-1]
         # self.df = self.df.dropna()
 
-        return self.df
+        return True
 
     def preprocess_last(self, last_candle: DataFrame):
         temp_df: DataFrame = self.df.iloc[-50:].reset_index(drop=True)
@@ -118,6 +121,8 @@ class MlTrading:
 
     def update(self) -> DataFrame:
         last_candle = self.get_last_candle()
+        if last_candle.empty:
+            return last_candle
         flag = self.check_update_df(last_candle)
 
         if flag:

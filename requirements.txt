@@ -1,6 +1,6 @@
-PyQt5Designer
+PyQt5Designer==5.14.1
 PyQt5==5.15.9
-pyqt-tools
+pyqt-tools==1.0.0
 PyQt5-stubs
 tinydb==4.7.1
 auto-py-to-exe
@@ -23,4 +23,5 @@ scikit-learn==1.2.2
 configparser==5.3.0
 websocket-client==1.5.1
 joblib==1.2.0
-holidays==0.28
+# holidays==0.14.2
+# holidays==0.28

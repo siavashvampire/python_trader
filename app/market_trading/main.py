@@ -30,7 +30,7 @@ class MainTradingThreadModel:
         self.last_check_time = datetime.now()
         self.data_connector = DataConnector()
 
-        self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
+        self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
         # self.Thread.start()
 
     def main_thread(self, stop_thread: Callable[[], bool]) -> None:
@@ -61,23 +61,23 @@ class MainTradingThreadModel:
 
     def start_thread(self):
         self.stop_thread = False
-        self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
-        self.Thread.start()
+        self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
+        self.thread.start()
 
     def stop_main_thread(self):
         self.stop_thread = True
-        self.Thread.join()
+        self.thread.join()
 
     def check(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
             self.restart_thread()
 
     def restart_thread(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
-            self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
-            self.Thread.start()
+            self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
+            self.thread.start()
 
     def find_max_trade(self) -> Optional[TradingThreadModel]:
         """

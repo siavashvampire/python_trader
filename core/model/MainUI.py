@@ -12,6 +12,7 @@ from app.market_trading.api import get_all_trading, get_trading
 from app.market_trading.main import MainTradingThreadModel
 from app.market_trading.model.trading_model import TradingModel
 from app.market_trading.model.trading_thread_model import TradingThreadModel
+from core.model.SplashScreen import SplashScreen
 
 
 class MainUi(QFrame):
@@ -288,9 +289,11 @@ class MainUi(QFrame):
         for trade in self.trade_threads:
             trade.start_thread()
 
-    def stop_trade_threads(self):
+    def stop_trade_threads(self, splash_screen: SplashScreen):
         for trade in self.trade_threads:
             trade.stop_thread = True
 
         for trade in self.trade_threads:
+            splash_screen.show_message("closing trade " + trade.trade.currency_disp())
             trade.thread.join()
+            splash_screen.add_saved_text("trade " + trade.trade.currency_disp() + " closed!")

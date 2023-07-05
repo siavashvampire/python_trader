@@ -44,7 +44,7 @@ class TradingThreadModel:
         self.q_label_name.setText(self.name)
         self.ml_trading = MlTrading(trade)
 
-        self.Thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
+        self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
         # self.Thread.start()
 
     def change_color(self, state: bool = False):
@@ -59,7 +59,14 @@ class TradingThreadModel:
         self.q_label_predict.setStyleSheet(css)
 
     def getting_data_thread(self, stop_thread: Callable[[], bool]) -> None:
-        self.ml_trading.preprocess()
+        flag = False
+
+        while not flag:
+            flag = self.ml_trading.preprocess()
+            sleep(2)
+            if stop_thread():
+                print("Main trade Thread ", self.trade.currency_disp(), " Stop")
+                break
 
         while True:
             sleep(1)
@@ -80,7 +87,7 @@ class TradingThreadModel:
                     print("error in trading thread : " + str(e))
                     # add_log(1, self.trade.id, 1, str(e))
             if stop_thread():
-                print("Main Rendering Thread", "Stop")
+                print("Main trade Thread ", self.trade.currency_disp(), " Stop")
                 break
 
     def create_order_from_predict(self, predict: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]):
@@ -89,17 +96,17 @@ class TradingThreadModel:
             self.data_connector.create_order(self.name, predict.get_unit())
 
     def check(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
             self.restart_thread()
 
     def start_thread(self):
         self.stop_thread = False
-        self.Thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
-        self.Thread.start()
+        self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
+        self.thread.start()
 
     def restart_thread(self) -> None:
-        if not (self.Thread.is_alive()):
+        if not (self.thread.is_alive()):
             self.stop_thread = False
-            self.Thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
-            self.Thread.start()
+            self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
+            self.thread.start()

@@ -17,7 +17,7 @@ class LogModel(Base):
     user_id = Column(ForeignKey("users.id"))
     trading_id = Column(ForeignKey("trading.id"))
     title = Column(ForeignKey("log_title.id"))
-    text = Column(String(50))
+    text = Column(String(1000))
     insert_time = Column(DateTime, default=datetime.now)
 
     user_rel = relationship("UserModel", foreign_keys=[user_id])

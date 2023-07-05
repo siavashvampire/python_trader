@@ -4,7 +4,7 @@ from datetime import datetime
 from time import sleep
 from typing import Optional
 
-import holidays
+# import holidays
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -32,7 +32,7 @@ def check_connection_decoration(func):
             qx_api_class.check_connection()
             return func(*args, **kwargs)
         except Exception as e:
-            print("check connection decoration : ",e)
+            print("check connection decoration : ", e)
             pass
 
     return inner1
@@ -424,6 +424,9 @@ class QuotexAPI:
 
         data = self.qx_api.get_candle(asset, _time, offset, period)['data']
 
+        if len(data) == 0:
+            return DataFrame()
+
         o = []
         c = []
         h = []
@@ -463,15 +466,29 @@ class QuotexAPI:
         except Exception as e:
             print("error in quotex api : " + str(e))
 
-    def otc_check(self, date_in: datetime = datetime.utcnow()) -> bool:
+    # def otc_check(self, date_in: datetime = datetime.utcnow()) -> bool:
+    #     """
+    #         Check the time, and if otc activate, it returns True otherwise returns False
+    #     :return:
+    #         True->if market is close
+    #         False->if market is open
+    #     """
+
+    # return (date_in.weekday() in [6, 7]) or date_in in holidays.XNYS()
+
+    def otc_check(self, name: str) -> bool:
         """
             Check the time, and if otc activate, it returns True otherwise returns False
         :return:
             True->if market is close
             False->if market is open
         """
+        currencies = name.split("_")
+        country_from = currencies[0]
+        country_to = currencies[1]
+        asset = country_from + country_to
 
-        return (date_in.weekday() in [6, 7]) or date_in in holidays.XNYS()
+        return not self.qx_api.check_asset_open(asset)
 
     def get_asset_from_name(self, name: str) -> str:
         currencies = name.split("_")
@@ -479,7 +496,7 @@ class QuotexAPI:
         country_to = currencies[1]
         asset = country_from + country_to
 
-        if self.otc_check():
+        if self.otc_check(name):
             asset += "_otc"
 
         return asset

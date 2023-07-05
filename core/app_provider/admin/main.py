@@ -48,7 +48,7 @@ class Main:
         self.loginFlag = 0
         self.stop_Thread = False
 
-        self.Thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
+        self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
 
         self.create_db_path()
 
@@ -112,7 +112,7 @@ class Main:
                 pass
 
     def run_thread(self):
-        self.Thread.start()
+        self.thread.start()
         # Logging.sender_log("Run Thread", "Thread is run")
 
     def check_plc_status(self):
@@ -134,7 +134,7 @@ class Main:
 
     def stop_all_threads(self):
         self.close_splash.show_message("closing trades system")
-        self.main_ui.stop_trade_threads()
+        self.main_ui.stop_trade_threads(self.close_splash)
         self.close_splash.add_saved_text("trades system closed!")
 
         self.close_splash.show_message("closing main system")
