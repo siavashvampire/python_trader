@@ -28,6 +28,7 @@ class MainTradingThreadModel:
         self.trade_threads = trade_threads
         self.stop_thread = False
         self.last_check_time = datetime.now()
+        self.last_check_time_2 = datetime.now()
         self.data_connector = DataConnector()
 
         self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
@@ -35,8 +36,8 @@ class MainTradingThreadModel:
 
     def main_thread(self, stop_thread: Callable[[], bool]) -> None:
         while True:
-            sleep(1)
-            if (datetime.now() - self.last_check_time).seconds > 10:
+            sleep(0.1)
+            if (datetime.now() - self.last_check_time).seconds > 2:
                 try:
                     self.make_all_trade_off_color()
                     max_trade = self.find_max_trade()
@@ -45,15 +46,23 @@ class MainTradingThreadModel:
                         self.max_trading_value_label.setText(str(round(max_trade.accuracy * 100, 2)) + "%")
                         max_trade.change_color(True)
                         self.create_order_from_trade(max_trade)
-                        # print(max_trade.accuracy)
+                        self.make_all_trade_invalid()
                     else:
                         self.max_trading_label.setText("nothing")
                         self.max_trading_value_label.setText("0%")
 
-                    self.balance_value_label.setText("$" + str(self.data_connector.get_balance()))
                     self.last_check_time = datetime.now()
                 except:
-                    sleep(1)
+                    pass
+
+            if (datetime.now() - self.last_check_time_2).seconds > 20:
+                try:
+                    self.balance_value_label.setText("$" + str(self.data_connector.get_balance()))
+
+                except:
+                    pass
+
+                self.last_check_time_2 = datetime.now()
 
             if stop_thread():
                 # print("Main Rendering Thread", "Stop")
@@ -88,9 +97,10 @@ class MainTradingThreadModel:
         temp_accuracy = 0.80
         temp_trade = None
         for trade in self.trade_threads:
-            if temp_accuracy < trade.accuracy and not isinstance(trade.predict, PredictNeutralEnums):
-                temp_accuracy = trade.accuracy
-                temp_trade = trade
+            if trade.valid_predict:
+                if temp_accuracy < trade.accuracy and not isinstance(trade.predict, PredictNeutralEnums):
+                    temp_accuracy = trade.accuracy
+                    temp_trade = trade
 
         if Force2Trade:
             temp_trade = self.trade_threads[1]
@@ -100,8 +110,18 @@ class MainTradingThreadModel:
         return temp_trade
 
     def make_all_trade_off_color(self):
+        """
+            make all trades off color
+        """
         for trade in self.trade_threads:
             trade.change_color()
+
+    def make_all_trade_invalid(self):
+        """
+            make all trades invalid
+        """
+        for trade in self.trade_threads:
+            trade.valid_predict = False
 
     def set_time(self, time: int):
         """
