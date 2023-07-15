@@ -57,11 +57,36 @@
      <attribute name="title">
       <string>Main</string>
      </attribute>
+     <widget class="QLabel" name="Main_Logo_label">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>160</y>
+        <width>161</width>
+        <height>191</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
      <widget class="QPushButton" name="open_trade_window_pb">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>300</y>
+        <y>370</y>
         <width>250</width>
         <height>40</height>
        </rect>
@@ -210,16 +235,16 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>190</y>
+        <y>210</y>
         <width>250</width>
-        <height>61</height>
+        <height>100</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
+        <pointsize>11</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="tabletTracking">
@@ -232,8 +257,9 @@
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Recommended balance: from $50 to
-$500</string>
+       <string>Optimal strategy
+Recommended balance:
+from $50 to $500</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -436,7 +462,7 @@ $500</string>
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>300</y>
+        <y>370</y>
         <width>250</width>
         <height>40</height>
        </rect>
@@ -453,208 +479,6 @@ $500</string>
       </property>
       <property name="text">
        <string>open instructions</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="Main_Logo_label">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>125</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="open_instructions_label">
-      <property name="geometry">
-       <rect>
-        <x>272</x>
-        <y>277</y>
-        <width>250</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Have questions or need some trade assistance?</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="optimal_strategy_label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>190</y>
-        <width>151</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Optimal strategy</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="trading_asset_label_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>360</y>
-        <width>520</width>
-        <height>110</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="balance_label_2">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>360</y>
-        <width>191</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Trading signals are disabled</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="balance_label_3">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>390</y>
-        <width>271</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Boost your auto trading to accuracy up to 73%</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="balance_label_4">
-      <property name="geometry">
-       <rect>
-        <x>330</x>
-        <y>360</y>
-        <width>191</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Available only for activated users</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="open_trade_window_pb_2">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>420</y>
-        <width>191</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Activate</string>
       </property>
      </widget>
     </widget>
@@ -889,7 +713,7 @@ $500</string>
      </font>
     </property>
     <property name="text">
-     <string>ACCOUNT IS NOT ACTIVATED</string>
+     <string>No Status</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
