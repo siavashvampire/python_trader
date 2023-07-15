@@ -3,8 +3,10 @@ from datetime import datetime
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QIcon, QFont, QIntValidator
-from PyQt5.QtWidgets import QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QVBoxLayout, QSpinBox, QComboBox, QWidget, \
-    QFrame, QRadioButton
+from PyQt5.QtWidgets import QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QVBoxLayout, QSpinBox, QComboBox, \
+    QWidget, QFrame, QRadioButton
+
+import webbrowser
 
 from MainCode import path
 from app.data_connector.model.data_connector import DataConnector
@@ -42,6 +44,7 @@ class MainUi(QFrame):
     tab_setting: QWidget
     logo_label_setting: QLabel
     main_logo_label: QLabel
+    open_instructions_label: QLabel
 
     def __init__(self):
         super(MainUi, self).__init__()
@@ -56,7 +59,6 @@ class MainUi(QFrame):
         self.setMouseTracking(True)
 
         self.setWindowFlags(Qt.FramelessWindowHint)
-
         self.init_ui()
 
     def setMouseTracking(self, flag):
@@ -88,10 +90,10 @@ class MainUi(QFrame):
             PB_Text_color_active, line_edit_BG, line_edit_Text_color, tab_selected_bg_color, tab_selected_text_color, \
             label_Text_color, PB_BG_color_active, label_Text_BG
 
-        line_edit_style = "background-color: rgba(" + line_edit_BG + ");color: rgba(" + line_edit_Text_color + ");"
+        line_edit_style = "background-color: rgba(" + line_edit_BG + ");color: rgba(" + line_edit_Text_color + ");border-radius: 7;"
         line_edit_prop_style = "background-color: rgba(" + line_edit_BG + ");color: rgba(70, 240, 60, 255);"
-        label_style = "background: " + label_Text_BG + ";color: rgba(" + label_Text_color + ");"
-        balance_label_style = "background-color: rgba(" + label_Text_BG + ");color: rgba(240, 140, 50, 255);"
+        label_style = "background: " + label_Text_BG + ";color: rgba(" + label_Text_color + ");border-radius: 7;"
+        balance_label_style = "background-color: rgba(" + label_Text_BG + ");color: rgba(240, 140, 50, 255);border-radius: 7;"
 
         # deactivate_pb_style = "background-color: rgba(" + PB_BG_color_deactivate + ");" + \
         #                       "color: rgba(" + PB_Text_color_deactivate + ");"
@@ -124,7 +126,7 @@ class MainUi(QFrame):
         #   End Colors
 
         trades = get_all_trading()
-        # trades = [get_trading(6)]
+        # trades = [get_trading(11)]
 
         self.add_trade_to_trade_threads(trades)
         # self.start_trade_threads()
@@ -151,6 +153,10 @@ class MainUi(QFrame):
 
         self.open_instructions_pb = self.findChild(QPushButton, "open_instructions_pb")
         self.open_instructions_pb.setStyleSheet(active_pb_style)
+        self.open_instructions_pb.clicked.connect(self.open_instructions)
+
+        self.open_instructions_label = self.findChild(QLabel, "open_instructions_label")
+        self.open_instructions_label.setStyleSheet(label_style)
 
         self.start_trading_pb = self.findChild(QPushButton, "start_trading_pb")
         self.start_trading_pb.setStyleSheet(start_pb_style)
@@ -190,7 +196,12 @@ class MainUi(QFrame):
         self.time_comboBox.setCurrentIndex(0)
 
         self.optimal_strategy_radioButton = self.findChild(QRadioButton, "optimal_strategy_radioButton")
-        self.optimal_strategy_radioButton.setStyleSheet(line_edit_style)
+        self.optimal_strategy_radioButton.setStyleSheet(
+            "background-color: rgba(" + line_edit_BG + ");color: rgba(" + label_Text_color + ");border-radius: 7;")
+
+        self.optimal_strategy_label = self.findChild(QLabel, "optimal_strategy_label")
+        self.optimal_strategy_label.setStyleSheet(
+            "background-color: rgba(" + line_edit_BG + ");color: rgba(" + line_edit_Text_color + ");border-radius: 7;")
 
         # self.aggressive_strategy_radioButton = self.findChild(QRadioButton, "aggressive_strategy_radioButton")
         # self.aggressive_strategy_radioButton.setStyleSheet(line_edit_style)
@@ -262,6 +273,12 @@ class MainUi(QFrame):
         self.main_trading_thread.set_amount(int(self.amount_spinBox.value()))
         self.main_trading_thread.start_thread()
         self.stop_trading_pb.show()
+
+    def open_instructions(self):
+        """
+            open instructions
+        """
+        webbrowser.open("https://t.me/quotexbottrading")
 
     def main_trading_stop_thread(self):
         """
