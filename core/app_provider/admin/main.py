@@ -5,7 +5,7 @@ from threading import Thread
 from typing import Callable
 
 from MainCode import path
-from core.config.Config import db_path, logout_time
+from core.config.Config import logout_time
 from core.database.database import create_db
 from core.model.Login import LoginUI
 from core.model.MainUI import MainUi
@@ -49,8 +49,6 @@ class Main:
         self.stop_Thread = False
 
         self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_Thread,))
-
-        self.create_db_path()
 
         self.start_splash.show_message("\t\t initializing database connection")
         create_db()
@@ -168,8 +166,3 @@ class Main:
         self.main_ui.close()
         os._exit(0)
 
-    @staticmethod
-    def create_db_path():
-        from app.ResourcePath.app_provider.admin.main import resource_path as get_path
-
-        os.makedirs(get_path(db_path), exist_ok=True)
