@@ -260,11 +260,53 @@ class Quotex:
     def check_asset_open(self, asset):
         all_asset = self.get_raw_asset()
         for i in all_asset:
+            # TODO:fekr mikonam age inja jaye 14 biaim ro hamash y for bezanim v motmaen beshim 14 omi bool hast v baad bedim behtar bashe
             if i[1] == asset:
-                if True in i:
-                    return True
-                else:
-                    return False
+                return i[14]
+                # if True in i:
+                #     return True
+                # else:
+                #     return False
+
+    def check_asset(self, asset):
+        all_asset = self.get_raw_asset()
+        asset_data, asset_data_otc = self.get_both_asset_from_raw(all_asset, asset)
+
+        if asset_data is None and asset_data_otc is None:
+            return None
+
+        if asset_data is not None and asset_data_otc is None:
+            if asset_data[14]:
+                return True
+            return None
+
+        if asset_data is None and asset_data_otc is not None:
+            if asset_data_otc[14]:
+                return False
+            return None
+
+        if asset_data is not None and asset_data_otc is not None:
+            if asset_data[14]:
+                return True
+            if asset_data_otc[14]:
+                return False
+
+            return None
+
+
+
+
+    def get_both_asset_from_raw(self, all_asset, asset):
+        asset_data = None
+        asset_data_otc = None
+
+        for i in all_asset:
+            if i[1] == asset:
+                asset_data = i
+            if i[1] == asset + "_otc":
+                asset_data_otc = i
+
+        return asset_data,asset_data_otc
 
     def start_candles_stream(self, asset, size):
         # the list of the size
@@ -329,7 +371,6 @@ class Quotex:
         except:
             pass
         return True, _tmp
-
 
     def buy_exact(self, asset, amount, dir, duration):
         if self.account_mode_isDemo == 1:
