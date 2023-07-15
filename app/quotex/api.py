@@ -4,6 +4,7 @@ from datetime import datetime
 from time import sleep
 from typing import Optional
 
+import pandas as pd
 # import holidays
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -18,7 +19,7 @@ from app.data_connector.model.enums import APIUsed
 from app.logging.api import add_log
 from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
-from core.config.Config import api_used
+from core.config.Config import api_used, time_format
 
 trade_window_url_quotex_main = 'https://quotex.com/en/sign-in/'
 config_file_path_main = "File/Config/qoutex.cfg"
@@ -209,7 +210,7 @@ class QuotexAPI:
         driver.delete_all_cookies()
 
         self.login_with_driver_quotex(driver)
-
+        # driver.quit()
         return self.extract_ssid_from_driver_quotex(driver)
 
     def extract_ssid(self) -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
@@ -381,13 +382,13 @@ class QuotexAPI:
             data = data[-1]
 
             data2 = {
-                'time': [datetime.fromtimestamp(data['time'])],
+                'time': [datetime.fromtimestamp(data['time']).strftime(time_format)],
                 'o': [data['open']],
                 'c': [data['close']],
                 'h': [data['high']],
                 'l': [data['low']],
             }
-
+            # df['time'] = pd.to_datetime(df['time'], format=time_format)
             return DataFrame(data2)
         except Exception as e:
             print("get last candle quotex : " + str(e))
@@ -411,8 +412,8 @@ class QuotexAPI:
 
         asset = self.get_asset_from_name(name)
 
-        start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
-        end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+        start_time = datetime.strptime(start_time, time_format)
+        end_time = datetime.strptime(end_time, time_format)
         _time = end_time.timestamp()
 
         offset = _time - start_time.timestamp() + 60  # how much sec want to get     _time-offset --->your candle <---_time
@@ -435,7 +436,8 @@ class QuotexAPI:
         time_temp = []
 
         for temp_data in data:
-            time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
+            # time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
+            time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime(time_format))
             o.append(temp_data['open'])
             c.append(temp_data['close'])
             h.append(temp_data['high'])
@@ -450,6 +452,23 @@ class QuotexAPI:
         }
 
         return DataFrame(data2)
+
+    @check_connection_decoration
+    def check_asset(self, name):
+        """
+            check asset
+        :param name: name of trade
+        :return:
+            None if both False
+            False if otc
+            True if open
+        """
+        currencies = name.split("_")
+        country_from = currencies[0]
+        country_to = currencies[1]
+        asset = country_from + country_to
+
+        return self.qx_api.check_asset(asset=asset)
 
     def open_trade_window_quotex(self) -> None:
         """
@@ -488,7 +507,12 @@ class QuotexAPI:
         country_to = currencies[1]
         asset = country_from + country_to
 
-        return not self.qx_api.check_asset_open(asset)
+        check_asset = self.qx_api.check_asset(asset)
+
+        if check_asset is None:
+            return False
+        else:
+            return not check_asset
 
     def get_asset_from_name(self, name: str) -> str:
         currencies = name.split("_")
