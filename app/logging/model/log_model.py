@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy import insert
 
-from app.market_trading.api import get_trading
+# from app.market_trading.api import get_trading
 from core.database.Base import Base
 from core.database.database import session, engine
 from datetime import datetime
@@ -11,6 +11,9 @@ table_name = 'log'
 
 
 class LogModel(Base):
+    """
+        log model that save logs in database
+    """
     __tablename__ = table_name
 
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
@@ -50,10 +53,16 @@ class LogModel(Base):
                 self.user_id, self.trading_id, self.title, self.text, self.id)
 
     def insert(self) -> bool:
+        """
+            Insert log to a database
+        :return:
+            True if insert correctly
+            False if insert goes wrong
+        """
         try:
             engine.dispose()
             stmt = insert(LogModel).values(user_id=self.user_id, trading_id=self.trading_id, title=self.title,
-                                             text=self.text)
+                                           text=self.text)
             with engine.connect() as conn:
                 conn.execute(stmt)
                 conn.commit()
