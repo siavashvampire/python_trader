@@ -1,14 +1,17 @@
+import traceback
 from datetime import datetime, timedelta
 from typing import Union
 
 import joblib
 import pandas as pd
-from pandas import DataFrame, Timestamp
+from pandas import DataFrame
 from sklearn.ensemble import GradientBoostingClassifier
 
 from app.data_connector.model.data_connector import DataConnector
+from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
+from core.config.Config import time_format
 
 
 class MlTrading:
@@ -18,12 +21,11 @@ class MlTrading:
     get_last_candle: callable
     trade: TradingModel
     candle: str
+    last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
 
     def __init__(self, trade: TradingModel) -> None:
         self.trade = trade
         self.candle = trade.candle_rel.name
-        self.counter = 0
-        self.counter2 = 0
 
         # main_root = 'app/ml_avidmech/file/trade_models/'
         main_root = 'File/trade_models/'
@@ -44,14 +46,12 @@ class MlTrading:
         #     csv_path='app/ml_avidmech/file/trade_data/' + 'trade_data_history_' + self.trade.currency_disp(
         #         "_") + '_' + self.candle + '.csv')
         self.get_history = lambda start_time, end_time: self.data_connector.get_history(
-            name=self.trade.currency_disp(), start_time=start_time.strftime('%Y-%m-%d %H:%M:%S'),
-            end_time=end_time.strftime('%Y-%m-%d %H:%M:%S'), candle=self.candle)
+            name=self.trade.currency_disp(), start_time=start_time.strftime(time_format),
+            end_time=end_time.strftime(time_format), candle=self.candle)
+
+        self.check_asset = lambda: self.data_connector.check_asset(name=self.trade.currency_disp())
 
         self.get_history_from_file = lambda: self.data_connector.get_history_from_file(data_file_root)
-        # preprocessed = trading.preprocess(last_candle)
-        # updated_model = trading.update(model)
-        # predicted_value = trading.predict(preprocessed)
-        # print(f"Prediction: {predicted_value}")
 
     def preprocess(self) -> bool:
         # self.df = self.get_history_from_file()
@@ -119,15 +119,16 @@ class MlTrading:
         print("Trading information updated.")
         return self.model
 
-    def update(self) -> DataFrame:
-        last_candle = self.get_last_candle()
-        if last_candle.empty:
-            return last_candle
-        flag = self.check_update_df(last_candle)
+    def update(self) -> [bool, DataFrame]:
+        flag, last_candle = self.check_update_df()
 
         if flag:
-            self.preprocess_last(last_candle)
-        return last_candle
+            if self.check_last_candle(last_candle):
+                self.preprocess_last(last_candle)
+                return True, last_candle
+            else:
+                return False, last_candle
+        return False, last_candle
 
     def predict(self) -> [Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums], float]:
         """
@@ -152,23 +153,121 @@ class MlTrading:
                 return PredictEnums().buy, accuracy
 
             return PredictEnums().neutral, accuracy
-        except:
+        except Exception as e:
+            add_log(1, self.trade.id, 1, "error in ml trading predict : " + str(e))
+            traceback.print_exc()
+            print(self.df)
+            # print("error in check update df : ", e)
             return PredictEnums().neutral, 0.0
 
-    def check_update_df(self, last_candle: DataFrame) -> bool:
+    def check_update_df(self) -> [bool, DataFrame]:
+        """
+            check that df of data need update or not
+        :return:
+            True if it needs
+            False if didn't need
+        """
+        try:
+            temp_df_time_str = self.df.tail(1)['time'].values[0]
+            temp_df_time = datetime.strptime(temp_df_time_str, time_format)
+            temp_df_time = temp_df_time.replace(second=0, microsecond=0)
+
+            now_date = datetime.utcnow().replace(second=0, microsecond=0)
+            delta = temp_df_time - now_date
+
+            if int(delta.total_seconds()) == 0:
+                return False, DataFrame()
+
+            last_candle = self.get_last_candle()
+            last_candle_time = pd.Timestamp(last_candle['time'].values[0])
+            last_candle_time.timestamp()
+            delta = temp_df_time - last_candle_time
+
+            if int(delta.total_seconds()) == 0:
+                return False, DataFrame()
+            else:
+                return True, last_candle
+
+        except Exception as e:
+            traceback.print_exc()
+            print("error in check update df : ", e)
+            return False, DataFrame()
+
+    def check_update_df_old(self, last_candle: DataFrame) -> bool:
+        """
+            check that df of data need update or not
+        :param last_candle: df of last candle
+        :return:
+            True if it needs
+            False if didn't need
+        """
         try:
             last_candle_time = pd.Timestamp(last_candle['time'].values[0])
 
             temp_df_time_str = self.df.tail(1)['time'].values[0]
-            type_temp_df_time_str = type(temp_df_time_str)
+            # type_temp_df_time_str = type(temp_df_time_str)
 
-            if type_temp_df_time_str == str:
-                temp_df_time = datetime.strptime(temp_df_time_str, '%Y-%m-%d %H:%M:%S+00:00')
-            elif type_temp_df_time_str == Timestamp:
-                temp_df_time = pd.Timestamp(temp_df_time_str)
-            else:
-                temp_df_time = pd.Timestamp(temp_df_time_str)
+            # if type_temp_df_time_str == str:
+            #     temp_df_time = datetime.strptime(temp_df_time_str, '%Y-%m-%d %H:%M:%S+00:00')
+            #     # temp_df_time = datetime.strptime(temp_df_time_str, time_format)
+            # elif type_temp_df_time_str == Timestamp:
+            #     temp_df_time = pd.Timestamp(temp_df_time_str)
+            # else:
+            #     temp_df_time = pd.Timestamp(temp_df_time_str)
+            temp_df_time = datetime.strptime(temp_df_time_str, time_format)
 
             return not temp_df_time.timestamp() == last_candle_time.timestamp()
         except:
             return False
+
+    def __repr__(self):
+        return "<MlTrading(%r,%r)>" % (self.trade.currency_disp(), self.candle)
+
+    def check_last_candle(self, last_candle: DataFrame) -> bool:
+        """
+            check last candle is ok or not
+        :param last_candle: df of last candle like
+                          time                o        c        h        l
+                    0 2023-07-15 05:43:00  1.12281  1.12281  1.12281  1.12281
+        :return:
+            True if it is ok,
+            False if it is wrong
+        """
+
+        if last_candle.empty:
+            add_log(1, self.trade.id, 1, "last_candle is empty")
+            return False
+
+        if last_candle.shape[0] != 1:
+            add_log(1, self.trade.id, 1,
+                    "last_candle dimension is wrong the number of row is : " + str(last_candle.shape[0]))
+            return False
+
+        if last_candle.shape[1] != 5:
+            add_log(1, self.trade.id, 1,
+                    "last_candle dimension is wrong the number of column is : " + str(last_candle.shape[1]))
+            return False
+
+        keys = last_candle.keys()
+
+        if 'time' not in keys:
+            add_log(1, self.trade.id, 1, "last_candle does not have time in keys")
+            return False
+
+        if 'o' not in keys:
+            add_log(1, self.trade.id, 1, "last_candle does not have o in keys")
+            return False
+
+        if 'c' not in keys:
+            add_log(1, self.trade.id, 1, "last_candle does not have c in keys")
+            return False
+
+        if 'h' not in keys:
+            add_log(1, self.trade.id, 1, "last_candle does not have h in keys")
+            return False
+
+        if 'l' not in keys:
+            add_log(1, self.trade.id, 1, "last_candle does not have l in keys")
+            return False
+
+        return True
