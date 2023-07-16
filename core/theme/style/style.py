@@ -25,8 +25,7 @@ stop_trading_pb_style = "background-color: " + stop_trading_pb_bg_color + ";" + 
                         pb_text_color_active + ";border-radius: 7;"
 activate_label_main_style = "background-color: " + line_edit_bg + ";color: " + label_text_color + ";border-radius: 7;"
 
-# " --background-color-checked: #2BAB40; --switcher-background-unchecked: rgba(155, 159, 168, 0.2); --switcher-background-checked: rgba(43, 171, 64, 0.2);"
-optimal_strategy_rb_style = "QRadioButton {background-color: " + line_edit_bg + ";color: " + label_text_color + ";border-radius: 7;} QRadioButton::indicator:checked{border-image: url(" + path + "core/theme/pic/pic/radio-button-green.png);}"
+optimal_strategy_rb_style = "QRadioButton {background-color: " + line_edit_bg + ";color: " + label_text_color + ";border-radius: 7;} QRadioButton::indicator:checked{border-image: url(" + path + "core/theme/pic/pic/radio-button-green.png);width : 24px;height : 24px;}QRadioButton::indicator{width : 24px;height : 24px;}"
 optimal_strategy_label_style = "background-color: " + line_edit_bg + ";color: " + line_edit_text_color + \
                                ";border-radius: 7;"
 login_page_style = "background-color: " + login_bg_color + ";color: " + login_text_color + ";" + \

@@ -27,7 +27,7 @@ class MainUi(QFrame):
     go_to_account_pb: QPushButton
     open_instructions_pb: QPushButton
     close_pb: QPushButton
-    balance_label: QLabel
+    balance_comboBox: QComboBox
     balance_value_label: QLabel
     amount_label: QLabel
     time_label: QLabel
@@ -166,8 +166,10 @@ class MainUi(QFrame):
         self.stop_trading_pb.hide()
         self.stop_trading_pb.clicked.connect(self.main_trading_stop_thread)
 
-        self.balance_label = self.findChild(QLabel, "balance_label")
-        self.balance_label.setStyleSheet(label_style)
+        self.balance_comboBox = self.findChild(QComboBox, "balance_comboBox")
+        self.balance_comboBox.setStyleSheet(line_edit_style)
+        self.balance_comboBox.setCurrentIndex(1)
+        self.balance_comboBox.currentIndexChanged.connect(self.balance_comboBox_change)
 
         self.balance_value_label = self.findChild(QLabel, "balance_value_label")
         self.balance_value_label.setStyleSheet(balance_label_style)
@@ -286,6 +288,7 @@ class MainUi(QFrame):
         """
         self.amount_spinBox.setEnabled(0)
         self.time_comboBox.setEnabled(0)
+        self.balance_comboBox.setEnabled(0)
         self.start_trading_pb.hide()
         self.main_trading_thread.set_time(int(self.time_comboBox.currentText()) * 60)
         self.main_trading_thread.set_amount(int(self.amount_spinBox.value()))
@@ -307,6 +310,7 @@ class MainUi(QFrame):
         self.start_trading_pb.show()
         self.amount_spinBox.setEnabled(1)
         self.time_comboBox.setEnabled(1)
+        self.balance_comboBox.setEnabled(1)
 
     def add_trade_to_trade_threads(self, trades: list[TradingModel]):
         """
@@ -332,3 +336,17 @@ class MainUi(QFrame):
             splash_screen.show_message("closing trade " + trade.trade.currency_disp())
             trade.thread.join()
             splash_screen.add_saved_text("trade " + trade.trade.currency_disp() + " closed!")
+
+    def balance_comboBox_change(self):
+        """
+            change balance mode
+        """
+        current_index = self.balance_comboBox.currentIndex()
+        if current_index == 0:
+            self.main_trading_thread.data_connector.change_account(0)
+        elif current_index == 1:
+            self.main_trading_thread.data_connector.change_account(1)
+        else:
+            self.main_trading_thread.data_connector.change_account(1)
+
+        self.balance_value_label.setText("$" + str(self.main_trading_thread.data_connector.get_balance()))

@@ -25,6 +25,7 @@ class DataConnector:
             self.close_api = close_api_oanda
             self.open_trade_window = open_trade_window_oanda
             # self.check_asset = check_asset_oanda
+            # self.change_account = change_account_oanda
 
         if api_used == self.api_enums.quotex:
             from app.quotex.api import trade_window_url_quotex_main, qx_api_class
@@ -41,6 +42,7 @@ class DataConnector:
             self.start_candles_stream = qx_api_class.start_candles_stream_quotex
             self.stop_candles_stream = qx_api_class.stop_candles_stream_quotex
             self.check_asset = qx_api_class.check_asset
+            self.change_account = qx_api_class.change_account
 
     @staticmethod
     def get_history_from_file(name: str) -> pd.DataFrame:

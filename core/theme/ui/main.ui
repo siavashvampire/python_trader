@@ -136,6 +136,9 @@
         <bold>true</bold>
        </font>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -246,6 +249,12 @@
        <string>Recommended balance: from $50 to
 $500</string>
       </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -253,37 +262,10 @@ $500</string>
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="balance_label">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>10</y>
-        <width>120</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-        <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>DEMO ACCOUNT</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="balance_value_label">
       <property name="geometry">
        <rect>
-        <x>260</x>
+        <x>250</x>
         <y>30</y>
         <width>120</width>
         <height>20</height>
@@ -790,6 +772,42 @@ $500</string>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
+     </widget>
+     <widget class="QComboBox" name="balance_comboBox">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>5</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Real account</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Demo account</string>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QWidget" name="trade_status">

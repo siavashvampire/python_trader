@@ -477,6 +477,20 @@ class QuotexAPI:
 
         return self.qx_api.check_asset(asset=asset)
 
+    @check_connection_decoration
+    def change_account(self, balance_mode: int = 1):
+        """
+            change account
+        :param balance_mode: mode of balance 0 for Real and 1 for Demo
+        """
+
+        if balance_mode == 0:
+            self.qx_api.change_balance(Balance_MODE="REAL")
+        elif balance_mode == 1:
+            self.qx_api.change_balance(Balance_MODE="PRACTICE")
+        else:
+            self.qx_api.change_balance(Balance_MODE="PRACTICE")
+
     def open_trade_window_quotex(self) -> None:
         """
             open web driver
