@@ -99,7 +99,8 @@ class QuotexAPI:
         except:
             return False
 
-    def login_with_driver_quotex(self, driver: WebDriver) -> None:
+    @staticmethod
+    def login_with_driver_quotex(driver: WebDriver) -> None:
         """
             login with a driver in a quotex
         :param driver: driver that open quotex site
@@ -116,8 +117,9 @@ class QuotexAPI:
             ec.presence_of_element_located((By.XPATH, '//*[@id="tab-1"]/form/button')))
         sign_button.click()
 
-    def extract_ssid_from_driver_quotex(self, driver: WebDriver) -> [Optional[str], Optional[str], Optional[str],
-                                                                     Optional[str]]:
+    @staticmethod
+    def extract_ssid_from_driver_quotex(driver: WebDriver) -> [Optional[str], Optional[str], Optional[str],
+                                                               Optional[str]]:
         """
             extract ssid and host and user_agent and websocket_cookie from a driver
         :param driver:
@@ -196,6 +198,11 @@ class QuotexAPI:
         return ssid, websocket_cookie, user_agent, host
 
     def extract_ssid_from_web(self) -> [Optional[str], Optional[str], Optional[str], Optional[str]]:
+        """
+            we create a driver and open quotex website and extract ssid
+        :return:
+            its return 4 parameters ssid, websocket_cookie, user_agent, host
+        """
         # option = Options()
         # option.add_argument("--disable-extensions")
         # option.add_argument("--disable-notifications")
@@ -454,14 +461,14 @@ class QuotexAPI:
         return DataFrame(data2)
 
     @check_connection_decoration
-    def check_asset(self, name):
+    def check_asset(self, name: str) -> Optional[bool]:
         """
             check asset
         :param name: name of trade
         :return:
-            None if both False
-            False if otc
-            True if open
+            None if both False,
+            False if market is otc
+            True if market is open
         """
         currencies = name.split("_")
         country_from = currencies[0]

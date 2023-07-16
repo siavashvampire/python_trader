@@ -1,7 +1,10 @@
+"""
+    TradingThreadModel
+"""
 from datetime import datetime
 from threading import Thread
 from time import sleep
-from typing import Callable, Union,Optional
+from typing import Callable, Union, Optional
 
 from PyQt5.QtWidgets import QLabel
 
@@ -9,11 +12,13 @@ from app.data_connector.model.data_connector import DataConnector
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 from app.ml_avidmech.model.ml_trading import MlTrading
-from core.theme.color.color import trade_on_bg_color, trade_on_text_color, trade_off_text_color, trade_off_bg_color, \
-    trade_none_bg_color, trade_none_text_color
+from core.theme.style.style import trade_none_style, trade_on_style, trade_off_style
 
 
 class TradingThreadModel:
+    """
+        TradingThreadModel
+    """
     q_label_name: QLabel
     q_label_value: QLabel
     q_label_accuracy: QLabel
@@ -25,9 +30,11 @@ class TradingThreadModel:
     state: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]
     valid_predict: bool = False
     update_time: int = 5  # update thread in second
+    check_asset: Optional[bool] = None
 
     def __init__(self, trade: TradingModel, q_label_name: QLabel, q_label_value: QLabel,
                  q_label_accuracy: QLabel, q_label_predict: QLabel) -> None:
+
         self.predict = PredictEnums().neutral
         self.trade = trade
         self.q_label_name = q_label_name
@@ -51,13 +58,23 @@ class TradingThreadModel:
         # self.Thread.start()
 
     def change_color(self, state: Optional[bool] = False):
-        if state is None:
-            css = "background-color:" + trade_none_bg_color + ";color: rgba(" + trade_none_text_color + ");"
+        """
+            change color in ui
+        :param state: Optional[bool]
+            if it's None, it means that both markets are close
+            if it's True, it means the main market is open
+            and if it's False, it means the main market is close and ots is open
+        """
+        if self.check_asset is None:
+            css = trade_none_style
         else:
-            if state:
-                css = "background-color:" + trade_on_bg_color + ";color: rgba(" + trade_on_text_color + ");"
+            if state is None:
+                css = trade_none_style
             else:
-                css = "background-color: " + trade_off_bg_color + ";color: rgba(" + trade_off_text_color + ");"
+                if state:
+                    css = trade_on_style
+                else:
+                    css = trade_off_style
 
         self.q_label_name.setStyleSheet(css)
         self.q_label_value.setStyleSheet(css)
@@ -65,6 +82,10 @@ class TradingThreadModel:
         self.q_label_predict.setStyleSheet(css)
 
     def getting_data_thread(self, stop_thread: Callable[[], bool]) -> None:
+        """
+            the main thread that updates df and model
+        :param stop_thread: this parameter can make thread stop when it's True
+        """
         flag = False
 
         while not flag:
@@ -79,8 +100,8 @@ class TradingThreadModel:
 
             if (datetime.now() - self.last_update_time).seconds > self.update_time:
                 try:
-                    check_asset = self.ml_trading.check_asset()
-                    if check_asset is not None:
+                    self.check_asset = self.ml_trading.check_asset()
+                    if self.check_asset is not None:
                         flag, _ = self.ml_trading.update()
                         if flag:
                             self.valid_predict = True
@@ -114,21 +135,37 @@ class TradingThreadModel:
                 break
 
     def create_order_from_predict(self, predict: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]):
+        """
+            create order in market from predicted state
+        :param predict: predict of AI that can be 3 type
+        Neutral
+        Buy
+        sell
+        """
         if predict != PredictNeutralEnums:
             # TODO:vaghti mikhare v mifroshe neveshte mide serfan bayad y True False bede
             self.data_connector.create_order(self.name, predict.get_unit())
 
     def check(self) -> None:
+        """
+            check thread is alive or not, and if it's dead,restart it
+        """
         if not (self.thread.is_alive()):
             self.stop_thread = False
             self.restart_thread()
 
     def start_thread(self):
+        """
+            start thread
+        """
         self.stop_thread = False
         self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
         self.thread.start()
 
     def restart_thread(self) -> None:
+        """
+            restart thread
+        """
         if not (self.thread.is_alive()):
             self.stop_thread = False
             self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
@@ -136,7 +173,7 @@ class TradingThreadModel:
 
     def calc_update_time(self):
         """
-            calculate update thread time in sec based on second we are in
+            calculate update thread time in sec based on the second we are in
         """
         second = datetime.now().second
         if second > 50:

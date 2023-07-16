@@ -15,6 +15,7 @@ from app.market_trading.main import MainTradingThreadModel
 from app.market_trading.model.trading_model import TradingModel
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from core.model.SplashScreen import SplashScreen
+from core.theme.style.style import activate_account_pb_style, activate_label_main_style, close_pb_style
 
 
 class MainUi(QFrame):
@@ -30,6 +31,8 @@ class MainUi(QFrame):
     balance_value_label: QLabel
     amount_label: QLabel
     time_label: QLabel
+    question_label: QLabel
+    question_label_2: QLabel
     trading_asset_label: QLabel
     trading_asset_value_label: QLabel
     trading_asset_prop_label: QLabel
@@ -45,6 +48,15 @@ class MainUi(QFrame):
     logo_label_setting: QLabel
     main_logo_label: QLabel
     open_instructions_label: QLabel
+    optimal_strategy_label: QLabel
+
+    activate_account_pb: QPushButton
+    activate_label_: QLabel
+    activate_label_2: QLabel
+    activate_label_3: QLabel
+    activate_label_4: QLabel
+    activate_label_5: QLabel
+    activate_label_main: QLabel
 
     def __init__(self):
         super(MainUi, self).__init__()
@@ -86,33 +98,20 @@ class MainUi(QFrame):
         self.tab_setting = self.findChild(QWidget, "Setting")
 
         #   Start Colors
-        from core.theme.color.color import PB_BG_color_deactivate, PB_Text_color_deactivate, PB_BG_color_active, \
-            PB_Text_color_active, line_edit_BG, line_edit_Text_color, tab_selected_bg_color, tab_selected_text_color, \
-            label_Text_color, PB_BG_color_active, label_Text_BG
+        from core.theme.color.color import tab_selected_bg_color, tab_selected_text_color
 
-        line_edit_style = "background-color: rgba(" + line_edit_BG + ");color: rgba(" + line_edit_Text_color + ");border-radius: 7;"
-        line_edit_prop_style = "background-color: rgba(" + line_edit_BG + ");color: rgba(70, 240, 60, 255);"
-        label_style = "background: " + label_Text_BG + ";color: rgba(" + label_Text_color + ");border-radius: 7;"
-        balance_label_style = "background-color: rgba(" + label_Text_BG + ");color: rgba(240, 140, 50, 255);border-radius: 7;"
+        from core.theme.style.style import active_pb_style, label_style, start_trading_pb_style, stop_trading_pb_style, \
+            balance_label_style, line_edit_style, line_edit_prop_style, optimal_strategy_rb_style, \
+            optimal_strategy_label_style
 
-        # deactivate_pb_style = "background-color: rgba(" + PB_BG_color_deactivate + ");" + \
-        #                       "color: rgba(" + PB_Text_color_deactivate + ");"
-        #
-        active_pb_style = "background-color: rgba(" + PB_BG_color_active + ");" + \
-                          "color: rgba(" + PB_Text_color_active + ");border-radius: 7;"
-        start_pb_style = "background-color: rgba(70, 240, 60, 255);" + \
-                         "color: rgba(" + PB_Text_color_active + ");border-radius: 7;"
-        stop_trading_pb_style = "background-color: rgba(136, 0, 27, 255);" + \
-                                "color: rgba(" + PB_Text_color_active + ");border-radius: 7;"
-
-        # stylesheet = "QTabBar::tab:selected {background-color: rgba(" + tab_selected_bg_color + ");" + \
-        #              "color: rgba(" + tab_selected_text_color + ");font-size: 8pt;}" + \
+        # stylesheet = "QTabBar::tab:selected {background-color: " + tab_selected_bg_color + ";" + \
+        #              "color: " + tab_selected_text_color + ";font-size: 8pt;}" + \
         #              "QTabWidget>QWidget>QWidget{background-image: url(" + path + \
         #              "core/theme/pic/pic/Main.jpg);background-repeat: no-repeat;background-position:center;}" + \
         #              "MainUi { background-image: url(" + path + "core/theme/pic/pic/Main.jpg);" + \
         #              "background-repeat: no-repeat;background-position:center;} "
-        stylesheet = "QTabBar::tab:selected {background-color: rgba(" + tab_selected_bg_color + ");" + \
-                     "color: rgba(" + tab_selected_text_color + ");font-size: 10pt;}" + \
+        stylesheet = "QTabBar::tab:selected {background-color: " + tab_selected_bg_color + ";" + \
+                     "color: " + tab_selected_text_color + ";font-size: 10pt;}" + \
                      "QTabWidget>QWidget>QWidget{border-image: url(" + path + \
                      "core/theme/pic/pic/Main.jpg);background-repeat: no-repeat;background-position:center;}" + \
                      "MainUi { border-image: url(" + path + "core/theme/pic/pic/Main.jpg);" + \
@@ -146,7 +145,7 @@ class MainUi(QFrame):
         self.open_trade_window_pb.setStyleSheet(active_pb_style)
 
         self.close_pb = self.findChild(QPushButton, "close_pb")
-        self.close_pb.setStyleSheet(active_pb_style)
+        self.close_pb.setStyleSheet(close_pb_style)
 
         self.go_to_account_pb = self.findChild(QPushButton, "go_to_account_pb")
         self.go_to_account_pb.setStyleSheet(active_pb_style)
@@ -159,7 +158,7 @@ class MainUi(QFrame):
         self.open_instructions_label.setStyleSheet(label_style)
 
         self.start_trading_pb = self.findChild(QPushButton, "start_trading_pb")
-        self.start_trading_pb.setStyleSheet(start_pb_style)
+        self.start_trading_pb.setStyleSheet(start_trading_pb_style)
         self.start_trading_pb.clicked.connect(self.main_trading_start_thread)
 
         self.stop_trading_pb = self.findChild(QPushButton, "stop_trading_pb")
@@ -196,12 +195,33 @@ class MainUi(QFrame):
         self.time_comboBox.setCurrentIndex(0)
 
         self.optimal_strategy_radioButton = self.findChild(QRadioButton, "optimal_strategy_radioButton")
-        self.optimal_strategy_radioButton.setStyleSheet(
-            "background-color: rgba(" + line_edit_BG + ");color: rgba(" + label_Text_color + ");border-radius: 7;")
+        self.optimal_strategy_radioButton.setStyleSheet(optimal_strategy_rb_style)
 
         self.optimal_strategy_label = self.findChild(QLabel, "optimal_strategy_label")
-        self.optimal_strategy_label.setStyleSheet(
-            "background-color: rgba(" + line_edit_BG + ");color: rgba(" + line_edit_Text_color + ");border-radius: 7;")
+        self.optimal_strategy_label.setStyleSheet(optimal_strategy_label_style)
+
+        self.activate_label_4 = self.findChild(QLabel, "activate_label_4")
+        self.activate_label_4.setStyleSheet(
+            "border-image: url(" + path + "core/theme/pic/pic/flags.png);background-repeat: no-repeat;background-position:center;")
+        self.activate_label_5 = self.findChild(QLabel, "activate_label_5")
+        self.activate_label_5.setStyleSheet(
+            "border-image: url(" + path + "core/theme/pic/pic/sound.png);background-repeat: no-repeat;background-position:center;")
+
+        self.question_label = self.findChild(QLabel, "question_label")
+        self.question_label.setStyleSheet(
+            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: no-repeat;background-position:center;")
+
+        self.question_label_2 = self.findChild(QLabel, "question_label_2")
+        self.question_label_2.setStyleSheet(
+            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: no-repeat;background-position:center;")
+
+        self.activate_label_main = self.findChild(QLabel, "activate_label_main")
+        self.activate_label_main.setStyleSheet(activate_label_main_style)
+
+        self.activate_account_pb = self.findChild(QPushButton, "activate_account_pb")
+        # self.activate_pb.clicked.connect(lambda: data_connector.open_trade_window())
+
+        self.activate_account_pb.setStyleSheet(activate_account_pb_style)
 
         # self.aggressive_strategy_radioButton = self.findChild(QRadioButton, "aggressive_strategy_radioButton")
         # self.aggressive_strategy_radioButton.setStyleSheet(line_edit_style)
@@ -226,9 +246,7 @@ class MainUi(QFrame):
         verticalLayout_trade = self.findChild(QVBoxLayout, "verticalLayout_trade")
         h1 = QHBoxLayout()
 
-        from core.theme.color.color import label_Text_color, label_Text_BG
-
-        label_style = "background: " + label_Text_BG + ";color: rgba(" + label_Text_color + ");"
+        from core.theme.style.style import label_style
 
         q_label_name = QLabel(name)
         q_label_value = QLabel(value)

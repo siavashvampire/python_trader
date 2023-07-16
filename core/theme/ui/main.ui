@@ -10,6 +10,11 @@
     <height>706</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Roboto</family>
+   </font>
+  </property>
   <property name="focusPolicy">
    <enum>Qt::NoFocus</enum>
   </property>
@@ -42,7 +47,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Arial</family>
+      <family>Roboto</family>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -73,6 +78,9 @@
         <bold>true</bold>
        </font>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -91,7 +99,7 @@
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -123,7 +131,7 @@
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -141,14 +149,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>98</y>
         <width>55</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -164,14 +172,14 @@
       <property name="geometry">
        <rect>
         <x>190</x>
-        <y>100</y>
+        <y>98</y>
         <width>71</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -210,9 +218,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>190</y>
+        <y>170</y>
         <width>250</width>
-        <height>61</height>
+        <height>80</height>
        </rect>
       </property>
       <property name="font">
@@ -221,6 +229,9 @@
         <weight>50</weight>
         <bold>false</bold>
        </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="tabletTracking">
        <bool>false</bool>
@@ -253,7 +264,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <pointsize>9</pointsize>
         <weight>75</weight>
         <bold>true</bold>
@@ -280,12 +291,13 @@ $500</string>
       </property>
       <property name="font">
        <font>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">color:orange</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>$ 0.00</string>
@@ -305,7 +317,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -321,14 +333,14 @@ $500</string>
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>100</y>
+        <y>98</y>
         <width>100</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -351,7 +363,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -379,6 +391,9 @@ $500</string>
         <bold>true</bold>
        </font>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -389,10 +404,10 @@ $500</string>
      <widget class="QPushButton" name="close_pb">
       <property name="geometry">
        <rect>
-        <x>400</x>
+        <x>515</x>
         <y>10</y>
-        <width>140</width>
-        <height>40</height>
+        <width>25</width>
+        <height>25</height>
        </rect>
       </property>
       <property name="font">
@@ -402,11 +417,14 @@ $500</string>
         <bold>true</bold>
        </font>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>close</string>
+       <string/>
       </property>
      </widget>
      <widget class="QPushButton" name="go_to_account_pb">
@@ -424,6 +442,9 @@ $500</string>
         <weight>75</weight>
         <bold>true</bold>
        </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -447,6 +468,9 @@ $500</string>
         <weight>75</weight>
         <bold>true</bold>
        </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -491,7 +515,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <pointsize>8</pointsize>
         <weight>50</weight>
         <bold>false</bold>
@@ -511,14 +535,14 @@ $500</string>
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>190</y>
+        <y>180</y>
         <width>151</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -530,18 +554,18 @@ $500</string>
        <string>Optimal strategy</string>
       </property>
      </widget>
-     <widget class="QLabel" name="trading_asset_label_2">
+     <widget class="QLabel" name="activate_label_main">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>360</y>
-        <width>520</width>
-        <height>110</height>
+        <x>5</x>
+        <y>355</y>
+        <width>535</width>
+        <height>115</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -553,7 +577,7 @@ $500</string>
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="balance_label_2">
+     <widget class="QLabel" name="activate_label_1">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -564,7 +588,7 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <pointsize>9</pointsize>
         <weight>75</weight>
         <bold>true</bold>
@@ -580,7 +604,7 @@ $500</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="balance_label_3">
+     <widget class="QLabel" name="activate_label_2">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -591,23 +615,23 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Boost your auto trading to accuracy up to 73%</string>
+       <string>Boost your auto trading accuracy up to 73%</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="balance_label_4">
+     <widget class="QLabel" name="activate_label_3">
       <property name="geometry">
        <rect>
         <x>330</x>
@@ -618,10 +642,10 @@ $500</string>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Roboto</family>
         <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="styleSheet">
@@ -633,8 +657,11 @@ $500</string>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
+      <property name="indent">
+       <number>3</number>
+      </property>
      </widget>
-     <widget class="QPushButton" name="open_trade_window_pb_2">
+     <widget class="QPushButton" name="activate_account_pb">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -650,11 +677,118 @@ $500</string>
         <bold>true</bold>
        </font>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
       <property name="text">
        <string>Activate</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="activate_label_4">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>360</y>
+        <width>267</width>
+        <height>102</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="activate_label_5">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>360</y>
+        <width>22</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="question_label_2">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>310</y>
+        <width>25</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="question_label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>310</y>
+        <width>25</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Roboto</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -735,7 +869,7 @@ $500</string>
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+          <layout class="QHBoxLayout" name="horizontalLayout"/>
          </item>
         </layout>
        </item>

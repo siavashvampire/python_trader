@@ -120,6 +120,15 @@ class MlTrading:
         return self.model
 
     def update(self) -> [bool, DataFrame]:
+        """
+            update system
+            its check update needed or not
+            and if needed its make system update
+        :return:
+            True for if its update is correctly
+            False for if its update is wrong
+            and if its update is correctly its return candle too
+        """
         flag, last_candle = self.check_update_df()
 
         if flag:

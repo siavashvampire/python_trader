@@ -9,9 +9,9 @@ from MainCode import path
 from core.app_provider.api.get import site_connection
 from core.config.Config import main_login_url, main_check_user_access_url, login_timeout, login_developer
 from core.model.TitleBar import TitleBar
-from core.theme.color.color import login_line_edit_text, login_line_edit_border, login_forget_pb_bg, \
-    login_forget_pb_text, login_enter_pb_bg, login_enter_pb_text, login_line_edit_bg
+from core.theme.color.color import login_line_edit_text, login_line_edit_border, login_line_edit_bg
 from core.theme.pic import Pics
+from core.theme.style.style import login_forget_style, login_enter_pb_style
 
 
 class LoginUI(QFrame):
@@ -74,17 +74,13 @@ class LoginUI(QFrame):
         m_mouse_down = False
 
     def change_text_pass(self):
-        from core.theme.color.color import login_text_color, login_bg_color, login_border_color
-        self.lineEdit_Pass.setStyleSheet(
-            "background-color: rgba(" + login_bg_color + ");color: rgba(" + login_text_color + ");" +
-            "border-radius : 7;border : 1px solid rgba(" + login_border_color + ");")
+        from core.theme.style.style import login_page_style
+        self.lineEdit_Pass.setStyleSheet(login_page_style)
         self.Pass_Icon_Label.clear()
 
     def change_text_user(self):
-        from core.theme.color.color import login_text_color, login_bg_color, login_border_color
-        self.lineEdit_User.setStyleSheet(
-            "background-color: rgba(" + login_bg_color + ");color: rgba(" + login_text_color + ");" +
-            "border-radius : 7;border : 1px solid rgba(" + login_border_color + ");")
+        from core.theme.style.style import login_page_style
+        self.lineEdit_User.setStyleSheet(login_page_style)
         self.User_Icon_Label.clear()
 
     def init_ui(self):
@@ -98,36 +94,30 @@ class LoginUI(QFrame):
 
         self.lineEdit_User = self.findChild(QLineEdit, "lineEdit_User")
         self.lineEdit_User.setStyleSheet(
-            "QLineEdit{background-color: rgba(" + login_line_edit_bg + ");color:rgba(" + login_line_edit_text + ");" +
-            "border-radius : 7;border : 1px solid rgba(" + login_line_edit_border + "); }\n" +
+            "QLineEdit{background-color: " + login_line_edit_bg + ";color: " + login_line_edit_text + ";" +
+            "border-radius : 7;border : 1px solid " + login_line_edit_border + "; }\n" +
             "QLineEdit[text=\"\"]{ color:rgba(" + login_line_edit_text + "); }")
         self.lineEdit_User.setTextMargins(10, 0, 10, 0)
         self.lineEdit_User.textChanged[str].connect(self.change_text_user)
 
         self.lineEdit_Pass = self.findChild(QLineEdit, "lineEdit_Pass")
         self.lineEdit_Pass.setStyleSheet(
-            "QLineEdit{background-color: rgba(" + login_line_edit_bg + ");color:rgba(" + login_line_edit_text + ");" +
-            "border-radius : 7;border : 1px solid rgba(" + login_line_edit_border + "); }\n" +
+            "QLineEdit{background-color: " + login_line_edit_bg + ";color: " + login_line_edit_text + ";" +
+            "border-radius : 7;border : 1px solid " + login_line_edit_border + "; }\n" +
             "QLineEdit[text=\"\"]{ color:rgba(" + login_line_edit_text + "); }")
         self.lineEdit_Pass.textChanged[str].connect(self.change_text_pass)
         self.lineEdit_Pass.setTextMargins(10, 0, 10, 0)
 
         self.pushButton_enter = self.findChild(QPushButton, "pushButton_enter")
 
-        self.pushButton_enter.setStyleSheet(
-            "background-color: rgba(" + login_enter_pb_bg + ");" +
-            "color: rgba(" + login_enter_pb_text + ");border-radius : 5;padding-bottom: 1px;")
+        self.pushButton_enter.setStyleSheet(login_enter_pb_style)
 
         self.pushButton_Forget = self.findChild(QPushButton, "pushButton_Forget")
 
-        self.pushButton_Forget.setStyleSheet(
-            "background-color: rgba(" + login_forget_pb_bg + ");" +
-            "color: rgba(" + login_forget_pb_text + ");")
+        self.pushButton_Forget.setStyleSheet(login_forget_style)
 
         self.label_Status = self.findChild(QLabel, "label_Status")
-        self.label_Status.setStyleSheet(
-            "background-color: rgba(" + login_forget_pb_bg + ");" +
-            "color: rgba(" + login_forget_pb_text + ");")
+        self.label_Status.setStyleSheet(login_forget_style)
 
     def local_checking_user_pass(self):
         r = self.checking_user_pass()
