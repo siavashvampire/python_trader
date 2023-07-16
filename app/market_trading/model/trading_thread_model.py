@@ -135,8 +135,8 @@ class TradingThreadModel:
                 print("Main trade Thread ", self.trade.currency_disp(), " Stop")
                 break
             if self.ml_trading.df.shape[0] < 50:
-                print("Main trade Thread ", self.trade.currency_disp(), " Stop becuase ml_trading df shape is ",
-                      self.ml_trading.df.shape[0])
+                # print("Main trade Thread ", self.trade.currency_disp(), " Stop becuase ml_trading df shape is ",
+                #       self.ml_trading.df.shape[0])
                 break
 
     def create_order_from_predict(self, predict: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]):
