@@ -87,8 +87,9 @@ class TradingThreadModel:
         :param stop_thread: this parameter can make thread stop when it's True
         """
         flag = False
+        self.check_asset = self.ml_trading.check_asset()
 
-        while not flag:
+        while not flag and self.check_asset is not None:
             flag = self.ml_trading.preprocess()
             sleep(2)
             if stop_thread():
@@ -132,6 +133,10 @@ class TradingThreadModel:
 
             if stop_thread():
                 print("Main trade Thread ", self.trade.currency_disp(), " Stop")
+                break
+            if self.ml_trading.df.shape[0] < 50:
+                print("Main trade Thread ", self.trade.currency_disp(), " Stop becuase ml_trading df shape is ",
+                      self.ml_trading.df.shape[0])
                 break
 
     def create_order_from_predict(self, predict: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]):
