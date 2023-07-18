@@ -426,6 +426,11 @@ class Quotex:
             return c_function.check_win_close_data[ticket]["profit"]
         return None
 
+    def check_win_raw_2(self, ticket, c_function):
+        if ticket in c_function.check_win_close_data:
+            return c_function.check_win_close_data[ticket]
+        return None
+
     def check_win(self, ticket, polling=1):
         while True:
             time.sleep(polling)
@@ -436,11 +441,41 @@ class Quotex:
                 return self.check_win_raw(ticket, self.api_real)
 
     def check_win_once(self, ticket):
-        if self.check_win_raw(ticket, self.api) is not None:
-            return self.check_win_raw(ticket, self.api)
+        check_win = self.check_win_raw_2(ticket, self.api)
+        if check_win is not None:
+            try:
+                check_win.pop('openTimestamp')
+                check_win.pop('closeTimestamp')
+                check_win.pop('uid')
+                check_win.pop('command')
+                check_win.pop('tournamentId')
+                check_win.pop('copyTicket')
+                check_win.pop('avatarUser')
+                check_win.pop('nickname')
+                check_win.pop('percentProfitable')
+                check_win.pop('closeMs')
+                check_win.pop('currency')
+            except:
+                pass
+            return check_win
 
-        if self.check_win_raw(ticket, self.api_real) is not None:
-            return self.check_win_raw(ticket, self.api_real)
+        check_win_real = self.check_win_raw_2(ticket, self.api_real)
+        if check_win_real is not None:
+            try:
+                check_win_real.pop('openTimestamp')
+                check_win_real.pop('closeTimestamp')
+                check_win_real.pop('uid')
+                check_win_real.pop('command')
+                check_win_real.pop('tournamentId')
+                check_win_real.pop('copyTicket')
+                check_win_real.pop('avatarUser')
+                check_win_real.pop('nickname')
+                check_win_real.pop('percentProfitable')
+                check_win_real.pop('closeMs')
+                check_win_real.pop('currency')
+            except:
+                pass
+            return check_win_real
 
         return None
 
