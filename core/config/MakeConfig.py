@@ -3,6 +3,9 @@ import os
 from tinydb import TinyDB
 import hashlib
 
+from app.data_connector.model.enums import APIUsed
+from core.config.Config import fernet
+
 config_path = "../../File/Config/"
 config_db_name = 'config.json'
 config_table_name = 'config'
@@ -49,9 +52,25 @@ config_db.update({"costumer": str(costumer)})
 config_db.update({"remove_db_flag": str(remove_db_flag)})
 # end  DB Config
 
+# Start connector api Config
+
+user_name_quotex = b"eng.tit0@yahoo.com"
+password_quotex = b"titometi2"
+
+api_used = APIUsed().quotex
+user_name_quotex = fernet.encrypt(user_name_quotex)
+password_quotex = fernet.encrypt(password_quotex)
+
+config_db.update({"api_used": api_used})
+config_db.update({"user_name_quotex": user_name_quotex.decode('utf-8')})
+config_db.update({"password_quotex": password_quotex.decode('utf-8')})
+
+# end connector api Config
+
+
 # Start  Developer Config
 if developer:
-    developer_config = hashlib.md5(b'VamPire1468').digest()
+    developer_config = fernet.encrypt(b"VamPire1468").decode('utf-8')
 else:
     developer_config = ""
 

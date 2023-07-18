@@ -19,7 +19,7 @@ from app.data_connector.model.enums import APIUsed
 from app.logging.api import add_log
 from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
-from core.config.Config import api_used, time_format
+from core.config.Config import api_used, time_format, user_name_quotex, password_quotex
 
 trade_window_url_quotex_main = 'https://quotex.com/en/sign-in/'
 config_file_path_main = "File/Config/qoutex.cfg"
@@ -109,10 +109,10 @@ class QuotexAPI:
         wait = WebDriverWait(driver, 10)
         email_input = WebDriverWait(driver, 20).until(
             ec.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[1]/input")))
-        email_input.send_keys("eng.tit0@yahoo.com")
+        email_input.send_keys(user_name_quotex)
         pass_input = WebDriverWait(driver, 20).until(
             ec.presence_of_element_located((By.XPATH, "//*[@id='tab-1']/form/div[2]/input")))
-        pass_input.send_keys("titometi2")
+        pass_input.send_keys(password_quotex)
         sign_button = WebDriverWait(driver, 20).until(
             ec.presence_of_element_located((By.XPATH, '//*[@id="tab-1"]/form/button')))
         sign_button.click()
