@@ -1,3 +1,5 @@
+from typing import Union
+
 from app.logging.main import log_sender
 from app.logging.model.log_model import LogModel
 from app.user.api import get_user
@@ -23,6 +25,43 @@ def get_log_by_user(telegram_id: int = 0, user_id: int = 0) -> list[LogModel]:
     return session.query(LogModel).filter(LogModel.user_id == user_id).all()
 
 
+def get_log_by_title(title_id: Union[list[int], int]) -> list[LogModel]:
+    """
+        get log by title id
+    :param title_id: title id
+    :return:
+    """
+    if type(title_id) == int:
+        title_id = [title_id]
+    return session.query(LogModel).filter(LogModel.title.in_(title_id)).all()
+
+
+def get_log_by_trading(trading_id: Union[list[int], int]) -> list[LogModel]:
+    """
+        get log by trading id
+    :param trading_id: trading id
+    :return:
+    """
+    if type(trading_id) == int:
+        trading_id = [trading_id]
+    return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id)).all()
+
+
+def get_log_by_title_by_trading(title_id: Union[list[int], int], trading_id: Union[list[int], int]) -> list[LogModel]:
+    """
+        get log by trading id and title id
+    :param title_id: title id
+    :param trading_id: trading id
+    :return:
+    """
+
+    if type(title_id) == int:
+        title_id = [title_id]
+    if type(trading_id) == int:
+        trading_id = [trading_id]
+    return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id), LogModel.title.in_(title_id)).all()
+
+
 def add_log(user_id: int, trading_id: int, title: int, text: str) -> bool:
     """
         insert log to database
@@ -37,5 +76,9 @@ def add_log(user_id: int, trading_id: int, title: int, text: str) -> bool:
     return True
 
 
-def get_all_trading() -> list[LogModel]:
+def get_all_log() -> list[LogModel]:
+    """
+        get all logs
+    :return:
+    """
     return session.query(LogModel).all()
