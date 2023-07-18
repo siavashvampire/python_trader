@@ -334,6 +334,21 @@ class QuotexAPI:
 
             return False, buy_info
         else:
+            try:
+                buy_info.pop('openTimestamp')
+                buy_info.pop('closeTimestamp')
+                buy_info.pop('uid')
+                buy_info.pop('tournamentId')
+                buy_info.pop('purchaseTime')
+                buy_info.pop('copyTicket')
+                buy_info.pop('command')
+                buy_info.pop('closePrice')
+                buy_info.pop('nickname')
+                buy_info.pop('requestId')
+                buy_info.pop('openMs')
+                buy_info.pop('currency')
+            except:
+                pass
             add_log(1, trade.id, 6, str(buy_info))
             return True, buy_info
 
