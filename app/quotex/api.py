@@ -4,8 +4,6 @@ from datetime import datetime
 from time import sleep
 from typing import Optional
 
-import pandas as pd
-# import holidays
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -282,6 +280,15 @@ class QuotexAPI:
             return int that shows balance of an account in quotex
         """
         return self.qx_api.get_balance()
+
+    @check_connection_decoration
+    def check_win(self, id_in: int) -> Optional[dict]:
+        """
+            get balance of an account in quotex
+        :return:
+            return int that shows balance of an account in quotex
+        """
+        return self.qx_api.check_win_once(id_in)
 
     # qx_api.check_win()
 

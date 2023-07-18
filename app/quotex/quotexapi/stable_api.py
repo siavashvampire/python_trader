@@ -435,6 +435,15 @@ class Quotex:
             if self.check_win_raw(ticket, self.api_real) is not None:
                 return self.check_win_raw(ticket, self.api_real)
 
+    def check_win_once(self, ticket):
+        if self.check_win_raw(ticket, self.api) is not None:
+            return self.check_win_raw(ticket, self.api)
+
+        if self.check_win_raw(ticket, self.api_real) is not None:
+            return self.check_win_raw(ticket, self.api_real)
+
+        return None
+
     def get_server_time(self):
         req_id = global_value.get_req_id(self.api.object_id)
         self.api.server_timestamp[req_id] = None
