@@ -1,11 +1,9 @@
 import threading
-from datetime import datetime
 from queue import Queue
 from threading import Thread
 from time import sleep
 
 from app.logging.model.log_model import LogModel
-from app.market_trading.api import get_trading
 
 
 class LogSender:
