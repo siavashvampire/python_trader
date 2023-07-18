@@ -55,13 +55,10 @@ if __name__ in ['__main__', 'core.config.Config']:
 
 
         # Start API Config
-        # api_used = APIUsed().oanda
-        # api_used = APIUsed().quotex
         api_used = sAll["api_used"]
 
         user_name_quotex = fernet.decrypt(sAll["user_name_quotex"].encode("ascii")).decode('utf-8')
         password_quotex = fernet.decrypt(sAll["password_quotex"].encode("ascii")).decode('utf-8')
-
         # end API Config
 
         # Start Developer Config

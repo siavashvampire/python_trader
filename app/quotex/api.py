@@ -284,9 +284,12 @@ class QuotexAPI:
     @check_connection_decoration
     def check_win(self, id_in: int) -> Optional[dict]:
         """
-            get balance of an account in quotex
+            check_win of a trade in quotex
         :return:
-            return int that shows balance of an account in quotex
+            return profit
+            zero for nothing
+            positive for benefit
+            negative for loss
         """
         return self.qx_api.check_win_once(id_in)
 

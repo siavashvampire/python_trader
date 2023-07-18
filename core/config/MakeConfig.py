@@ -10,7 +10,7 @@ config_path = "../../File/Config/"
 config_db_name = 'config.json'
 config_table_name = 'config'
 
-developer = 1
+developer = True
 
 os.makedirs(resource_path(config_path), exist_ok=True)
 
@@ -18,7 +18,6 @@ config_db_path = resource_path(config_path + config_db_name)
 config_db = TinyDB(config_db_path)
 config_db.drop_tables()
 config_db = TinyDB(config_db_path).table(config_table_name)
-
 
 # start format Config
 time_format = '%Y-%m-%d %H:%M:%S'
@@ -53,9 +52,12 @@ config_db.update({"remove_db_flag": str(remove_db_flag)})
 # end  DB Config
 
 # Start connector api Config
-
-user_name_quotex = b"eng.tit0@yahoo.com"
-password_quotex = b"titometi2"
+if developer:
+    user_name_quotex = b"avidmechco@gmail.com"
+    password_quotex = b"titometi2"
+else:
+    user_name_quotex = b"eng.tit0@yahoo.com"
+    password_quotex = b"titometi2"
 
 api_used = APIUsed().quotex
 user_name_quotex = fernet.encrypt(user_name_quotex)
