@@ -15,6 +15,9 @@ from core.config.Config import time_format
 
 
 class MlTrading:
+    """
+        the main trading class
+    """
     df: DataFrame = DataFrame()
     model: GradientBoostingClassifier
     model_name: str
@@ -54,6 +57,13 @@ class MlTrading:
         self.get_history_from_file = lambda: self.data_connector.get_history_from_file(data_file_root)
 
     def preprocess(self) -> bool:
+        """
+            preprocess the ml_trading
+        :return:
+
+            if its prepare correctly, its return True,
+            otherwise return False
+        """
         # self.df = self.get_history_from_file()
 
         start_time = datetime.utcnow() - timedelta(hours=8)
@@ -86,6 +96,13 @@ class MlTrading:
         return True
 
     def preprocess_last(self, last_candle: DataFrame):
+        """
+            preprocess the ml_trading for the last candle
+        :return:
+
+            if its prepare correctly, its return True,
+            otherwise return False
+        """
         temp_df: DataFrame = self.df.iloc[-50:].reset_index(drop=True)
         temp_df = pd.concat([temp_df, last_candle], axis=0)
 

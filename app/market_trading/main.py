@@ -14,6 +14,9 @@ Force2Trade = False
 
 
 class MainTradingThreadModel:
+    """
+        the main thread class
+    """
     thread: Thread
     trade_threads: list[TradingThreadModel]
     time: int
@@ -35,6 +38,9 @@ class MainTradingThreadModel:
         # self.Thread.start()
 
     def main_thread(self, stop_thread: Callable[[], bool]) -> None:
+        """
+            the main thread
+        """
         while True:
             sleep(0.1)
             if (datetime.now() - self.last_check_time).seconds > 2:
@@ -69,20 +75,32 @@ class MainTradingThreadModel:
                 break
 
     def start_thread(self):
+        """
+            start the main thread
+        """
         self.stop_thread = False
         self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
         self.thread.start()
 
     def stop_main_thread(self):
+        """
+            stop the main thread
+        """
         self.stop_thread = True
         self.thread.join()
 
     def check(self) -> None:
+        """
+            check the tread if it's dead, restart thread
+        """
         if not (self.thread.is_alive()):
             self.stop_thread = False
             self.restart_thread()
 
     def restart_thread(self) -> None:
+        """
+            restart thread
+        """
         if not (self.thread.is_alive()):
             self.stop_thread = False
             self.thread = Thread(target=self.main_thread, args=(lambda: self.stop_thread,))
