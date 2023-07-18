@@ -6,9 +6,10 @@ from typing import Callable, Optional
 from PyQt5.QtWidgets import QLabel
 
 from app.data_connector.model.data_connector import DataConnector
-# from app.logging.api import add_log
+from app.logging.api import add_log
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from app.ml_avidmech.model.enums import PredictNeutralEnums, PredictBuyEnums
+from queue import Queue
 
 Force2Trade = False
 
@@ -26,8 +27,10 @@ class MainTradingThreadModel:
     balance_value_label: QLabel = None
     trading: bool = False
     buy_time: datetime = datetime.now() - timedelta(minutes=8)
+    trade_log_queue: Queue[list[int, int]]
 
     def __init__(self, trade_threads: list[TradingThreadModel]) -> None:
+        self.trade_log_queue = Queue()
         self.trade_threads = trade_threads
         self.stop_thread = False
         self.last_check_time = datetime.now()
@@ -64,7 +67,19 @@ class MainTradingThreadModel:
             if (datetime.now() - self.last_check_time_2).seconds > 20:
                 try:
                     self.balance_value_label.setText("$" + str(self.data_connector.get_balance()))
+                    trading_web_id, trade_id = self.trade_log_queue.get(timeout=1)
+                    check_win = self.data_connector.check_win(trading_web_id)
 
+                    if check_win is not None:
+                        print("check win not None : ", check_win['profit'])
+                        if check_win['profit'] >= 0:
+                            add_log(1, trade_id, 7, "we win in :" + str(check_win))
+                        else:
+                            add_log(1, trade_id, 8, "we lose in :" + str(check_win))
+                    else:
+                        self.trade_log_queue.put([trading_web_id, trade_id])
+
+                    self.trade_log_queue.task_done()
                 except:
                     pass
 
@@ -166,8 +181,9 @@ class MainTradingThreadModel:
             flag, buy_info = self.data_connector.create_order(trade.name, trade.predict.get_unit(self.amount),
                                                               self.time)
 
+            self.trade_log_queue.put([buy_info["id"], trade.trade.id])
+
             if flag:
                 self.buy_time = datetime.now()
             else:
                 print("buy_info : ", buy_info)
-            # print("Get: ", self.qx_api.check_win(buy_info["id"]))
