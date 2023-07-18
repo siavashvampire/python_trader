@@ -7,8 +7,10 @@ pb_text_color_active: str = "rgba({r}, {g}, {b}, {a})".format(r=240, g=240, b=24
 # they activate
 
 start_trading_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=43, g=171, b=64, a=255)
+hover_start_trading_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=75, g=184, b=93, a=255)
 activate_account_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=50, g=95, b=76, a=255)
-stop_trading_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=136, g=0, b=27, a=255)
+stop_trading_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=255, g=87, b=34, a=255)
+hover_stop_trading_pb_bg_color: str = "rgba({r}, {g}, {b}, {a})".format(r=255, g=119, b=0, a=180)
 
 
 # line_edit_BG: str = "transparent"  # line edit background
