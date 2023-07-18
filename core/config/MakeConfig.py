@@ -1,7 +1,6 @@
 from app.ResourcePath.app_provider.admin.main import resource_path
 import os
 from tinydb import TinyDB
-import hashlib
 
 from app.data_connector.model.enums import APIUsed
 from core.config.Config import fernet
