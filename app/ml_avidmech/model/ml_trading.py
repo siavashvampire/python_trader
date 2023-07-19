@@ -30,10 +30,8 @@ class MlTrading:
         self.trade = trade
         self.candle = trade.candle_rel.name
 
-        # main_root = 'app/ml_avidmech/file/trade_models/'
         main_root = 'File/trade_models/'
 
-        # data_file_root = 'app/ml_avidmech/file/trade_data/'
         data_file_root = 'File/trade_data/'
         data_file_root += 'trade_data_history_' + self.trade.currency_disp() + '_' + self.candle + '.csv'
 
@@ -79,8 +77,17 @@ class MlTrading:
 
         self.df['L14'] = self.df['l'].rolling(window=14).min()
         self.df['H14'] = self.df['h'].rolling(window=14).max()
+
+        # if self.df['h'] != self.df['l']:
+        #     self.df['%K'] = 100 * (
+        #             (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscillator
+        # else:
+        #     self.df['%K'] = 100
+
         self.df['%K'] = 100 * (
-                (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscilator
+                (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscillator
+        self.df['%K'] = self.df['%K'].fillna(100)
+
         self.df['%D'] = self.df['%K'].rolling(window=3).mean()
 
         self.df['EMA_20'] = self.df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
@@ -114,7 +121,16 @@ class MlTrading:
 
         temp_df['L14'] = temp_df['l'].rolling(window=14).min()
         temp_df['H14'] = temp_df['h'].rolling(window=14).max()
-        temp_df['%K'] = 100 * ((temp_df['c'] - temp_df['l']) / (temp_df['h'] - temp_df['l']))  # stochastic oscilator
+
+        # if temp_df['h'] != temp_df['l']:
+        #     temp_df['%K'] = 100 * \
+        #                     ((temp_df['c'] - temp_df['l']) / (temp_df['h'] - temp_df['l']))  # stochastic oscillator
+        # else:
+        #     temp_df['%K'] = 100
+        temp_df['%K'] = 100 * \
+                        ((temp_df['c'] - temp_df['l']) / (temp_df['h'] - temp_df['l']))  # stochastic oscillator
+        temp_df['%K'] = temp_df['%K'].fillna(100)
+
         temp_df['%D'] = temp_df['%K'].rolling(window=3).mean()
 
         temp_df['EMA_20'] = temp_df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
@@ -138,7 +154,7 @@ class MlTrading:
 
     def update(self) -> [bool, DataFrame]:
         """
-            update system
+            Update system
             its check update needed or not
             and if needed its make system update
         :return:
@@ -188,7 +204,7 @@ class MlTrading:
 
     def check_update_df(self) -> [bool, DataFrame]:
         """
-            check that df of data need update or not
+            Check that df of data need update or not
         :return:
             True if it needs
             False if didn't need
@@ -221,7 +237,7 @@ class MlTrading:
 
     def check_update_df_old(self, last_candle: DataFrame) -> bool:
         """
-            check that df of data need update or not
+            Check that df of data need update or not
         :param last_candle: df of last candle
         :return:
             True if it needs
@@ -251,10 +267,10 @@ class MlTrading:
 
     def check_last_candle(self, last_candle: DataFrame) -> bool:
         """
-            check last candle is ok or not
+            Check last candle is ok or not
         :param last_candle: df of last candle like
-                          time                o        c        h        l
-                    0 2023-07-15 05:43:00  1.12281  1.12281  1.12281  1.12281
+                          time o c h l
+                    0 2023-07-15 05:43:00  1.12281 1.12281 1.12281 1.12281
         :return:
             True if it is ok,
             False if it is wrong

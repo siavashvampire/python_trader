@@ -47,9 +47,9 @@ def get_log_by_trading(trading_id: Union[list[int], int]) -> list[LogModel]:
     return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id)).all()
 
 
-def get_log_by_title_by_trading(title_id: Union[list[int], int], trading_id: Union[list[int], int]) -> list[LogModel]:
+def get_log_by_title_by_trading( trading_id: Union[list[int], int],title_id: Union[list[int], int]) -> list[LogModel]:
     """
-        get log by trading id and title id
+        get to log by trading id and title id
     :param title_id: title id
     :param trading_id: trading id
     :return:
@@ -59,6 +59,7 @@ def get_log_by_title_by_trading(title_id: Union[list[int], int], trading_id: Uni
         title_id = [title_id]
     if type(trading_id) == int:
         trading_id = [trading_id]
+
     return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id), LogModel.title.in_(title_id)).all()
 
 

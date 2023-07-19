@@ -37,6 +37,22 @@ def get_trading_by_country_currency(currency_from: str, country_to: str) -> Trad
     return TradingModel()
 
 
+def get_all_trades_by_country_id( country_id: int) -> list[TradingModel]:
+    """
+        get trade by country currency
+    :param currency_from: country from currency
+    :param country_to: country to currency
+    :return:
+        get trade or None if cant find any trade
+    """
+
+    temp: list[TradingModel] = session.query(TradingModel).filter(TradingModel.country_from == country_id).all()
+    temp2: list[TradingModel] = session.query(TradingModel).filter(TradingModel.country_to == country_id).all()
+
+    temp.extend(temp2)
+    return temp
+
+
 def add_trading(country_from: int, country_to: int) -> bool:
     temp = TradingModel()
     temp.country_from = country_from

@@ -11,6 +11,8 @@ from app.market_trading.model.trading_thread_model import TradingThreadModel
 from app.ml_avidmech.model.enums import PredictNeutralEnums, PredictBuyEnums
 from queue import Queue
 
+from app.telegram_bot.main import telegram_app
+
 Force2Trade = False
 
 
@@ -74,8 +76,12 @@ class MainTradingThreadModel:
                         print("check win not None : ", check_win['profit'])
                         if check_win['profit'] >= 0:
                             add_log(1, trade_id, 7, "we win in :" + str(check_win))
+
+                            telegram_app.send_queue.put([0, "we win in :" + str(check_win)])
                         else:
                             add_log(1, trade_id, 8, "we lose in :" + str(check_win))
+
+                            telegram_app.send_queue.put([0, "we lose in :" + str(check_win)])
                     else:
                         self.trade_log_queue.put([trading_web_id, trade_id])
 

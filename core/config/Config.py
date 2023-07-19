@@ -38,10 +38,18 @@ if __name__ in ['__main__', 'core.config.Config']:
         main_login_url = ""
         main_check_user_access_url = ""
         login_timeout = 30
+        instructions_telegram_link = "https://t.me/quotexbottrading"
 
         # Start System Config
         logout_time = int(sAll["logout_time"])
         # end System Config
+
+        # start telegram config
+        token_telegram = fernet.decrypt(sAll["token_telegram"].encode("ascii")).decode('utf-8')
+
+        bot_admin_id: list[int] = sAll['bot_admin_id']
+        telegram_channel_id: int = sAll['telegram_channel_id']
+        # end telegram config
 
 
         # Start  DB Config
@@ -59,6 +67,7 @@ if __name__ in ['__main__', 'core.config.Config']:
 
         user_name_quotex = fernet.decrypt(sAll["user_name_quotex"].encode("ascii")).decode('utf-8')
         password_quotex = fernet.decrypt(sAll["password_quotex"].encode("ascii")).decode('utf-8')
+
         # end API Config
 
         # Start Developer Config

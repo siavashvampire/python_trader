@@ -23,6 +23,7 @@ engine = get_connection()
 
 session = sessionmaker(bind=engine)()
 
+
 def create_db() -> None:
     from app.user.model.user_model import UserModel
     from app.country.model.country_model import CountryModel
@@ -30,6 +31,7 @@ def create_db() -> None:
     from app.market_trading.model.trading_model import TradingModel
     from app.log_title.model.log_title_model import LogTitleModel
     from app.logging.model.log_model import LogModel
+    from app.telegram_bot.user.model.user_model import TelegramUser
 
     UserModel()
     CountryModel()
@@ -37,6 +39,7 @@ def create_db() -> None:
     TradingModel()
     LogTitleModel()
     LogModel()
+    TelegramUser()
 
     Base.metadata.create_all(engine)
 

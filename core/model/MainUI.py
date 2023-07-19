@@ -8,12 +8,15 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QV
 
 import webbrowser
 
+from queue import Queue
+
 from MainCode import path
 from app.data_connector.model.data_connector import DataConnector
 from app.market_trading.api import get_all_trading, get_trading
 from app.market_trading.main import MainTradingThreadModel
 from app.market_trading.model.trading_model import TradingModel
 from app.market_trading.model.trading_thread_model import TradingThreadModel
+from core.config.Config import instructions_telegram_link
 from core.model.SplashScreen import SplashScreen
 from core.theme.style.style import activate_account_pb_style, activate_label_main_style, close_pb_style
 
@@ -57,6 +60,7 @@ class MainUi(QFrame):
     activate_label_4: QLabel
     activate_label_5: QLabel
     activate_label_main: QLabel
+    telegram_send_queue: Queue[list[int, str]]
 
     def __init__(self):
         super(MainUi, self).__init__()
@@ -299,7 +303,7 @@ class MainUi(QFrame):
         """
             open instructions
         """
-        webbrowser.open("https://t.me/quotexbottrading")
+        webbrowser.open(instructions_telegram_link)
 
     def main_trading_stop_thread(self):
         """

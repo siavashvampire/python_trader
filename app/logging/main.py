@@ -1,4 +1,3 @@
-import threading
 from queue import Queue
 from threading import Thread
 from time import sleep
@@ -13,7 +12,7 @@ class LogSender:
 
     def __init__(self):
         self.log_queue = Queue()
-        self.thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
+        self.thread = Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
         self.stop_thread = False
         self.run_thread()
 
@@ -33,7 +32,7 @@ class LogSender:
                     temp.text = text
                     temp.insert()
                 except Exception as e:
-                    print("log model : " + e)
+                    print("log model : ", e)
                 self.log_queue.task_done()
             except:
                 if stop_thread():
@@ -43,7 +42,7 @@ class LogSender:
     def restart_thread(self) -> None:
         if not (self.thread.is_alive()):
             self.stop_thread = False
-            self.thread = threading.Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
+            self.thread = Thread(target=self.inserting_log, args=(lambda: self.stop_thread,))
             self.thread.start()
 
     def stop_func(self) -> None:

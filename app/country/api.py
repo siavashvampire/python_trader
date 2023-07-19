@@ -44,4 +44,4 @@ def get_all_country() -> list[CountryModel]:
     :return:
         return list of CountryModel: list[CountryModel]
     """
-    return session.query(CountryModel).all()
+    return session.query(CountryModel).filter(CountryModel.currency.is_not(None)).all()

@@ -69,6 +69,19 @@ config_db.update({"password_quotex": password_quotex.decode('utf-8')})
 # end connector api Config
 
 
+# start telegram config
+token_telegram = b"6328974072:AAEPZhYsr1nZVAYHWUbGUrFIhHJyVvfFvkk"
+token_telegram = fernet.encrypt(token_telegram)
+config_db.update({"token_telegram": token_telegram.decode('utf-8')})
+
+bot_admin_id = [99981475]
+config_db.update({'bot_admin_id': bot_admin_id})
+
+telegram_channel_id = -1001835626804
+config_db.update({'telegram_channel_id': telegram_channel_id})
+# end telegram config
+
+
 # Start  Developer Config
 if developer:
     developer_config = fernet.encrypt(b"VamPire1468").decode('utf-8')
