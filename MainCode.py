@@ -20,21 +20,19 @@ path = resource_path("")
 path = path.replace(path[2], "/")
 
 if __name__ == '__main__':
-    # from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QApplication
 
-    # app = QApplication(sys.argv)
-    # from core.app_provider.admin.main import Main
+    app = QApplication(sys.argv)
+    from core.app_provider.admin.main import Main
 
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     warnings.filterwarnings("ignore")
 
     create_db()
 
-    from app.telegram_bot.main import telegram_app
+    # from app.telegram_bot.main import telegram_app
 
     # asyncio.run(telegram_app.run_all())
-    # main = Main()
-    print("miad inja khar ahmagh22")
+    main = Main()
 
-
-    # sys.exit(app.exec_())
+    sys.exit(app.exec_())

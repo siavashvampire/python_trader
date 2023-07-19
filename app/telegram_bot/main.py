@@ -60,4 +60,4 @@ class TelegramApp:
 
 
 telegram_app = TelegramApp()
-telegram_app.run_all()
+# telegram_app.run_all()
