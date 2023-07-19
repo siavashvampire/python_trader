@@ -17,7 +17,7 @@ from app.data_connector.model.enums import APIUsed
 from app.logging.api import add_log
 from app.market_trading.api import get_trading_by_country_currency
 from app.quotex.quotexapi.stable_api import Quotex
-from app.telegram_bot.main import telegram_app
+from app.telegram_bot.api import add_message
 from core.config.Config import api_used, time_format, user_name_quotex, password_quotex
 
 trade_window_url_quotex_main = 'https://quotex.com/en/sign-in/'
@@ -323,13 +323,13 @@ class QuotexAPI:
             # print("we are buying "+ trade.currency_disp())
             add_log(1, trade.id, 4, "we are buying " + trade.currency_disp())
 
-            telegram_app.send_queue.put([0, "we are buying " + trade.currency_disp()])
+            add_message( "we are buying " + trade.currency_disp())
             direction = "call"  # or "put"
         else:
             # print("we are selling "+ trade.currency_disp())
             add_log(1, trade.id, 2, "we are selling " + trade.currency_disp())
 
-            telegram_app.send_queue.put([0, "we are selling " + trade.currency_disp()])
+            add_message( "we are selling " + trade.currency_disp())
             direction = "put"  # or "put"
 
         c, buy_info = self.qx_api.buy_exact(asset, amount, direction, duration)
