@@ -34,7 +34,7 @@ def get_main_markup() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("percent for all currency", callback_data="percent_all_currency"),
-            InlineKeyboardButton("accuracy for all currency", callback_data="accuracy_all_currency"),
+            InlineKeyboardButton("percent all currency detail", callback_data="percent_all_currency_detail"),
         ]
     ]
 
