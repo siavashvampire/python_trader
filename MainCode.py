@@ -1,8 +1,8 @@
-import asyncio
 import os
 import sys
 
 import warnings
+from threading import Thread
 
 from core.database.database import create_db
 
@@ -19,20 +19,27 @@ def resource_path(relative_path):
 path = resource_path("")
 path = path.replace(path[2], "/")
 
-if __name__ == '__main__':
-    from PyQt5.QtWidgets import QApplication
 
-    app = QApplication(sys.argv)
+def main_thread():
+    from PyQt5.QtWidgets import QApplication
     from core.app_provider.admin.main import Main
 
+    app = QApplication(sys.argv)
+
+    main = Main()
+
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     warnings.filterwarnings("ignore")
 
     create_db()
 
-    # from app.telegram_bot.main import telegram_app
+    from app.telegram_bot.main import telegram_app
 
-    # asyncio.run(telegram_app.run_all())
-    main = Main()
+    thread = Thread(target=main_thread)
+    thread.start()
 
-    sys.exit(app.exec_())
+    telegram_app.run_all()
