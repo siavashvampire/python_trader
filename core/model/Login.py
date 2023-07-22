@@ -10,7 +10,6 @@ from core.app_provider.api.get import site_connection
 from core.config.Config import main_login_url, main_check_user_access_url, login_timeout, login_developer
 from core.model.TitleBar import TitleBar
 from core.theme.color.color import login_line_edit_text, login_line_edit_border, login_line_edit_bg
-from core.theme.pic import Pics
 from core.theme.style.style import login_forget_style, login_enter_pb_style
 
 
@@ -88,6 +87,7 @@ class LoginUI(QFrame):
         self.Pass_Icon_Label = self.findChild(QLabel, "Pass_Icon_Label")
         self.label_Logo = self.findChild(QLabel, "label_Logo")
 
+        from core.theme.pic import Pics
         self.User_Icon_Label.setPixmap(Pics.UserICO)
         self.Pass_Icon_Label.setPixmap(Pics.passwordICO)
         self.label_Logo.setPixmap(Pics.Logo)

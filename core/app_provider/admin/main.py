@@ -7,7 +7,6 @@ from time import sleep
 from datetime import datetime
 from threading import Thread
 from typing import Callable
-
 from MainCode import path
 from core.config.Config import logout_time
 from core.database.database import create_db
@@ -16,7 +15,6 @@ from core.model.MainUI import MainUi
 from core.model.SplashScreen import SplashScreen
 from core.theme.color.color import login_line_edit_bg, login_line_edit_text, close_splash_color, start_splash_align, \
     start_splash_color, close_splash_align, login_line_edit_border, start_splash_font_size, end_splash_font_size
-from core.theme.pic import Pics
 
 
 class Main:
@@ -127,6 +125,9 @@ class Main:
         self.loginFlag = 0
         self.main_ui.hide()
         self.login_ui.show()
+
+        from core.theme.pic import Pics
+
         self.login_ui.User_Icon_Label.setPixmap(Pics.UserICO)
         self.login_ui.Pass_Icon_Label.setPixmap(Pics.passwordICO)
 

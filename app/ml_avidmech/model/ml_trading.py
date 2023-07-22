@@ -25,6 +25,7 @@ class MlTrading:
     trade: TradingModel
     candle: str
     last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
+    counter: int = 0
 
     def __init__(self, trade: TradingModel) -> None:
         self.trade = trade
@@ -78,15 +79,8 @@ class MlTrading:
         self.df['L14'] = self.df['l'].rolling(window=14).min()
         self.df['H14'] = self.df['h'].rolling(window=14).max()
 
-        # if self.df['h'] != self.df['l']:
-        #     self.df['%K'] = 100 * (
-        #             (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscillator
-        # else:
-        #     self.df['%K'] = 100
-
         self.df['%K'] = 100 * (
-                (self.df['c'] - self.df['l']) / (self.df['h'] - self.df['l']))  # stochastic oscillator
-        self.df['%K'] = self.df['%K'].fillna(100)
+                (self.df['c'] - self.df['L14']) / (self.df['H14'] - self.df['L14']))  # stochastic oscilator
 
         self.df['%D'] = self.df['%K'].rolling(window=3).mean()
 
@@ -122,14 +116,8 @@ class MlTrading:
         temp_df['L14'] = temp_df['l'].rolling(window=14).min()
         temp_df['H14'] = temp_df['h'].rolling(window=14).max()
 
-        # if temp_df['h'] != temp_df['l']:
-        #     temp_df['%K'] = 100 * \
-        #                     ((temp_df['c'] - temp_df['l']) / (temp_df['h'] - temp_df['l']))  # stochastic oscillator
-        # else:
-        #     temp_df['%K'] = 100
-        temp_df['%K'] = 100 * \
-                        ((temp_df['c'] - temp_df['l']) / (temp_df['h'] - temp_df['l']))  # stochastic oscillator
-        temp_df['%K'] = temp_df['%K'].fillna(100)
+        temp_df['%K'] = 100 * (
+                (temp_df['c'] - temp_df['L14']) / (temp_df['H14'] - temp_df['L14']))  # stochastic oscilator
 
         temp_df['%D'] = temp_df['%K'].rolling(window=3).mean()
 
@@ -147,7 +135,7 @@ class MlTrading:
         self.df = pd.concat([self.df, last], axis=0)
 
     def update_model(self):
-        self.model.fit(self.df.iloc[:, :-2], self.df.iloc[:, -2:])
+        self.model.fit(self.df.iloc[:-30, :-2], self.df.iloc[:-30, -2:])
         joblib.dump(self.model, self.model_name)
         print("Trading information updated.")
         return self.model
@@ -167,6 +155,12 @@ class MlTrading:
         if flag:
             if self.check_last_candle(last_candle):
                 self.preprocess_last(last_candle)
+                self.counter += 1
+                # If the counter reaches 30, update the model and reset the counter
+                if self.counter >= 30:
+                    self.update_model()
+                    self.counter = 0
+
                 return True, last_candle
             else:
                 return False, last_candle
@@ -174,7 +168,7 @@ class MlTrading:
 
     def predict(self) -> [Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums], float]:
         """
-
+            get predict of trade
         :return:
             0:sell
             1:buy
@@ -195,6 +189,7 @@ class MlTrading:
                 return PredictEnums().buy, accuracy
 
             return PredictEnums().neutral, accuracy
+
         except Exception as e:
             add_log(1, self.trade.id, 1, "error in ml trading predict : " + str(e))
             traceback.print_exc()
