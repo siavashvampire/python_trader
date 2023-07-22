@@ -7,10 +7,11 @@ import numpy
 from app.market_trading.api import get_trading
 from app.ml_avidmech.model.ml_trading import MlTrading
 
+trade_id = 4
 
 class TestTrading(unittest.TestCase):
     def test_preprocess(self):
-        trade = get_trading(id_in=9)
+        trade = get_trading(id_in=trade_id)
         ml_trade = MlTrading(trade=trade)
 
         self.assertTrue(ml_trade.df.empty)
@@ -61,7 +62,7 @@ class TestTrading(unittest.TestCase):
         self.assertIsInstance(first_row['label'].values[0], numpy.int64)
 
     def test_check_update(self):
-        trade = get_trading(id_in=9)
+        trade = get_trading(id_in=trade_id)
         ml_trade = MlTrading(trade=trade)
         ml_trade.preprocess()
 
@@ -74,7 +75,7 @@ class TestTrading(unittest.TestCase):
         self.assertTrue(flag)
 
     def test_last_candle(self):
-        trade = get_trading(id_in=9)
+        trade = get_trading(id_in=trade_id)
         ml_trade = MlTrading(trade=trade)
         ml_trade.preprocess()
 
@@ -98,3 +99,33 @@ class TestTrading(unittest.TestCase):
         self.assertIsInstance(last_candle['c'].values[0], float)
         self.assertIsInstance(last_candle['h'].values[0], float)
         self.assertIsInstance(last_candle['l'].values[0], float)
+
+    def test_reduce_df_size(self):
+        trade = get_trading(id_in=trade_id)
+        ml_trade = MlTrading(trade)
+        ml_trade.preprocess()
+        # temp_df = ml.df
+        # shape_first = temp_df.shape[0]
+        ml_trade.reduce_df_size()
+        temp_df2 = ml_trade.df
+        shape_second = temp_df2.shape[0]
+        self.assertLessEqual(shape_second,ml_trade.prefer_df_size)
+
+        first_row = ml_trade.df.head(1)
+
+        self.assertIsInstance(first_row['time'].values[0], str)
+        self.assertIsInstance(first_row['o'].values[0], float)
+        self.assertIsInstance(first_row['c'].values[0], float)
+        self.assertIsInstance(first_row['h'].values[0], float)
+        self.assertIsInstance(first_row['l'].values[0], float)
+        self.assertIsInstance(first_row['trend'].values[0], float)
+        self.assertIsInstance(first_row['MA_20'].values[0], float)
+        self.assertIsInstance(first_row['MA_50'].values[0], float)
+        self.assertIsInstance(first_row['L14'].values[0], float)
+        self.assertIsInstance(first_row['H14'].values[0], float)
+        self.assertIsInstance(first_row['%K'].values[0], float)
+        self.assertIsInstance(first_row['%D'].values[0], float)
+        self.assertIsInstance(first_row['EMA_20'].values[0], float)
+        self.assertIsInstance(first_row['EMA_50'].values[0], float)
+        self.assertIsInstance(first_row['next_trend'].values[0], float)
+        self.assertIsInstance(first_row['label'].values[0], numpy.int64)

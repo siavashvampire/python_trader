@@ -26,6 +26,7 @@ class MlTrading:
     candle: str
     last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
     counter: int = 0
+    prefer_df_size :int = 80
 
     def __init__(self, trade: TradingModel) -> None:
         self.trade = trade
@@ -314,4 +315,4 @@ class MlTrading:
         """
             reduce the size of main df
         """
-        self.df = self.df.tail(80)
+        self.df = self.df.tail(self.prefer_df_size).reset_index(drop=True)
