@@ -72,8 +72,8 @@ if __name__ in ['__main__', 'core.config.Config']:
 
         # Start Developer Config
         developer_config = sAll["developer_config"]
-
-        login_developer = False
-        if fernet.decrypt(developer_config) == b'VamPire1468':
-            login_developer = True
+        login_developer = True
+        # login_developer = False
+        # if developer_config != "" and fernet.decrypt(developer_config) == b'VamPire1468':
+        #     login_developer = True
         # end  Developer Config
