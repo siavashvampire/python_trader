@@ -158,6 +158,7 @@ class MlTrading:
                 self.counter += 1
                 # If the counter reaches 30, update the model and reset the counter
                 if self.counter >= 30:
+                    self.reduce_df_size()
                     self.update_model()
                     self.counter = 0
 
@@ -308,3 +309,9 @@ class MlTrading:
             return False
 
         return True
+
+    def reduce_df_size(self):
+        """
+            reduce the size of main df
+        """
+        self.df = self.df.tail(80)
