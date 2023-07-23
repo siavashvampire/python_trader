@@ -2,8 +2,6 @@ from app.ResourcePath.app_provider.admin.main import resource_path
 import os
 from tinydb import TinyDB
 
-from app.data_connector.model.enums import APIUsed
-
 from cryptography.fernet import Fernet
 
 config_path = "File/Config/"
@@ -53,7 +51,6 @@ if __name__ in ['__main__', 'core.config.Config']:
 
         # end telegram config
 
-
         # Start  DB Config
         system_version = "Trader Version: 0.1"
         db_username = sAll["db_username"]
@@ -62,7 +59,6 @@ if __name__ in ['__main__', 'core.config.Config']:
         costumer = sAll["costumer"]
         remove_db_flag = int(sAll["remove_db_flag"])
         # end  DB Config
-
 
         # Start API Config
         api_used = sAll["api_used"]
@@ -74,8 +70,31 @@ if __name__ in ['__main__', 'core.config.Config']:
 
         # Start Developer Config
         developer_config = sAll["developer_config"]
-        login_developer = True
-        # login_developer = False
-        # if developer_config != "" and fernet.decrypt(developer_config) == b'VamPire1468':
-        #     login_developer = True
+        # login_developer = True
+        login_developer = False
+        if developer_config != "" and fernet.decrypt(developer_config) == b'VamPire1468':
+            login_developer = True
+
         # end  Developer Config
+
+
+    def get_user_pass_quotex() -> tuple[str, str]:
+        try:
+            sAll1 = config_db.all()[0]
+            user_name_quotex1 = fernet.decrypt(sAll1["user_name_quotex"].encode("ascii")).decode('utf-8')
+            password_quotex1 = fernet.decrypt(sAll1["password_quotex"].encode("ascii")).decode('utf-8')
+
+            return user_name_quotex1, password_quotex1
+        except:
+            return "", ""
+
+
+def set_user_pass_quotex(username_quotex_in, password_quotex_in) -> None:
+    username_quotex_in = bytes(username_quotex_in, 'utf-8')
+    password_quotex_in = bytes(password_quotex_in, 'utf-8')
+
+    user_name_quotex1 = fernet.encrypt(username_quotex_in)
+    password_quotex1 = fernet.encrypt(password_quotex_in)
+
+    config_db.update({"user_name_quotex": user_name_quotex1.decode('utf-8')})
+    config_db.update({"password_quotex": password_quotex1.decode('utf-8')})

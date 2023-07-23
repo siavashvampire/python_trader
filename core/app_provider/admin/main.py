@@ -57,7 +57,7 @@ class Main:
 
         for trade in self.main_ui.trade_threads:
             self.start_splash.show_message("\t\t getting data for trade " + trade.name)
-            sleep(0.2)
+            sleep(0.1)
 
         self.main_ui.start_trade_threads()
         self.main_ui.close_pb.clicked.connect(self.close)

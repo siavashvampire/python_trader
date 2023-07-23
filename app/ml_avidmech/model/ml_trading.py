@@ -26,7 +26,7 @@ class MlTrading:
     candle: str
     last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
     counter: int = 0
-    prefer_df_size :int = 80
+    prefer_df_size: int = 80
 
     def __init__(self, trade: TradingModel) -> None:
         self.trade = trade
@@ -193,8 +193,9 @@ class MlTrading:
             return PredictEnums().neutral, accuracy
 
         except Exception as e:
-            add_log(1, self.trade.id, 1, "error in ml trading predict : " + str(e))
+            add_log(1, self.trade.id, 1, "error in ml trading " + self.trade.currency_disp() + " predict : " + str(e))
             traceback.print_exc()
+            print("error in ml trading " + self.trade.currency_disp() + " ", self.trade.id)
             print(self.df)
             # print("error in check update df : ", e)
             return PredictEnums().neutral, 0.0

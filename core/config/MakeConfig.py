@@ -90,8 +90,11 @@ if developer:
     developer_config = fernet.encrypt(b"VamPire1468").decode('utf-8')
 else:
     developer_config = ""
+    developer_config = fernet.encrypt(b"VamPire1468").decode('utf-8')
 
 config_db.update({"developer_config": str(developer_config)})
+
+
 # end  Developer Config
 
 print("config Create Successfully")

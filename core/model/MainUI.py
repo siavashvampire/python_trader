@@ -4,7 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QIcon, QFont, QIntValidator
 from PyQt5.QtWidgets import QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QVBoxLayout, QSpinBox, QComboBox, \
-    QWidget, QFrame, QRadioButton
+    QWidget, QFrame, QRadioButton, QLineEdit, QMessageBox
 
 import webbrowser
 
@@ -18,7 +18,7 @@ from app.market_trading.model.trading_model import TradingModel
 from app.market_trading.model.trading_thread_model import TradingThreadModel
 from core.config.Config import instructions_telegram_link
 from core.model.SplashScreen import SplashScreen
-from core.theme.style.style import activate_account_pb_style, activate_label_main_style, close_pb_style
+from core.theme.style.style import activate_account_pb_style, close_pb_style
 
 
 class MainUi(QFrame):
@@ -52,6 +52,12 @@ class MainUi(QFrame):
     main_logo_label: QLabel
     open_instructions_label: QLabel
     optimal_strategy_label: QLabel
+
+    quotex_username_lineEdit: QLineEdit
+    quotex_username_label: QLabel
+    quotex_password_lineEdit: QLineEdit
+    quotex_password_label: QLabel
+    set_profile_pb: QPushButton
 
     activate_account_pb: QPushButton
     activate_label_: QLabel
@@ -129,6 +135,7 @@ class MainUi(QFrame):
         #   End Colors
 
         trades = get_all_trading()
+        trades.remove(get_trading(12))
         # trades = [get_trading(11)]
 
         self.add_trade_to_trade_threads(trades)
@@ -208,21 +215,43 @@ class MainUi(QFrame):
 
         self.activate_label_4 = self.findChild(QLabel, "activate_label_4")
         self.activate_label_4.setStyleSheet(
-            "border-image: url(" + path + "core/theme/pic/pic/flags.png);background-repeat: no-repeat;background-position:center;")
+            "border-image: url(" + path + "core/theme/pic/pic/flags.png);background-repeat: "
+                                          "no-repeat;background-position:center;")
         self.activate_label_5 = self.findChild(QLabel, "activate_label_5")
         self.activate_label_5.setStyleSheet(
-            "border-image: url(" + path + "core/theme/pic/pic/sound.png);background-repeat: no-repeat;background-position:center;")
+            "border-image: url(" + path + "core/theme/pic/pic/sound.png);background-repeat: "
+                                          "no-repeat;background-position:center;")
 
         self.question_label = self.findChild(QLabel, "question_label")
         self.question_label.setStyleSheet(
-            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: no-repeat;background-position:center;")
+            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: "
+                                          "no-repeat;background-position:center;")
 
         self.question_label_2 = self.findChild(QLabel, "question_label_2")
         self.question_label_2.setStyleSheet(
-            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: no-repeat;background-position:center;")
+            "border-image: url(" + path + "core/theme/pic/pic/question_mark.png);background-repeat: "
+                                          "no-repeat;background-position:center;")
 
         self.activate_label_main = self.findChild(QLabel, "activate_label_main")
-        self.activate_label_main.setStyleSheet(activate_label_main_style)
+        self.activate_label_main.setStyleSheet(label_style)
+
+        self.quotex_username_label = self.findChild(QLabel, "quotex_username_label")
+        self.quotex_username_label.setStyleSheet(label_style)
+
+        self.quotex_password_label = self.findChild(QLabel, "quotex_password_label")
+        self.quotex_password_label.setStyleSheet(label_style)
+
+        self.quotex_username_lineEdit = self.findChild(QLineEdit, "quotex_username_lineEdit")
+        self.quotex_username_lineEdit.setStyleSheet(label_style)
+
+        self.quotex_password_lineEdit = self.findChild(QLineEdit, "quotex_password_lineEdit")
+        self.quotex_password_lineEdit.setStyleSheet(label_style)
+
+        self.show_user_pass_from_config()
+
+        self.set_profile_pb = self.findChild(QPushButton, "set_profile_pb")
+        self.set_profile_pb.setStyleSheet(active_pb_style)
+        self.set_profile_pb.clicked.connect(self.set_profile_to_config)
 
         self.activate_account_pb = self.findChild(QPushButton, "activate_account_pb")
         # self.activate_pb.clicked.connect(lambda: data_connector.open_trade_window())
@@ -293,6 +322,9 @@ class MainUi(QFrame):
         self.amount_spinBox.setEnabled(0)
         self.time_comboBox.setEnabled(0)
         self.balance_comboBox.setEnabled(0)
+        self.quotex_password_lineEdit.setEnabled(0)
+        self.quotex_username_lineEdit.setEnabled(0)
+        self.set_profile_pb.setEnabled(0)
         self.start_trading_pb.hide()
         self.main_trading_thread.set_time(int(self.time_comboBox.currentText()) * 60)
         self.main_trading_thread.set_amount(int(self.amount_spinBox.value()))
@@ -315,6 +347,9 @@ class MainUi(QFrame):
         self.amount_spinBox.setEnabled(1)
         self.time_comboBox.setEnabled(1)
         self.balance_comboBox.setEnabled(1)
+        self.quotex_password_lineEdit.setEnabled(1)
+        self.quotex_username_lineEdit.setEnabled(1)
+        self.set_profile_pb.setEnabled(1)
 
     def add_trade_to_trade_threads(self, trades: list[TradingModel]):
         """
@@ -354,3 +389,23 @@ class MainUi(QFrame):
             self.main_trading_thread.data_connector.change_account(1)
 
         self.balance_value_label.setText("$" + str(self.main_trading_thread.data_connector.get_balance()))
+
+    def show_user_pass_from_config(self):
+        from core.config.Config import get_user_pass_quotex
+        user_name_quotex, password_quotex = get_user_pass_quotex()
+        self.quotex_username_lineEdit.setText(user_name_quotex)
+        self.quotex_password_lineEdit.setText(password_quotex)
+
+    def set_profile_to_config(self):
+        from core.config.Config import set_user_pass_quotex
+        quotex_username = self.quotex_username_lineEdit.text()
+        quotex_password = self.quotex_password_lineEdit.text()
+
+        set_user_pass_quotex(quotex_username, quotex_password)
+        msg = QMessageBox()
+        msg.setWindowTitle("change username and password of quotex")
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("your username and password changed successfully")
+        msg.exec_()
+
+        self.show_user_pass_from_config()
