@@ -17,8 +17,8 @@ class TelegramApp:
     def __init__(self):
         self.telegram_application = Application.builder().token(token_telegram).build()
 
-        # job_queue = self.telegram_application.job_queue
-        # job_queue.run_repeating(self.send_message_func, interval=10, first=10)
+        job_queue = self.telegram_application.job_queue
+        job_queue.run_repeating(self.send_message_func, interval=10, first=10)
 
         self.telegram_application.add_handler(
             MessageHandler(filters.COMMAND & filters.Regex("start") & ~user_exist_filter, start_new_user))

@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, insert
 from sqlalchemy.orm import relationship
-from sqlalchemy import insert
 
 # from app.market_trading.api import get_trading
 from core.database.Base import Base
@@ -45,10 +44,14 @@ class LogModel(Base):
         Base.__init__(self)
 
     def __repr__(self):
-        if self.user_rel is not None:
-            return "<Log(%r, %r, %r, %r)>" % (
-                self.user_rel.first_name, self.trading_rel.currency_disp(), self.title_rel.name, self.text)
-        else:
+        try:
+            if self.user_rel is not None:
+                return "<Log(%r, %r, %r, %r)>" % (
+                    self.user_rel.first_name, self.trading_rel.currency_disp(), self.title_rel.name, self.text)
+            else:
+                return "<Log(%r, %r, %r, %r,%r)>" % (
+                    self.user_id, self.trading_id, self.title, self.text, self.id)
+        except:
             return "<Log(%r, %r, %r, %r,%r)>" % (
                 self.user_id, self.trading_id, self.title, self.text, self.id)
 
@@ -63,6 +66,7 @@ class LogModel(Base):
             engine.dispose()
             stmt = insert(LogModel).values(user_id=self.user_id, trading_id=self.trading_id, title=self.title,
                                            text=self.text)
+
             with engine.connect() as conn:
                 conn.execute(stmt)
                 conn.commit()
