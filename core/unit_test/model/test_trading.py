@@ -9,6 +9,7 @@ from app.ml_avidmech.model.ml_trading import MlTrading
 
 trade_id = 4
 
+
 class TestTrading(unittest.TestCase):
     def test_preprocess(self):
         trade = get_trading(id_in=trade_id)
@@ -109,7 +110,7 @@ class TestTrading(unittest.TestCase):
         ml_trade.reduce_df_size()
         temp_df2 = ml_trade.df
         shape_second = temp_df2.shape[0]
-        self.assertLessEqual(shape_second,ml_trade.prefer_df_size)
+        self.assertLessEqual(shape_second, ml_trade.prefer_df_size)
 
         first_row = ml_trade.df.head(1)
 

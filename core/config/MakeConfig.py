@@ -74,6 +74,9 @@ token_telegram = b"6328974072:AAEPZhYsr1nZVAYHWUbGUrFIhHJyVvfFvkk"
 token_telegram = fernet.encrypt(token_telegram)
 config_db.update({"token_telegram": token_telegram.decode('utf-8')})
 
+run_telegram_flag = True
+config_db.update({'run_telegram_flag': run_telegram_flag})
+
 bot_admin_id = [99981475]
 config_db.update({'bot_admin_id': bot_admin_id})
 

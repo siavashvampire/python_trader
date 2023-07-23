@@ -37,9 +37,11 @@ if __name__ == '__main__':
 
     create_db()
 
-    from app.telegram_bot.main import telegram_app
 
     thread = Thread(target=main_thread)
     thread.start()
 
-    telegram_app.run_all()
+    from core.config.Config import run_telegram_flag
+    if run_telegram_flag:
+        from app.telegram_bot.main import telegram_app
+        telegram_app.run_all()

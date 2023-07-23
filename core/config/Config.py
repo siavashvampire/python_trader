@@ -49,6 +49,8 @@ if __name__ in ['__main__', 'core.config.Config']:
 
         bot_admin_id: list[int] = sAll['bot_admin_id']
         telegram_channel_id: int = sAll['telegram_channel_id']
+        run_telegram_flag: bool = sAll['run_telegram_flag']
+
         # end telegram config
 
 
