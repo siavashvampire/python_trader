@@ -136,9 +136,15 @@ class MlTrading:
         self.df = pd.concat([self.df, last], axis=0)
 
     def update_model(self):
-        self.model.fit(self.df.iloc[:-30, :-2], self.df.iloc[:-30, -2:])
-        joblib.dump(self.model, self.model_name)
-        print("Trading information updated.")
+        # print("miad inja 1")
+        # temp_model = joblib.load(self.model_name)
+        # temp_model.fit(self.df.iloc[-31:-1, 1:-2], self.df.iloc[-31:-1, -1:])
+        # print("miad inja 2")
+        # joblib.dump(temp_model, self.model_name)
+        # print("miad inja 3")
+        # print("path : ", self.model_name)
+        # # self.model = joblib.load(self.model_name)
+        # self.model = temp_model
         return self.model
 
     def update(self) -> [bool, DataFrame]:
@@ -158,9 +164,9 @@ class MlTrading:
                 self.preprocess_last(last_candle)
                 self.counter += 1
                 # If the counter reaches 30, update the model and reset the counter
-                if self.counter >= 30:
+                if self.counter >= 2:
                     self.reduce_df_size()
-                    self.update_model()
+                    # self.update_model()
                     self.counter = 0
 
                 return True, last_candle
@@ -308,6 +314,24 @@ class MlTrading:
 
         if 'l' not in keys:
             add_log(1, self.trade.id, 1, "last_candle does not have l in keys")
+            return False
+
+        first_row = last_candle.head(1)
+
+        if not isinstance(first_row['time'].values[0], str):
+            add_log(1, self.trade.id, 1, "last_candle time is not str")
+            return False
+        if not isinstance(first_row['o'].values[0], float):
+            add_log(1, self.trade.id, 1, "last_candle o is not float")
+            return False
+        if not isinstance(first_row['c'].values[0], float):
+            add_log(1, self.trade.id, 1, "last_candle c is not float")
+            return False
+        if not isinstance(first_row['h'].values[0], float):
+            add_log(1, self.trade.id, 1, "last_candle h is not float")
+            return False
+        if not isinstance(first_row['l'].values[0], float):
+            add_log(1, self.trade.id, 1, "last_candle l is not float")
             return False
 
         return True
