@@ -1,6 +1,7 @@
 """
     TradingThreadModel
 """
+import traceback
 from datetime import datetime
 from threading import Thread
 from time import sleep
@@ -123,7 +124,8 @@ class TradingThreadModel:
 
                 except Exception as e:
                     sleep(1)
-                    print("error in trading thread update code: " + str(e))
+                    traceback.print_exc()
+                    print("error in trading thread update code: ", e)
                     # add_log(1, self.trade.id, 1, str(e))
 
                 if datetime.now().second > 10:
