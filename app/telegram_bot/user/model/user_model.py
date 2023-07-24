@@ -1,10 +1,12 @@
 from sqlalchemy import Column, String, Integer, BigInteger, DateTime, Boolean
+from sqlalchemy.orm import sessionmaker
 from telegram import User
 
 from core.config.Config import bot_admin_id
 from core.database.Base import Base
-from core.database.database import session
 from datetime import datetime
+
+from core.database.database import engine
 
 
 class TelegramUser(User, Base):
@@ -19,10 +21,10 @@ class TelegramUser(User, Base):
     insert_time = Column(DateTime, default=datetime.now)
 
     def __init__(self, id: int = 0, username: str = "", first_name: str = "", last_name: str = "") -> None:
-        self._frozen = False
 
         try:
-            temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == id).first()
+            with sessionmaker(bind=engine)() as session:
+                temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == id).first()
             if temp is None:
                 raise AttributeError
 
@@ -33,28 +35,30 @@ class TelegramUser(User, Base):
             self.username = temp.username
             self.access = temp.access
         except:
-            self.id = id
-            self.first_name = first_name
-            self.last_name = last_name
-            self.username = username
-            self.username = 0
+            pass
+            # self.first_name = first_name
+            # self.last_name = last_name
+            # self.username = username
+            # self.username = 0
 
         User.__init__(self=self, id=id, first_name=first_name, last_name=last_name, is_bot=False, username=username)
         Base.__init__(self)
 
     def insert_user(self) -> bool:
-        temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == self.id).first()
-        if temp is not None:
-            return False
-        try:
-            session.add(self)
-            session.commit()
-            return True
-        except:
-            return False
+        with sessionmaker(bind=engine)() as session:
+            temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == self.id).first()
+            if temp is not None:
+                return False
+            try:
+                session.add(self)
+                session.commit()
+                return True
+            except:
+                return False
 
     def check_exist_user(self) -> bool:
-        temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == self.id).first()
+        with sessionmaker(bind=engine)() as session:
+            temp: TelegramUser = session.query(TelegramUser).filter(TelegramUser.id == self.id).first()
         if temp is not None:
             return True
         return False
@@ -62,12 +66,14 @@ class TelegramUser(User, Base):
     def check_admin(self) -> bool:
         return self.id in bot_admin_id
 
-    def check_access(self) -> bool:
+    def check_access(self) -> int:
         return self.access
 
     def change_access(self, cond: int) -> None:
-        self._frozen = False
-        self.access = cond
+        # self.access = cond
+        with sessionmaker(bind=engine)() as session:
+            session.query(TelegramUser).filter(TelegramUser.user_id == self.user_id).update({'access': cond})
+            session.commit()
 
     def __repr__(self):
         return "<User(%r, %r)>" % (self.first_name, self.id)

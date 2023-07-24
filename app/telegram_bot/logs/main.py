@@ -50,7 +50,7 @@ async def percent_currency_show_handler(update: Update, context: ContextTypes.DE
 async def separate_otc_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     data = str(query.data)
-    png_path = "app/telegram_bot/logs/temp/separate_otc_handler_" + str(update.effective_user.id) + ".png"
+    png_path = "File/temp/separate_otc_handler_" + str(update.effective_user.id) + ".png"
     trading_id = extract_trading_id_from_data("separate_otc_", data)
 
     if trading_id != 0:
@@ -76,6 +76,7 @@ async def separate_otc_handler(update: Update, context: ContextTypes.DEFAULT_TYP
                 autopct='%1.1f%%', shadow=True, startangle=140)
         plt.axis('equal')
         plt.savefig(png_path)
+        plt.close()
         await update.effective_message.reply_photo(open(png_path, 'rb'))
         os.remove(png_path)
     else:
@@ -86,7 +87,7 @@ async def separate_otc_handler(update: Update, context: ContextTypes.DEFAULT_TYP
 async def over_all_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     data = str(query.data)
-    png_path = "app/telegram_bot/logs/temp/over_all_handler_" + str(update.effective_user.id) + ".png"
+    png_path = "File/temp/over_all_handler_" + str(update.effective_user.id) + ".png"
     trading_id = extract_trading_id_from_data("over_all_", data)
 
     if trading_id != 0:
@@ -112,6 +113,7 @@ async def over_all_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
                 autopct='%1.1f%%', shadow=True, startangle=140)
         plt.axis('equal')
         plt.savefig(png_path)
+        plt.close()
         await update.effective_message.reply_photo(open(png_path, 'rb'))
         os.remove(png_path)
     else:
@@ -172,7 +174,7 @@ async def over_all_detail_handler(update: Update, context: ContextTypes.DEFAULT_
 async def country_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     data = str(query.data)
-    png_path = "app/telegram_bot/logs/temp/country_handler_" + str(update.effective_user.id) + ".png"
+    png_path = "File/temp/country_handler_" + str(update.effective_user.id) + ".png"
     country_id = extract_trading_id_from_data("country_", data)
     trades = get_all_trades_by_country_id(country_id)
 
@@ -197,6 +199,7 @@ async def country_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
                 autopct='%1.1f%%', shadow=True, startangle=140)
         plt.axis('equal')
         plt.savefig(png_path)
+        plt.close()
         await update.effective_message.reply_photo(open(png_path, 'rb'))
         os.remove(png_path)
     else:

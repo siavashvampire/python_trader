@@ -70,7 +70,11 @@ config_db.update({"password_quotex": password_quotex.decode('utf-8')})
 
 
 # start telegram config
-token_telegram = b"6328974072:AAEPZhYsr1nZVAYHWUbGUrFIhHJyVvfFvkk"
+if developer:
+    token_telegram = b"5911882360:AAFQABCYQXObbISk4BGe4DE-_Vtxn39uQ1I"
+else:
+    token_telegram = b"6328974072:AAEPZhYsr1nZVAYHWUbGUrFIhHJyVvfFvkk"
+
 token_telegram = fernet.encrypt(token_telegram)
 config_db.update({"token_telegram": token_telegram.decode('utf-8')})
 

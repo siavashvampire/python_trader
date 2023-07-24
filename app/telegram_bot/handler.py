@@ -3,6 +3,7 @@ from telegram.ext import ContextTypes
 from app.telegram_bot.logs.main import percent_currency_handler, percent_currency_show_handler, separate_otc_handler, \
     over_all_handler, percent_all_currency_handler, percent_location_handler, country_handler, \
     separate_otc_detail_handler, over_all_detail_handler
+from app.telegram_bot.user.api import check_admin_user
 from app.telegram_bot.user.model.query_handlers import access_query_handler
 from core.config.Config import telegram_channel_id
 
@@ -10,12 +11,15 @@ from core.config.Config import telegram_channel_id
 async def callback_query_handler(update: Update, context: ContextTypes) -> None:
     chat_data = context.chat_data
 
-    if 'app' in chat_data.keys() and not chat_data['app'] == '':
-        if chat_data['app'] == 'user':
-            if chat_data['state'] == 'insert_wait_for_accept':
-                await access_query_handler(update, context)
+    if check_admin_user(update.effective_user):
+        query = update.callback_query
+        data = str(query.data)
+        if "user_" in data:
+            await access_query_handler(update, context)
+            await query.answer()
 
-        elif chat_data['app'] == 'main_app':
+    if 'app' in chat_data.keys() and not chat_data['app'] == '':
+        if chat_data['app'] == 'main_app':
             query = update.callback_query
             data = str(query.data)
 

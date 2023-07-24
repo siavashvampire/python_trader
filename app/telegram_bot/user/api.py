@@ -1,7 +1,10 @@
+from typing import Type
+
+from sqlalchemy.orm import sessionmaker
 from telegram import User
 
 from app.telegram_bot.user.model.user_model import TelegramUser
-from core.database.database import session
+from core.database.database import engine
 
 
 def get_user(id_in: int = 0, user_id: int = 0, user: User = None) -> TelegramUser:
@@ -12,15 +15,15 @@ def get_user(id_in: int = 0, user_id: int = 0, user: User = None) -> TelegramUse
 
     if user is not None:
         id_check = user.id
-
-    if id_check != 0:
-        temp = session.query(TelegramUser).filter(TelegramUser.id == id_check).first()
-        if temp is not None:
-            return temp
-    if user_id != 0:
-        temp = session.query(TelegramUser).filter(TelegramUser.user_id == user_id).first()
-        if temp is not None:
-            return temp
+    with sessionmaker(bind=engine)() as session:
+        if id_check != 0:
+            temp = session.query(TelegramUser).filter(TelegramUser.id == id_check).first()
+            if temp is not None:
+                return temp
+        if user_id != 0:
+            temp = session.query(TelegramUser).filter(TelegramUser.user_id == user_id).first()
+            if temp is not None:
+                return temp
 
     return TelegramUser(id=user.id, username=user.username, first_name=user.first_name,
                         last_name=user.last_name)
@@ -30,8 +33,9 @@ def add_user(user_in: User) -> bool:
     return get_user(user=user_in).insert_user()
 
 
-def get_all_user() -> list[TelegramUser]:
-    return session.query(TelegramUser).all()
+def get_all_user() -> list[Type[TelegramUser]]:
+    with sessionmaker(bind=engine)() as session:
+        return session.query(TelegramUser).all()
 
 
 def check_exist_user(user_in: User) -> bool:
