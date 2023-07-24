@@ -1,6 +1,6 @@
 from typing import Union, Type
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 from app.logging.main import log_sender
 from app.logging.model.log_model import LogModel
@@ -12,7 +12,7 @@ def get_log(id_in: int = 0) -> LogModel:
     temp = LogModel()
 
     if id_in != 0:
-        with Session(engine) as session:
+        with sessionmaker(bind=engine)() as session:
             temp: LogModel = session.query(LogModel).filter(LogModel.id == id_in).first()
 
     return temp
@@ -22,7 +22,8 @@ def get_log_by_user(telegram_id: int = 0, user_id: int = 0) -> list[Type[LogMode
     if user_id == 0:
         user = get_user(id_in=telegram_id)
         user_id = user.user_id
-    with Session(engine) as session:
+
+    with sessionmaker(bind=engine)() as session:
         return session.query(LogModel).filter(LogModel.user_id == user_id).all()
 
 
@@ -34,7 +35,8 @@ def get_log_by_title(title_id: Union[list[int], int]) -> list[Type[LogModel]]:
     """
     if type(title_id) == int:
         title_id = [title_id]
-    with Session(engine) as session:
+
+    with sessionmaker(bind=engine)() as session:
         return session.query(LogModel).filter(LogModel.title.in_(title_id)).all()
 
 
@@ -46,7 +48,8 @@ def get_log_by_trading(trading_id: Union[list[int], int]) -> list[Type[LogModel]
     """
     if type(trading_id) == int:
         trading_id = [trading_id]
-    with Session(engine) as session:
+
+    with sessionmaker(bind=engine)() as session:
         return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id)).all()
 
 
@@ -64,7 +67,7 @@ def get_log_by_title_by_trading(trading_id: Union[list[int], int], title_id: Uni
     if type(trading_id) == int:
         trading_id = [trading_id]
 
-    with Session(engine) as session:
+    with sessionmaker(bind=engine)() as session:
         return session.query(LogModel).filter(LogModel.trading_id.in_(trading_id), LogModel.title.in_(title_id)).all()
 
 
@@ -90,5 +93,6 @@ def get_all_log() -> list[Type[LogModel]]:
         get all logs
     :return:
     """
-    with Session(engine) as session:
+
+    with sessionmaker(bind=engine)() as session:
         return session.query(LogModel).all()
