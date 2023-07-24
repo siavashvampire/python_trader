@@ -158,8 +158,8 @@ async def over_all_detail_handler(update: Update, context: ContextTypes.DEFAULT_
         lose = len(get_log_by_title_by_trading(trade.id, 8))
         total = win + lose
         if total != 0:
-            percent = round(win / total, 2)
-            text_temp = "accuracy for " + name + " is : " + str(percent)
+            percent = round(win / total * 100, 2)
+            text_temp = "accuracy for " + name + " is : " + str(percent) + "%"
         else:
             text_temp = "no trade is logged for " + name
 
@@ -188,7 +188,6 @@ async def country_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     title = get_country(country_id).name
 
     if win != 0 or lose != 0:
-
         import matplotlib.pyplot as plt
 
         labels = ['win , ' + str(win), 'lose , ' + str(lose)]
