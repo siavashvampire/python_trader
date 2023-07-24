@@ -20,18 +20,10 @@
 #        'percentLoss': 100, 'openPrice': 1.08983, 'copyTicket': '', 'closePrice': 0, 'command': 0,
 #        'asset': 'EURUSD' or CADCHF_otc,'nickname': '#24692142', 'accountBalance': 9876.7, 'requestId': '1',
 #        'openMs': 40, 'currency': 'USD'}
-from time import sleep
 
 # from app.quotex.api import qx_api_class
-from core.database.database import create_db
-from app.logging.api import get_log_by_trading, add_log
+# from core.database.database import create_db
 
-create_db()
-asd = get_log_by_trading(11)
-print(asd)
-add_log(1, 11, 6, "test2")
-sleep(10)
-asd = get_log_by_trading(11)
-print(asd)
+# create_db()
 # asd =  get_country(241).name
 # print(asd)
