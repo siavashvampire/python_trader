@@ -75,11 +75,13 @@ class MainTradingThreadModel:
                     if check_win is not None:
                         # print("check win not None: ", check_win['profit'])
                         if check_win['profit'] >= 0:
-                            add_log(1, trade_id, 7, "we win in :" + str(check_win))
-                            add_message("we win in :" + str(check_win))
+                            txt = "we win " + str(check_win['profit']) + " in " + str(check_win['asset'])
+                            add_log(1, trade_id, 7, txt)
+                            add_message(txt)
                         else:
-                            add_log(1, trade_id, 8, "we lose in :" + str(check_win))
-                            add_message("we lose in :" + str(check_win))
+                            txt = "we lose " + str(check_win['profit']) + " in " + str(check_win['asset'])
+                            add_log(1, trade_id, 8, txt)
+                            add_message(txt)
                     else:
                         self.trade_log_queue.put([trading_web_id, trade_id])
 
