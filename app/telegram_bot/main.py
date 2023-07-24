@@ -49,7 +49,6 @@ class TelegramApp:
 
 
     async def send_message_func(self, context: CallbackContext) -> None:
-        print("miad inja123")
         try:
             user_id, text = self.send_queue.get(timeout=1)
             await context.bot.send_message(chat_id=telegram_channel_id, text=text)

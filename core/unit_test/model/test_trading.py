@@ -105,7 +105,7 @@ class TestTrading(unittest.TestCase):
         trade = get_trading(id_in=trade_id)
         ml_trade = MlTrading(trade)
         ml_trade.preprocess()
-        # temp_df = ml.df
+        # temp_df = ml_trade.df
         # shape_first = temp_df.shape[0]
         ml_trade.reduce_df_size()
         temp_df2 = ml_trade.df
