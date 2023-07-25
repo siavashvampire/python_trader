@@ -1,11 +1,11 @@
 from telegram.ext import Application, MessageHandler, filters, CallbackQueryHandler, CallbackContext, PicklePersistence, \
     PersistenceInput
-from app.telegram_bot.start.main import main_app
+from app.telegram_bot.start.main import main_app, admin_system_check
 from app.telegram_bot.start.main import start_new_user, start_exist_user, say_start_user
 from app.telegram_bot.handler import callback_query_handler
 from app.telegram_bot.user.main import without_access_user
 from core.config.Config import token_telegram, telegram_channel_id
-from app.telegram_bot.core.custom_filter.custom_filter import user_exist_filter, access_filter
+from app.telegram_bot.core.custom_filter.custom_filter import user_exist_filter, access_filter, user_admin_filter
 from app.telegram_bot.core.error_handler.error import error_handler
 
 from queue import Queue
@@ -24,6 +24,10 @@ class TelegramApp:
             MessageHandler(filters.COMMAND & filters.Regex("start") & ~user_exist_filter, start_new_user))
         self.telegram_application.add_handler(
             MessageHandler(filters.COMMAND & filters.Regex("start") & user_exist_filter, start_exist_user))
+
+        self.telegram_application.add_handler(
+            MessageHandler(filters.COMMAND & filters.Regex("systemCheck") & user_admin_filter, admin_system_check))
+
         self.telegram_application.add_handler(MessageHandler(~user_exist_filter, say_start_user))
 
         self.telegram_application.add_handler(MessageHandler(~access_filter & user_exist_filter, without_access_user))
@@ -45,8 +49,7 @@ class TelegramApp:
         # async with self.telegram_application:
         #     # await self.telegram_application.initialize()  # inits bot, update, persistence
         #     await self.telegram_application.start()
-            # await self.telegram_application.updater.start_polling()
-
+        # await self.telegram_application.updater.start_polling()
 
     async def send_message_func(self, context: CallbackContext) -> None:
         try:
