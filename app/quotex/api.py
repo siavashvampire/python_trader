@@ -323,13 +323,13 @@ class QuotexAPI:
             # print("we are buying "+ trade.currency_disp())
             add_log(1, trade.id, 4, "we are buying " + trade.currency_disp())
 
-            add_message( "we are buying " + trade.currency_disp())
+            add_message("we are buying " + trade.currency_disp())
             direction = "call"  # or "put"
         else:
             # print("we are selling "+ trade.currency_disp())
             add_log(1, trade.id, 2, "we are selling " + trade.currency_disp())
 
-            add_message( "we are selling " + trade.currency_disp())
+            add_message("we are selling " + trade.currency_disp())
             direction = "put"  # or "put"
 
         c, buy_info = self.qx_api.buy_exact(asset, amount, direction, duration)
@@ -488,7 +488,11 @@ class QuotexAPI:
             'l': l,
         }
 
-        return DataFrame(data2)
+        data = DataFrame(data2)
+        if csv_path != "":
+            data.to_csv(csv_path, index=True, encoding='utf-8')
+
+        return data
 
     @check_connection_decoration
     def check_asset(self, name: str) -> Optional[bool]:

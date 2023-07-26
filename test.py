@@ -21,9 +21,22 @@
 #        'asset': 'EURUSD' or CADCHF_otc,'nickname': '#24692142', 'accountBalance': 9876.7, 'requestId': '1',
 #        'openMs': 40, 'currency': 'USD'}
 
-# from app.quotex.api import qx_api_class
-# from core.database.database import create_db
+from core.database.database import create_db
 
-# create_db()
-# asd =  get_country(241).name
-# print(asd)
+create_db()
+
+from app.data_connector.model.data_connector import DataConnector
+from app.market_trading.api import get_all_trading
+
+data_connector = DataConnector()
+
+trades = get_all_trading()
+
+# trade_data_history_CAD_CHF_M1
+
+for trade in trades:
+    asset = trade.currency_disp()
+    candle = "M1"
+    df1 = data_connector.get_history(asset, "2023-07-18 00:00:00", "2023-07-25 00:00:00", candle,
+                                     "File/trade_data/trade_data_history_" + asset + "_" + candle +".csv")
+    # print(df1)
