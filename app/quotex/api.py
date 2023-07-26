@@ -4,6 +4,7 @@ from datetime import datetime
 from time import sleep
 from typing import Optional
 
+import pandas as pd
 from pandas import DataFrame
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -451,48 +452,58 @@ class QuotexAPI:
 
         start_time = datetime.strptime(start_time, time_format)
         end_time = datetime.strptime(end_time, time_format)
-        _time = end_time.timestamp()
-
-        offset = _time - start_time.timestamp() + 60  # how much sec want to get     _time-offset --->your candle <---_time
 
         if candle == "M1":
             period = 60  # candle size in sec
         else:
             period = 60  # candle size in sec
 
-        data = self.qx_api.get_candle(asset, _time, offset, period)['data']
+        freq = '1h'
+        dr = pd.date_range(start_time, end_time, freq=freq)
+        data_total = pd.DataFrame()
 
-        if len(data) == 0:
-            return DataFrame()
+        for t in range(len(dr) - 1):
+            start_time_temp = dr[t].to_pydatetime()
+            end_time_temp = dr[t + 1].to_pydatetime()
+            _time = end_time_temp.timestamp()
+            print(end_time_temp)
+            offset = 61 * 60  # how much sec want to get     _time-offset --->your candle <---_time
 
-        o = []
-        c = []
-        h = []
-        l = []
+            data = self.qx_api.get_candle(asset, _time, offset, period)['data']
 
-        time_temp = []
+            if len(data) == 0:
+                return DataFrame()
 
-        for temp_data in data:
-            # time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
-            time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime(time_format))
-            o.append(temp_data['open'])
-            c.append(temp_data['close'])
-            h.append(temp_data['high'])
-            l.append(temp_data['low'])
+            o = []
+            c = []
+            h = []
+            l = []
 
-        data2 = {
-            'time': time_temp,
-            'o': o,
-            'c': c,
-            'h': h,
-            'l': l,
-        }
+            time_temp = []
 
-        data = DataFrame(data2)
+            for temp_data in data:
+                # time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
+                time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime(time_format))
+                o.append(temp_data['open'])
+                c.append(temp_data['close'])
+                h.append(temp_data['high'])
+                l.append(temp_data['low'])
+
+            data2 = {
+                'time': time_temp,
+                'o': o,
+                'c': c,
+                'h': h,
+                'l': l,
+            }
+
+            data_temp = DataFrame(data2)
+            data_total = pd.concat([data_total, data_temp])
+        data_total = data_total.reset_index(drop=True)
         if csv_path != "":
-            data.to_csv(csv_path, index=True, encoding='utf-8')
+            data_total.to_csv(csv_path, index=True, encoding='utf-8')
 
-        return data
+        return data_total
 
     @check_connection_decoration
     def check_asset(self, name: str) -> Optional[bool]:
