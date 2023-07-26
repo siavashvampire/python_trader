@@ -66,7 +66,7 @@ class MlTrading:
         """
         # self.df = self.get_history_from_file()
 
-        start_time = datetime.utcnow() - timedelta(hours=8)
+        start_time = datetime.utcnow() - timedelta(hours=2)
         end_time = datetime.utcnow()
         self.df = self.get_history(start_time, end_time)
 
