@@ -452,6 +452,8 @@ class QuotexAPI:
 
         start_time = datetime.strptime(start_time, time_format)
         end_time = datetime.strptime(end_time, time_format)
+        start_time = start_time.replace(second=0, microsecond=0)
+        end_time = end_time.replace(second=0, microsecond=0)
 
         if candle == "M1":
             period = 60  # candle size in sec
@@ -463,42 +465,12 @@ class QuotexAPI:
         data_total = pd.DataFrame()
 
         for t in range(len(dr) - 1):
-            start_time_temp = dr[t].to_pydatetime()
             end_time_temp = dr[t + 1].to_pydatetime()
-            _time = end_time_temp.timestamp()
+            data_temp = self.get_history_detail_quotex(asset, end_time_temp)
             print(end_time_temp)
-            offset = 61 * 60  # how much sec want to get     _time-offset --->your candle <---_time
 
-            data = self.qx_api.get_candle(asset, _time, offset, period)['data']
-
-            if len(data) == 0:
-                return DataFrame()
-
-            o = []
-            c = []
-            h = []
-            l = []
-
-            time_temp = []
-
-            for temp_data in data:
-                # time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
-                time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime(time_format))
-                o.append(temp_data['open'])
-                c.append(temp_data['close'])
-                h.append(temp_data['high'])
-                l.append(temp_data['low'])
-
-            data2 = {
-                'time': time_temp,
-                'o': o,
-                'c': c,
-                'h': h,
-                'l': l,
-            }
-
-            data_temp = DataFrame(data2)
             data_total = pd.concat([data_total, data_temp])
+
         data_total = data_total.reset_index(drop=True)
         if csv_path != "":
             data_total.to_csv(csv_path, index=True, encoding='utf-8')
@@ -590,6 +562,42 @@ class QuotexAPI:
             asset += "_otc"
 
         return asset
+
+    @check_connection_decoration
+    def get_history_detail_quotex(self, asset, end_time):
+        period = 60
+        _time = end_time.timestamp()
+        offset = 61 * 60  # how much sec want to get     _time-offset --->your candle <---_time
+
+        data = self.qx_api.get_candle(asset, _time, offset, period)['data']
+
+        if len(data) == 0:
+            return DataFrame()
+
+        o = []
+        c = []
+        h = []
+        l = []
+
+        time_temp = []
+
+        for temp_data in data:
+            # time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime('%Y-%m-%d %H:%M:%S+00:00'))
+            time_temp.append(datetime.fromtimestamp(temp_data['time']).strftime(time_format))
+            o.append(temp_data['open'])
+            c.append(temp_data['close'])
+            h.append(temp_data['high'])
+            l.append(temp_data['low'])
+
+        data2 = {
+            'time': time_temp,
+            'o': o,
+            'c': c,
+            'h': h,
+            'l': l,
+        }
+
+        return DataFrame(data2)
 
 
 if api_used == APIUsed().quotex:

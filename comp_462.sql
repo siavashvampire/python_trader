@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2023 at 09:20 PM
+-- Generation Time: Jul 26, 2023 at 12:28 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -326,12 +326,23 @@ INSERT INTO `country` (`id`, `name`, `short_name`, `flag_unicode`, `currency`) V
 
 CREATE TABLE `log` (
   `id` int(11) NOT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `trading_id` int(11) DEFAULT NULL,
-  `title` varchar(50) DEFAULT NULL,
-  `text` varchar(50) DEFAULT NULL,
-  `insert_time` datetime DEFAULT NULL
+  `title` int(11) DEFAULT NULL,
+  `text` varchar(1000) DEFAULT NULL,
+  `insert_time` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `log`
+--
+
+INSERT INTO `log` (`id`, `user_id`, `trading_id`, `title`, `text`, `insert_time`) VALUES
+(144, 1, 4, 2, 'we are selling CAD_CHF', '2023-07-24 11:27:07'),
+(145, 1, 4, 6, '{\'id\': \'598f948f-d6c9-470b-8786-021289b3355b\', \'openTime\': \'2023-07-24 07:57:08\', \'closeTime\': \'2023-07-24 07:58:08\', \'isDemo\': 1, \'amount\': 10, \'profit\': 6.7, \'percentProfit\': 67, \'percentLoss\': 100, \'openPrice\': 0.67164, \'asset\': \'CADCHF_otc\', \'accountBalance\': 11524.3}', '2023-07-24 11:27:08'),
+(146, 1, 4, 7, 'we win in :{\'id\': \'598f948f-d6c9-470b-8786-021289b3355b\', \'openTime\': \'2023-07-24 07:57:08\', \'closeTime\': \'2023-07-24 07:58:08\', \'amount\': 10, \'profit\': 6.7, \'percentProfit\': 67, \'percentLoss\': 100, \'openPrice\': 0.67164, \'closePrice\': 0.67093, \'asset\': \'CADCHF_otc\', \'isDemo\': 1}', '2023-07-24 11:28:15'),
+(341, 1, 5, 1, 'testqwr', '2023-07-25 13:08:05'),
+(342, 1, 14, 1, 'asdfvzzv', '2023-07-25 13:08:52');
 
 -- --------------------------------------------------------
 
@@ -349,7 +360,38 @@ CREATE TABLE `log_title` (
 --
 
 INSERT INTO `log_title` (`id`, `name`) VALUES
-(1, 'error');
+(1, 'error'),
+(2, 'sell_open'),
+(3, 'sell_close'),
+(4, 'buy_open'),
+(5, 'buy_close'),
+(6, 'log'),
+(7, 'win'),
+(8, 'lose');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `telegram_users`
+--
+
+CREATE TABLE `telegram_users` (
+  `user_id` int(11) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `access` tinyint(1) DEFAULT NULL,
+  `insert_time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `telegram_users`
+--
+
+INSERT INTO `telegram_users` (`user_id`, `id`, `first_name`, `last_name`, `username`, `access`, `insert_time`) VALUES
+(2, 99981475, 'vampire', NULL, 'Vampire1468', 1, '2023-07-24 15:29:41'),
+(9, 258534481, 'Alireza', 'Tavakol', 'AvidMechanic', 1, '2023-07-24 15:52:55');
 
 -- --------------------------------------------------------
 
@@ -369,10 +411,21 @@ CREATE TABLE `trading` (
 --
 
 INSERT INTO `trading` (`id`, `country_from`, `country_to`, `candle`) VALUES
-(1, 74, 241, 1),
-(2, 82, 241, 1),
-(3, 39, 44, 1),
-(4, 74, 241, 1);
+(1, 14, 39, 1),
+(2, 14, 44, 1),
+(3, 14, 241, 1),
+(4, 39, 44, 1),
+(5, 74, 14, 1),
+(6, 74, 39, 1),
+(7, 74, 44, 1),
+(8, 74, 82, 1),
+(9, 74, 241, 1),
+(10, 82, 14, 1),
+(11, 82, 39, 1),
+(12, 177, 39, 1),
+(13, 177, 44, 1),
+(14, 241, 39, 1),
+(15, 241, 44, 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +434,7 @@ INSERT INTO `trading` (`id`, `country_from`, `country_to`, `candle`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) NOT NULL,
+  `id` int(11) NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `admin_check_flag` tinyint(1) DEFAULT NULL,
@@ -420,13 +473,22 @@ ALTER TABLE `log`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `trading_id` (`trading_id`);
+  ADD KEY `trading_id` (`trading_id`),
+  ADD KEY `title` (`title`);
 
 --
 -- Indexes for table `log_title`
 --
 ALTER TABLE `log_title`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `telegram_users`
+--
+ALTER TABLE `telegram_users`
+  ADD PRIMARY KEY (`user_id`,`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`),
   ADD UNIQUE KEY `id` (`id`);
 
 --
@@ -466,25 +528,31 @@ ALTER TABLE `country`
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=343;
 
 --
 -- AUTO_INCREMENT for table `log_title`
 --
 ALTER TABLE `log_title`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `telegram_users`
+--
+ALTER TABLE `telegram_users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `trading`
 --
 ALTER TABLE `trading`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=725;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -495,7 +563,8 @@ ALTER TABLE `users`
 --
 ALTER TABLE `log`
   ADD CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `log_ibfk_2` FOREIGN KEY (`trading_id`) REFERENCES `trading` (`id`);
+  ADD CONSTRAINT `log_ibfk_2` FOREIGN KEY (`trading_id`) REFERENCES `trading` (`id`),
+  ADD CONSTRAINT `log_ibfk_3` FOREIGN KEY (`title`) REFERENCES `log_title` (`id`);
 
 --
 -- Constraints for table `trading`
