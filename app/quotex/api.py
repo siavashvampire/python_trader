@@ -434,7 +434,7 @@ class QuotexAPI:
 
     @check_connection_decoration
     def get_history_quotex(self, name: str, start_time: str, end_time: str, candle: str,
-                           csv_path: str = "") -> DataFrame:
+                           csv_path: str = "", force_otc: Optional[bool] = None) -> DataFrame:
         # TODO:irad dare dakhele OTC 2 saat akharo bishtar nemide
         """
             get history of data in candles
@@ -449,6 +449,13 @@ class QuotexAPI:
         """
 
         asset = self.get_asset_from_name(name)
+
+        if force_otc is not None:
+            if force_otc:
+                if "_otc" not in asset:
+                    asset += "_otc"
+            else:
+                asset = asset.replace("_otc", "")
 
         start_time = datetime.strptime(start_time, time_format)
         end_time = datetime.strptime(end_time, time_format)
@@ -467,6 +474,8 @@ class QuotexAPI:
 
         for t in range(len(dr) - 1):
             end_time_temp = dr[t + 1].to_pydatetime()
+            print(end_time_temp)
+
             data_temp = self.get_history_detail_quotex(asset, end_time_temp)
 
             data_total = pd.concat([data_total, data_temp])
