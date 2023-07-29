@@ -467,13 +467,25 @@ class QuotexAPI:
         for t in range(len(dr) - 1):
             end_time_temp = dr[t + 1].to_pydatetime()
             data_temp = self.get_history_detail_quotex(asset, end_time_temp)
-            print(end_time_temp)
+            # print(end_time_temp)
 
             data_total = pd.concat([data_total, data_temp])
 
+        # start = self.transform_datetime(start)
+        # end = self.transform_datetime(end_total)
+        # batch = self.retrieve_data(instrument, start, end,
+        #                            granularity, price)
+        # data = pd.concat([data, batch])
+
         data_total = data_total.reset_index(drop=True)
         if csv_path != "":
-            data_total.to_csv(csv_path, index=True, encoding='utf-8')
+            try:
+                data = pd.read_csv(csv_path)
+            except:
+                data = pd.DataFrame()
+
+            data_total = pd.concat([data, data_total])
+            data_total.to_csv(csv_path, index=False, encoding='utf-8')
 
         return data_total
 
@@ -564,10 +576,8 @@ class QuotexAPI:
         return asset
 
     @check_connection_decoration
-    def get_history_detail_quotex(self, asset, end_time):
-        period = 60
+    def get_history_detail_quotex(self, asset: str, end_time: datetime, period: int = 60, offset: int = 61 * 60):
         _time = end_time.timestamp()
-        offset = 61 * 60  # how much sec want to get     _time-offset --->your candle <---_time
 
         data = self.qx_api.get_candle(asset, _time, offset, period)['data']
 
