@@ -14,6 +14,7 @@ from app.market_trading.api import get_all_trading
 data_connector = DataConnector()
 
 trades = get_all_trading()
+
 candle = "M1"
 
 main_path = "File/trade_data/"
@@ -41,7 +42,7 @@ for trade in trades:
     end_time = datetime.utcnow()
     end_time = end_time.replace(second=0, microsecond=0)
     if not file_exist(asset):
-        start_time = datetime.utcnow() - timedelta(days=93)
+        start_time = datetime.utcnow() - timedelta(hours=4)
         start_time = start_time.replace(second=0, microsecond=0)
     else:
         start_time = get_start_time_from_file(file_path)

@@ -11,7 +11,9 @@ for file in files:
     time = data['time']
     d = []
 
-    if len(np.unique(np.array(time))) != 133920:
+    if len(np.unique(np.array(time))) != data.shape[0]:
+        print(data.shape[0])
+        print(len(np.unique(np.array(time))))
         print(file)
 
 

@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
 from typing import Optional
 
@@ -454,6 +454,7 @@ class QuotexAPI:
         end_time = datetime.strptime(end_time, time_format)
         start_time = start_time.replace(second=0, microsecond=0)
         end_time = end_time.replace(second=0, microsecond=0)
+        end_time_temp = start_time
 
         if candle == "M1":
             period = 60  # candle size in sec
@@ -467,15 +468,20 @@ class QuotexAPI:
         for t in range(len(dr) - 1):
             end_time_temp = dr[t + 1].to_pydatetime()
             data_temp = self.get_history_detail_quotex(asset, end_time_temp)
-            # print(end_time_temp)
 
             data_total = pd.concat([data_total, data_temp])
+            end_time_temp += timedelta(minutes=1)
 
-        # start = self.transform_datetime(start)
-        # end = self.transform_datetime(end_total)
-        # batch = self.retrieve_data(instrument, start, end,
-        #                            granularity, price)
-        # data = pd.concat([data, batch])
+        start_final_temp = end_time_temp
+
+        if start_final_temp >= end_time:
+            offset = 0
+        else:
+            offset = (end_time - start_final_temp).seconds + 60
+
+        if offset != 0:
+            data_temp = self.get_history_detail_quotex(asset, end_time, offset=offset)
+            data_total = pd.concat([data_total, data_temp])
 
         data_total = data_total.reset_index(drop=True)
         if csv_path != "":
