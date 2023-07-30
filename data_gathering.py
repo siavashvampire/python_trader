@@ -30,8 +30,14 @@ def file_exist(file_name_in: str):
 
 
 def get_start_time_from_file(file_path_in: str) -> datetime:
-    data = pd.read_csv(file_path_in)
-    return datetime.strptime(data.tail(1)['time'].values[0], time_format).replace(second=0, microsecond=0)
+    data_temp = pd.read_csv(file_path_in)
+    try:
+        start_time_temp = datetime.strptime(data_temp.tail(1)['time'].values[0], time_format).replace(second=0,
+                                                                                                      microsecond=0)
+    except:
+        start_time_temp = datetime.utcnow() - timedelta(days=93)
+
+    return start_time_temp
 
 
 for trade in trades:
