@@ -20,5 +20,3 @@
 #        'percentLoss': 100, 'openPrice': 1.08983, 'copyTicket': '', 'closePrice': 0, 'command': 0,
 #        'asset': 'EURUSD' or CADCHF_otc,'nickname': '#24692142', 'accountBalance': 9876.7, 'requestId': '1',
 #        'openMs': 40, 'currency': 'USD'}
-
-

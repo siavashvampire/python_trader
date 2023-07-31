@@ -48,7 +48,7 @@ class MainTradingThreadModel:
         """
         while True:
             sleep(0.1)
-            if (datetime.now() - self.last_check_time).seconds > 2:
+            if (datetime.now() - self.last_check_time).total_seconds() > 2:
                 try:
                     self.make_all_trade_off_color()
                     max_trade = self.find_max_trade()
@@ -66,7 +66,7 @@ class MainTradingThreadModel:
                 except:
                     pass
 
-            if (datetime.now() - self.last_check_time_2).seconds > 20:
+            if (datetime.now() - self.last_check_time_2).total_seconds() > 20:
                 try:
                     self.balance_value_label.setText("$" + str(self.data_connector.get_balance()))
                     trading_web_id, trade_id = self.trade_log_queue.get(timeout=1)

@@ -9,7 +9,7 @@ config_path = "../../File/Config/"
 config_db_name = 'config.json'
 config_table_name = 'config'
 
-developer = True
+developer = False
 
 os.makedirs(resource_path(config_path), exist_ok=True)
 

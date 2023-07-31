@@ -81,7 +81,7 @@ class Main:
                 if self.loginFlag:
                     login_diff = datetime.now() - self.main_ui.LoginNow
                     # TODO:check konim k login bayad koja etefagh biofte
-                    if login_diff.seconds > logout_time:
+                    if login_diff.total_seconds() > logout_time:
                         pass
                         # self.logout()
                 if stop_thread():
@@ -104,7 +104,7 @@ class Main:
         """
         for trade in self.main_ui.trade_threads:
             trade.check()
-            sleep(0.5)
+            sleep(0.1)
 
     def stop_all_threads(self):
         """
