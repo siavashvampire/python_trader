@@ -6,9 +6,10 @@ from core.database.database import create_db
 
 create_db()
 
-from app.market_trading.api import get_all_trading
+from app.market_trading.api import get_all_trading,get_trading
 
-trades = get_all_trading()
+# trades = get_all_trading()
+trades = [get_trading(2)]
 
 for trade in trades:
     name = trade.currency_disp()
