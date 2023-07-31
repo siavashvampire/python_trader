@@ -20,12 +20,14 @@ class MlTrading:
     """
     df: DataFrame = DataFrame()
     model: GradientBoostingClassifier
+    otc_model: GradientBoostingClassifier
     model_name: str
+    otc_model_name: str
     get_last_candle: callable
     trade: TradingModel
     candle: str
     last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
-    counter: int = 0
+    counter: int = 730
     prefer_df_size: int = 80
 
     def __init__(self, trade: TradingModel) -> None:
@@ -40,6 +42,9 @@ class MlTrading:
         # self.model = joblib.load('model_1min_EUR_USD.pkl')
         self.model_name = main_root + 'trade_model_' + self.trade.currency_disp() + '_' + self.candle + '.pkl'
         self.model = joblib.load(self.model_name)
+
+        self.otc_model_name = main_root + 'trade_model_' + self.trade.currency_disp() + '_otc_' + self.candle + '.pkl'
+        self.otc_model = joblib.load(self.model_name)
 
         self.data_connector = DataConnector()
 
@@ -66,7 +71,7 @@ class MlTrading:
         """
         # self.df = self.get_history_from_file()
 
-        start_time = datetime.utcnow() - timedelta(hours=2)
+        start_time = datetime.utcnow() - timedelta(hours=3)
         end_time = datetime.utcnow()
         self.df = self.get_history(start_time, end_time)
 
@@ -89,7 +94,7 @@ class MlTrading:
         self.df['EMA_50'] = self.df['c'].ewm(span=50, adjust=False).mean()
 
         self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
-        self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 0.0006 else 1 if x <= -0.0006 else 2)
+        self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
 
         # self.v= self.df.drop(['time', 'next_trend', 'label'], axis=1)
         # self.to_predict = self.v.iloc[-1]
@@ -97,7 +102,7 @@ class MlTrading:
 
         return True
 
-    def preprocess_last(self, last_candle: DataFrame):
+    def preprocess_last(self, last_candle: DataFrame) -> None:
         """
             preprocess the ml_trading for the last candle
         :return:
@@ -105,7 +110,7 @@ class MlTrading:
             if its prepare correctly, its return True,
             otherwise return False
         """
-        temp_df: DataFrame = self.df.iloc[-50:].reset_index(drop=True)
+        temp_df: DataFrame = self.df.iloc[-60:].reset_index(drop=True)
         temp_df = pd.concat([temp_df, last_candle], axis=0)
 
         temp_df = temp_df.shift(-1)[:-1]
@@ -126,7 +131,7 @@ class MlTrading:
         temp_df['EMA_50'] = temp_df['c'].ewm(span=50, adjust=False).mean()
 
         temp_df['next_trend'] = temp_df['o'].shift(-1) - temp_df['c'].shift(-1)
-        temp_df['label'] = temp_df['next_trend'].apply(lambda x: 0 if x >= .0004 else 1 if x <= -.0004 else 2)
+        temp_df['label'] = temp_df['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
 
         second = temp_df.tail(2)
         last = second.tail(1)
@@ -135,16 +140,33 @@ class MlTrading:
         self.df.iloc[-1, self.df.columns.get_loc('next_trend')] = second
         self.df = pd.concat([self.df, last], axis=0)
 
-    def update_model(self):
-        # print("miad inja 1")
-        # temp_model = joblib.load(self.model_name)
-        # temp_model.fit(self.df.iloc[-31:-1, 1:-2], self.df.iloc[-31:-1, -1:])
-        # print("miad inja 2")
-        # joblib.dump(temp_model, self.model_name)
-        # print("miad inja 3")
-        # print("path : ", self.model_name)
-        # # self.model = joblib.load(self.model_name)
-        # self.model = temp_model
+    def update_model(self) -> GradientBoostingClassifier:
+        """
+            update model
+        :return:
+            return updated model
+        """
+        main_data_path = "File/trade_data/"
+
+        otc_data_file_path = main_data_path + "trade_data_history_" + self.trade.currency_disp() + "_otc_" + self.candle + ".csv"
+        data_file_path = main_data_path + "trade_data_history_" + self.trade.currency_disp() + "_" + self.candle + ".csv"
+        data = pd.read_csv(data_file_path)
+        otc_data = pd.read_csv(otc_data_file_path)
+
+        temp_model = joblib.load(self.model_name)
+        temp_df: DataFrame = data.iloc[-720:].reset_index(drop=True)
+        temp_df2 = pd.concat([data, temp_df], axis=0)
+        temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
+        joblib.dump(temp_model, self.model_name)
+        self.model = temp_model
+
+        temp_model = joblib.load(self.otc_model_name)
+        temp_df: DataFrame = otc_data.iloc[-720:].reset_index(drop=True)
+        temp_df2 = pd.concat([otc_data, temp_df], axis=0)
+        temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
+        joblib.dump(temp_model, self.otc_model_name)
+        self.otc_model = temp_model
+
         return self.model
 
     def update(self) -> [bool, DataFrame]:
@@ -163,11 +185,7 @@ class MlTrading:
             if self.check_last_candle(last_candle):
                 self.preprocess_last(last_candle)
                 self.counter += 1
-                # If the counter reaches 30, update the model and reset the counter
-                if self.counter >= 2:
-                    self.reduce_df_size()
-                    # self.update_model()
-                    self.counter = 0
+                # If the counter reaches 90, update the model and reset the counter
 
                 return True, last_candle
             else:
@@ -184,16 +202,24 @@ class MlTrading:
         """
         # self.update()
         try:
-            predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
-            accuracy = round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2)
+            week = datetime.today().weekday()
+
+            if week < 5:
+                predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
+                accuracy = (
+                    round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2))
+            else:
+                predict = self.otc_model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
+                accuracy = (
+                    round(float(max(self.otc_model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2))
 
             if predict == 2:
                 return PredictEnums().neutral, accuracy
 
-            if predict == 0 and accuracy >= 0.8:
+            if predict == 0 and accuracy >= 0.9:
                 return PredictEnums().sell, accuracy
 
-            if predict == 1 and accuracy >= 0.8:
+            if predict == 1 and accuracy >= 0.9:
                 return PredictEnums().buy, accuracy
 
             return PredictEnums().neutral, accuracy
