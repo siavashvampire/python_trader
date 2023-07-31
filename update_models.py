@@ -6,7 +6,7 @@ from core.database.database import create_db
 
 create_db()
 
-from app.market_trading.api import get_all_trading,get_trading
+from app.market_trading.api import get_all_trading, get_trading
 
 # trades = get_all_trading()
 trades = [get_trading(2)]
