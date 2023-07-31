@@ -149,7 +149,7 @@ class MlTrading:
             data = pd.read_csv(data_file_path)
 
             data = self.render_data(data)
-            temp_model:GradientBoostingClassifier = joblib.load(self.model_name)
+            temp_model: GradientBoostingClassifier = joblib.load(self.model_name)
             temp_df: DataFrame = data.iloc[-720:].reset_index(drop=True)
             temp_df2 = pd.concat([data, temp_df], axis=0)
             temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])

@@ -25,7 +25,7 @@ def get_start_time_from_file(file_path_in: str) -> datetime:
 
 
 def data_gathering(asset: str):
-    if data_connector.check_asset(asset) is not None:
+    if data_connector.check_asset(asset) is not None or 1:
         end_time = datetime.utcnow()
         end_time = end_time.replace(second=0, microsecond=0)
 
