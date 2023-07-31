@@ -20,26 +20,5 @@
 #        'percentLoss': 100, 'openPrice': 1.08983, 'copyTicket': '', 'closePrice': 0, 'command': 0,
 #        'asset': 'EURUSD' or CADCHF_otc,'nickname': '#24692142', 'accountBalance': 9876.7, 'requestId': '1',
 #        'openMs': 40, 'currency': 'USD'}
-from datetime import datetime, timedelta
 
-from core.config.Config import time_format
-from core.database.database import create_db
 
-create_db()
-
-from app.data_connector.model.data_connector import DataConnector
-from app.market_trading.api import get_all_trading, get_trading
-
-data_connector = DataConnector()
-
-trades = get_all_trading()
-candle = "M1"
-
-# trade_data_history_CAD_CHF_M1
-
-for trade in trades:
-    asset = trade.currency_disp()
-    start_time = datetime.utcnow() - timedelta(hours=8)
-    end_time = datetime.utcnow()
-    df1 = data_connector.get_history(asset, start_time.strftime(time_format), end_time.strftime(time_format), candle,
-                                     "File/trade_data/trade_data_history_" + asset + "_" + candle + ".csv")

@@ -474,7 +474,6 @@ class QuotexAPI:
 
         for t in range(len(dr) - 1):
             end_time_temp = dr[t + 1].to_pydatetime()
-            print(end_time_temp)
 
             data_temp = self.get_history_detail_quotex(asset, end_time_temp)
 
@@ -627,29 +626,3 @@ class QuotexAPI:
 
 if api_used == APIUsed().quotex:
     qx_api_class = QuotexAPI()
-    # webdriver.Chrome(options=options).get(trade_window_url_quotex)
-# qx_api.get_balance()
-# self.qx_api = qx_api
-# self.qx_api.change_balance("PRACTICE")  # or "REAL"
-#
-# # define trading parameters
-# asset = "EURUSD"
-# amount = 1
-# dir = "call"  # or "put"
-# duration = 60  # in seconds
-#
-# # print account balance and execute trade
-# print("Balance: ", self.qx_api.get_balance())
-# c, buy_info = self.qx_api.buy(asset, amount, dir, duration)
-#
-# # print trade execution information
-# print(buy_info)
-# if 'id' in buy_info.keys():
-#     print("----Trade----")
-#     print("Get: ", self.qx_api.check_win(buy_info["id"]))
-#     print("----Trade----")
-#     print("Balance: ", self.qx_api.get_balance())
-#     sleep(20)
-# else:
-#     print("BUY Fail")
-# self.qx_api.close()  # close the connection to the Quotex API
