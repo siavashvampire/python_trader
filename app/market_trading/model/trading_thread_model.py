@@ -33,8 +33,9 @@ class TradingThreadModel:
     state: Union[PredictNeutralEnums, PredictBuyEnums, PredictSellEnums]
     valid_predict: bool = False
     update_time: int = 5  # update thread in second
-    model_update_time: int = 720*60  # model update thread in second
+    model_update_time: int = 720 * 60  # model update thread in second
     check_asset: Optional[bool] = None
+    last_check_asset: Optional[bool] = None
 
     def __init__(self, trade: TradingModel, q_label_name: QLabel, q_label_value: QLabel,
                  q_label_accuracy: QLabel, q_label_predict: QLabel) -> None:
@@ -56,7 +57,8 @@ class TradingThreadModel:
 
         self.get_real_time_data = lambda: self.data_connector.get_real_time_data(self.name)
 
-        self.q_label_name.setText(self.name)
+        if self.q_label_name is not None:
+            self.q_label_name.setText(self.name)
         self.ml_trading = MlTrading(trade)
 
         self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
@@ -94,6 +96,7 @@ class TradingThreadModel:
         """
         flag = False
         self.check_asset = self.ml_trading.check_asset()
+        self.last_check_asset = self.ml_trading.check_asset()
 
         while not flag and self.check_asset is not None:
             flag = self.ml_trading.preprocess()
@@ -105,9 +108,14 @@ class TradingThreadModel:
         while True:
             sleep(0.2)
 
-            if (datetime.now() - self.last_update_time).seconds > self.update_time:
+            if (datetime.now() - self.last_update_time).total_seconds() > self.update_time:
                 try:
                     self.check_asset = self.ml_trading.check_asset()
+
+                    if self.last_check_asset != self.check_asset:
+                        self.last_check_asset = self.check_asset
+                        break
+
                     if self.check_asset is not None:
                         flag, _ = self.ml_trading.update()
                         if flag:
@@ -119,7 +127,6 @@ class TradingThreadModel:
                         self.q_label_value.setText(value)
                         self.q_label_accuracy.setText(str(round(self.accuracy * 100, 2)) + "%")
                         self.q_label_predict.setText(self.predict.__repr__())
-                        self.last_update_time = datetime.now()
                     else:
                         self.valid_predict = False
                         self.q_label_value.setText("trade is close")
@@ -127,10 +134,12 @@ class TradingThreadModel:
                         self.q_label_predict.setText("trade is close")
                         self.change_color(None)
 
+                    self.last_update_time = datetime.now()
+
                 except Exception as e:
                     sleep(1)
                     traceback.print_exc()
-                    print("error in trading thread update code: ", e)
+                    print("error in trading getting data thread update code: ", e)
                     # add_log(1, self.trade.id, 1, str(e))
 
                 if datetime.now().second > 10:
@@ -153,9 +162,8 @@ class TradingThreadModel:
         """
 
         while True:
-            sleep(60)
-
-            if (datetime.now() - self.last_model_update_time).seconds > self.model_update_time:
+            sleep(10)
+            if (datetime.now() - self.last_model_update_time).total_seconds() > self.model_update_time:
                 try:
                     if self.ml_trading.counter >= 720:
                         self.ml_trading.reduce_df_size()
@@ -166,7 +174,7 @@ class TradingThreadModel:
                 except Exception as e:
                     sleep(1)
                     traceback.print_exc()
-                    print("error in trading thread update code: ", e)
+                    print("error in trading update model thread update code: ", e)
                     # add_log(1, self.trade.id, 1, str(e))
 
             if stop_thread():
@@ -208,6 +216,14 @@ class TradingThreadModel:
             restart thread
         """
         if not self.thread.is_alive() or not self.model_thread.is_alive():
+            self.stop_thread = True
+
+            if self.thread.is_alive():
+                self.thread.join()
+
+            if self.model_thread.is_alive():
+                self.model_thread.join()
+
             self.stop_thread = False
             self.thread = Thread(target=self.getting_data_thread, args=(lambda: self.stop_thread,))
             self.thread.start()
