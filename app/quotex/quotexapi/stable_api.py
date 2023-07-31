@@ -1,4 +1,6 @@
 # python
+from datetime import datetime
+
 from app.quotex.quotexapi.api import quotexapi
 import time
 import logging
@@ -271,30 +273,28 @@ class Quotex:
     def check_asset(self, asset):
         all_asset = self.get_raw_asset()
         asset_data, asset_data_otc = self.get_both_asset_from_raw(all_asset, asset)
+        week = datetime.today().weekday()
 
         if asset_data is None and asset_data_otc is None:
             return None
 
         if asset_data is not None and asset_data_otc is None:
-            if asset_data[14]:
+            if asset_data[14] and week < 5:
                 return True
             return None
 
         if asset_data is None and asset_data_otc is not None:
-            if asset_data_otc[14]:
+            if asset_data_otc[14] and week >= 5:
                 return False
             return None
 
         if asset_data is not None and asset_data_otc is not None:
-            if asset_data[14]:
+            if asset_data[14] and week < 5:
                 return True
-            if asset_data_otc[14]:
+            if asset_data_otc[14] and week >= 5:
                 return False
 
             return None
-
-
-
 
     def get_both_asset_from_raw(self, all_asset, asset):
         asset_data = None
@@ -306,7 +306,7 @@ class Quotex:
             if i[1] == asset + "_otc":
                 asset_data_otc = i
 
-        return asset_data,asset_data_otc
+        return asset_data, asset_data_otc
 
     def start_candles_stream(self, asset, size):
         # the list of the size
