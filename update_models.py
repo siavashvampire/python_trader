@@ -18,7 +18,7 @@ for trade in trades:
     start_train_time = datetime.now()
     thread.model_thread.start()
     sleep(5)
-    thread.stop_thread = False
+    thread.stop_thread = True
     thread.model_thread.join()
     end_train_time = datetime.now()
     print("total train time for ", name, " is : ", (end_train_time - start_train_time).total_seconds(), "seconds")
