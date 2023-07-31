@@ -1,6 +1,6 @@
 import traceback
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, Optional
 
 import joblib
 import pandas as pd
@@ -11,6 +11,7 @@ from app.data_connector.model.data_connector import DataConnector
 from app.logging.api import add_log
 from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
+from core.app_provider.main import file_exist
 from core.config.Config import time_format
 
 
@@ -19,15 +20,15 @@ class MlTrading:
         the main trading class
     """
     df: DataFrame = DataFrame()
-    model: GradientBoostingClassifier
-    otc_model: GradientBoostingClassifier
+    model: Optional[GradientBoostingClassifier]
+    otc_model: Optional[GradientBoostingClassifier]
     model_name: str
     otc_model_name: str
     get_last_candle: callable
     trade: TradingModel
     candle: str
     last_update_time: datetime = datetime.now().replace(second=0, microsecond=0) - timedelta(minutes=8)
-    counter: int = 730
+    counter: int = 0
     prefer_df_size: int = 80
 
     def __init__(self, trade: TradingModel) -> None:
@@ -41,10 +42,16 @@ class MlTrading:
 
         # self.model = joblib.load('model_1min_EUR_USD.pkl')
         self.model_name = main_root + 'trade_model_' + self.trade.currency_disp() + '_' + self.candle + '.pkl'
-        self.model = joblib.load(self.model_name)
+        if file_exist('trade_model_' + self.trade.currency_disp() + '_' + self.candle + '.pkl', main_root):
+            self.model = joblib.load(self.model_name)
+        else:
+            self.model = None
 
         self.otc_model_name = main_root + 'trade_model_' + self.trade.currency_disp() + '_otc_' + self.candle + '.pkl'
-        self.otc_model = joblib.load(self.model_name)
+        if file_exist('trade_model_' + self.trade.currency_disp() + '_otc_' + self.candle + '.pkl', main_root):
+            self.otc_model = joblib.load(self.otc_model_name)
+        else:
+            self.otc_model = None
 
         self.data_connector = DataConnector()
 
@@ -78,23 +85,7 @@ class MlTrading:
         if self.df is None or self.df.empty:
             return False
 
-        self.df['trend'] = self.df['o'] - self.df['c']
-        self.df['MA_20'] = self.df['c'].rolling(window=20).mean()  # moving average 20
-        self.df['MA_50'] = self.df['c'].rolling(window=50).mean()  # moving average 50
-
-        self.df['L14'] = self.df['l'].rolling(window=14).min()
-        self.df['H14'] = self.df['h'].rolling(window=14).max()
-
-        self.df['%K'] = 100 * (
-                (self.df['c'] - self.df['L14']) / (self.df['H14'] - self.df['L14']))  # stochastic oscilator
-
-        self.df['%D'] = self.df['%K'].rolling(window=3).mean()
-
-        self.df['EMA_20'] = self.df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
-        self.df['EMA_50'] = self.df['c'].ewm(span=50, adjust=False).mean()
-
-        self.df['next_trend'] = self.df['o'].shift(-1) - self.df['c'].shift(-1)
-        self.df['label'] = self.df['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
+        self.df = self.render_data(self.df)
 
         # self.v= self.df.drop(['time', 'next_trend', 'label'], axis=1)
         # self.to_predict = self.v.iloc[-1]
@@ -114,24 +105,7 @@ class MlTrading:
         temp_df = pd.concat([temp_df, last_candle], axis=0)
 
         temp_df = temp_df.shift(-1)[:-1]
-
-        temp_df['trend'] = temp_df['o'] - temp_df['c']
-        temp_df['MA_20'] = temp_df['c'].rolling(window=20).mean()  # moving average 20
-        temp_df['MA_50'] = temp_df['c'].rolling(window=50).mean()  # moving average 50
-
-        temp_df['L14'] = temp_df['l'].rolling(window=14).min()
-        temp_df['H14'] = temp_df['h'].rolling(window=14).max()
-
-        temp_df['%K'] = 100 * (
-                (temp_df['c'] - temp_df['L14']) / (temp_df['H14'] - temp_df['L14']))  # stochastic oscilator
-
-        temp_df['%D'] = temp_df['%K'].rolling(window=3).mean()
-
-        temp_df['EMA_20'] = temp_df['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
-        temp_df['EMA_50'] = temp_df['c'].ewm(span=50, adjust=False).mean()
-
-        temp_df['next_trend'] = temp_df['o'].shift(-1) - temp_df['c'].shift(-1)
-        temp_df['label'] = temp_df['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
+        temp_df = self.render_data(temp_df)
 
         second = temp_df.tail(2)
         last = second.tail(1)
@@ -139,6 +113,26 @@ class MlTrading:
 
         self.df.iloc[-1, self.df.columns.get_loc('next_trend')] = second
         self.df = pd.concat([self.df, last], axis=0)
+
+    def render_data(self, df_in: DataFrame):
+        df_in['trend'] = df_in['o'] - df_in['c']
+        df_in['MA_20'] = df_in['c'].rolling(window=20).mean()  # moving average 20
+        df_in['MA_50'] = df_in['c'].rolling(window=50).mean()  # moving average 50
+
+        df_in['L14'] = df_in['l'].rolling(window=14).min()
+        df_in['H14'] = df_in['h'].rolling(window=14).max()
+
+        df_in['%K'] = 100 * (
+                (df_in['c'] - df_in['L14']) / (df_in['H14'] - df_in['L14']))  # stochastic oscilator
+
+        df_in['%D'] = df_in['%K'].rolling(window=3).mean()
+
+        df_in['EMA_20'] = df_in['c'].ewm(span=20, adjust=False).mean()  # exponential moving average
+        df_in['EMA_50'] = df_in['c'].ewm(span=50, adjust=False).mean()
+
+        df_in['next_trend'] = df_in['o'].shift(-1) - df_in['c'].shift(-1)
+        df_in['label'] = df_in['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
+        return df_in
 
     def update_model(self) -> GradientBoostingClassifier:
         """
@@ -150,22 +144,31 @@ class MlTrading:
 
         otc_data_file_path = main_data_path + "trade_data_history_" + self.trade.currency_disp() + "_otc_" + self.candle + ".csv"
         data_file_path = main_data_path + "trade_data_history_" + self.trade.currency_disp() + "_" + self.candle + ".csv"
-        data = pd.read_csv(data_file_path)
-        otc_data = pd.read_csv(otc_data_file_path)
 
-        temp_model = joblib.load(self.model_name)
-        temp_df: DataFrame = data.iloc[-720:].reset_index(drop=True)
-        temp_df2 = pd.concat([data, temp_df], axis=0)
-        temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
-        joblib.dump(temp_model, self.model_name)
-        self.model = temp_model
+        if self.model is not None:
+            data = pd.read_csv(data_file_path)
 
-        temp_model = joblib.load(self.otc_model_name)
-        temp_df: DataFrame = otc_data.iloc[-720:].reset_index(drop=True)
-        temp_df2 = pd.concat([otc_data, temp_df], axis=0)
-        temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
-        joblib.dump(temp_model, self.otc_model_name)
-        self.otc_model = temp_model
+            data = self.render_data(data)
+            temp_model:GradientBoostingClassifier = joblib.load(self.model_name)
+            temp_df: DataFrame = data.iloc[-720:].reset_index(drop=True)
+            temp_df2 = pd.concat([data, temp_df], axis=0)
+            temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
+            joblib.dump(temp_model, self.model_name)
+
+            self.model = temp_model
+
+        if self.otc_model is not None:
+            otc_data = pd.read_csv(otc_data_file_path)
+
+            otc_data = self.render_data(otc_data)
+
+            temp_model = joblib.load(self.otc_model_name)
+            temp_df: DataFrame = otc_data.iloc[-720:].reset_index(drop=True)
+            temp_df2 = pd.concat([otc_data, temp_df], axis=0)
+            temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
+            joblib.dump(temp_model, self.otc_model_name)
+
+            self.otc_model = temp_model
 
         return self.model
 
@@ -204,14 +207,16 @@ class MlTrading:
         try:
             week = datetime.today().weekday()
 
-            if week < 5:
+            if week < 5 and self.model is not None:
                 predict = self.model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
                 accuracy = (
                     round(float(max(self.model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2))
-            else:
+            elif week >= 5 and self.otc_model is not None:
                 predict = self.otc_model.predict(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0]
                 accuracy = (
                     round(float(max(self.otc_model.predict_proba(self.df.iloc[-1, 1:-2].values.reshape(1, -1))[0])), 2))
+            else:
+                return PredictEnums().neutral, 0.0
 
             if predict == 2:
                 return PredictEnums().neutral, accuracy
