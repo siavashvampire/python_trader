@@ -1,5 +1,6 @@
 # python
 from datetime import datetime
+from typing import Optional
 
 from app.quotex.quotexapi.api import quotexapi
 import time
@@ -270,7 +271,7 @@ class Quotex:
                 # else:
                 #     return False
 
-    def check_asset(self, asset):
+    def check_asset(self, asset: str) -> Optional[bool]:
         all_asset = self.get_raw_asset()
         asset_data, asset_data_otc = self.get_both_asset_from_raw(all_asset, asset)
         week = datetime.today().weekday()
