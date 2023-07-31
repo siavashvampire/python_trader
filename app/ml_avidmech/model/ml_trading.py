@@ -13,6 +13,9 @@ from app.market_trading.model.trading_model import TradingModel
 from app.ml_avidmech.model.enums import PredictEnums, PredictNeutralEnums, PredictBuyEnums, PredictSellEnums
 from core.app_provider.main import file_exist
 from core.config.Config import time_format
+from sklearn import ensemble
+from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import TomekLinks
 
 
 class MlTrading:
@@ -132,6 +135,7 @@ class MlTrading:
 
         df_in['next_trend'] = df_in['o'].shift(-1) - df_in['c'].shift(-1)
         df_in['label'] = df_in['next_trend'].apply(lambda x: 0 if x >= 0.0009 else 1 if x <= -0.0009 else 2)
+        # df_in = df_in.dropna()
         return df_in
 
     def update_model(self) -> GradientBoostingClassifier:
@@ -149,10 +153,11 @@ class MlTrading:
             data = pd.read_csv(data_file_path)
 
             data = self.render_data(data)
-            temp_model: GradientBoostingClassifier = joblib.load(self.model_name)
-            temp_df: DataFrame = data.iloc[-720:].reset_index(drop=True)
-            temp_df2 = pd.concat([data, temp_df], axis=0)
-            temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
+            temp_model = ensemble.GradientBoostingClassifier(verbose=3, n_estimators=100, learning_rate=0.3)
+            resample = SMOTETomek(tomek=TomekLinks(sampling_strategy='majority'))
+            X, y = data.iloc[-60000:, 1:-2], data.iloc[-60000:, -1:]
+            X, y = resample.fit_resample(X, y)
+            temp_model.fit(X, y )
             joblib.dump(temp_model, self.model_name)
 
             self.model = temp_model
@@ -162,11 +167,12 @@ class MlTrading:
 
             otc_data = self.render_data(otc_data)
 
-            temp_model = joblib.load(self.otc_model_name)
-            temp_df: DataFrame = otc_data.iloc[-720:].reset_index(drop=True)
-            temp_df2 = pd.concat([otc_data, temp_df], axis=0)
-            temp_model.fit(temp_df2.iloc[-60000:, 1:-2], temp_df2.iloc[-60000:, -1:])
-            joblib.dump(temp_model, self.otc_model_name)
+            temp_model = ensemble.GradientBoostingClassifier(verbose=3, n_estimators=100, learning_rate=0.3)
+            resample = SMOTETomek(tomek=TomekLinks(sampling_strategy='majority'))
+            X, y = otc_data.iloc[-60000:, 1:-2], otc_data.iloc[-60000:, -1:]
+            X, y = resample.fit_resample(X, y)
+            temp_model.fit(X, y)
+            joblib.dump(temp_model, self.model_name)
 
             self.otc_model = temp_model
 

@@ -30,3 +30,4 @@ python-telegram-bot==20.4
 
 # holidays==0.14.2
 # holidays==0.28
+imblearn==0.0
