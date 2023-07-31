@@ -157,7 +157,7 @@ class MlTrading:
             resample = SMOTETomek(tomek=TomekLinks(sampling_strategy='majority'))
             X, y = data.iloc[-60000:, 1:-2], data.iloc[-60000:, -1:]
             X, y = resample.fit_resample(X, y)
-            temp_model.fit(X, y )
+            temp_model.fit(X, y)
             joblib.dump(temp_model, self.model_name)
 
             self.model = temp_model
@@ -169,9 +169,9 @@ class MlTrading:
 
             temp_model = ensemble.GradientBoostingClassifier(verbose=3, n_estimators=100, learning_rate=0.3)
             resample = SMOTETomek(tomek=TomekLinks(sampling_strategy='majority'))
-            X, y = otc_data.iloc[-60000:, 1:-2], otc_data.iloc[-60000:, -1:]
-            X, y = resample.fit_resample(X, y)
-            temp_model.fit(X, y)
+            x, y = otc_data.iloc[-60000:, 1:-2], otc_data.iloc[-60000:, -1:]
+            x, y = resample.fit_resample(x, y)
+            temp_model.fit(x, y)
             joblib.dump(temp_model, self.model_name)
 
             self.otc_model = temp_model
