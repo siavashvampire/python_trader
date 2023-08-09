@@ -170,6 +170,7 @@ class TradingThreadModel:
                         data_gathering(self.ml_trading.trade.currency_disp())
                         self.ml_trading.update_model()
                         self.ml_trading.counter = 0
+                        self.last_model_update_time = datetime.now()
 
                 except Exception as e:
                     sleep(1)

@@ -19,7 +19,9 @@ for trade in trades:
     print(name)
 
     thread = TradingThreadModel(trade, None, None, None, None)
-    if file_exist(thread.ml_trading.model_name, 'File/trade_models/'):
+
+    if file_exist('trade_model_' + thread.trade.currency_disp() + '_' + thread.ml_trading.candle + '.pkl',
+                  'File/trade_models/'):
         last_modified = datetime.fromtimestamp(os.path.getmtime(thread.ml_trading.model_name))
         if (datetime.now() - last_modified).total_seconds() > 1 * 60 * 60:
             thread.ml_trading.counter = 730
