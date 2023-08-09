@@ -153,12 +153,17 @@ class MlTrading:
             data = pd.read_csv(data_file_path)
 
             data = self.render_data(data)
-            temp_model = ensemble.GradientBoostingClassifier(verbose=3, n_estimators=100, learning_rate=0.3)
+            temp_model = ensemble.GradientBoostingClassifier(verbose=3, n_estimators=100, learning_rate=0.3,
+                                                             n_iter_no_change=5)
+
             resample = SMOTETomek(tomek=TomekLinks(sampling_strategy='majority'))
-            X, y = data.iloc[-60000:, 1:-2], data.iloc[-60000:, -1:]
-            X, y = resample.fit_resample(X, y)
-            temp_model.fit(X, y)
+            x, y = data.iloc[-60000:, 1:-2], data.iloc[-60000:, -1:]
+            x, y = resample.fit_resample(x, y)
+            temp_model.fit(x, y)
             joblib.dump(temp_model, self.model_name)
+            accuracy = temp_model.score(x, y)
+            print('Training Accuracy for {currency} : {accuracy}'.format(currency=self.trade.currency_disp(),
+                                                                         accuracy=accuracy))
 
             self.model = temp_model
 
@@ -172,7 +177,7 @@ class MlTrading:
             x, y = otc_data.iloc[-60000:, 1:-2], otc_data.iloc[-60000:, -1:]
             x, y = resample.fit_resample(x, y)
             temp_model.fit(x, y)
-            joblib.dump(temp_model, self.model_name)
+            joblib.dump(temp_model, self.otc_model_name)
 
             self.otc_model = temp_model
 
